@@ -1,82 +1,157 @@
 "use client";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation"; // URL se city ID/name lene ke liye
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { MapPin, Search, ArrowRight, TrendingUp } from "lucide-react";
+import { 
+  MapPin, 
+  Briefcase, 
+  ArrowLeft, 
+  Search, 
+  Loader2, 
+  Building2, 
+  Clock, 
+  ChevronRight 
+} from "lucide-react";
 
-const cities = [
-  { name: "Karachi", jobs: "4,500+", growth: "+12%", color: "bg-blue-50" },
-  { name: "Lahore", jobs: "3,200+", growth: "+8%", color: "bg-green-50" },
-  { name: "Islamabad", jobs: "2,100+", growth: "+15%", color: "bg-purple-50" },
-  { name: "Rawalpindi", jobs: "1,500+", growth: "+5%", color: "bg-orange-50" },
-  { name: "Faisalabad", jobs: "1,200+", growth: "+3%", color: "bg-red-50" },
-  { name: "Multan", jobs: "950+", growth: "+6%", color: "bg-teal-50" },
-  { name: "Peshawar", jobs: "800+", growth: "+4%", color: "bg-indigo-50" },
-  { name: "Quetta", jobs: "500+", growth: "+2%", color: "bg-yellow-50" },
-];
+export default function CityJobsPage() {
+  const params = useParams();
+  const cityName = params.id;
 
-export default function CitiesPage() {
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCityJobs = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/jobs?city=${cityName}`);
+        const data = await response.json();
+        setJobs(data);
+      } catch (error) {
+        console.error("Error fetching jobs for city:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (cityName) fetchCityJobs();
+  }, [cityName]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
+        <Loader2 className="animate-spin text-[#1e3a8a]" size={40} />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#f8fafc] py-16 px-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-black text-[#1e3a8a] mb-6"
-          >
-            Browse Jobs by <span className="text-[#00d26a]">City</span>
-          </motion.h1>
-          <p className="text-gray-500 font-bold text-lg max-w-2xl mx-auto">
-            Find the best opportunities in your preferred location. We cover all major industrial hubs across Pakistan.
-          </p>
+    <main className="min-h-screen bg-[#f8fafc] py-12 px-6">
+      <div className="max-w-6xl mx-auto">
+        
+        <Link href="/cities" className="flex items-center gap-2 text-gray-400 font-bold mb-8 hover:text-[#1e3a8a] transition-colors">
+          <ArrowLeft size={20} /> Back to All Cities
+        </Link>
 
-          <div className="mt-10 max-w-xl mx-auto relative group">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#1e3a8a] transition-colors" size={24} />
-            <input 
-              type="text" 
-              placeholder="Search for your city..." 
-              className="w-full pl-16 pr-8 py-5 rounded-[2rem] bg-white shadow-xl shadow-slate-200/50 border-2 border-transparent focus:border-[#1e3a8a] outline-none font-bold text-[#1e3a8a] transition-all"
-            />
+        <div className="bg-white p-10 md:p-16 rounded-[3.5rem] shadow-xl shadow-slate-200/50 border border-gray-100 mb-12 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-bl-full -mr-20 -mt-20 opacity-50"></div>
+          
+          <div className="relative z-10">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-3 text-[#00d26a] font-black uppercase tracking-widest text-sm mb-4"
+            >
+              <MapPin size={18} /> {cityName} Opportunities
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              className="text-4xl md:text-6xl font-black text-[#1e3a8a] mb-6 capitalize"
+            >
+              Jobs in <span className="text-[#00d26a]">{cityName}</span>
+            </motion.h1>
+            
+            <p className="text-gray-500 font-bold text-lg max-w-2xl leading-relaxed">
+              Explore {jobs.length} active job openings in {cityName}. Find your next career move with top local companies and multinational firms.
+            </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {cities.map((city, index) => (
-            <motion.div
-              key={city.name}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ y: -10 }}
-            >
-              <Link href={`/cities/${city.name.toLowerCase()}`} className="block group">
-                <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-slate-200/40 relative overflow-hidden h-full">
-                  <div className={`absolute top-0 right-0 w-24 h-24 ${city.color} rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150`}></div>
-                  
-                  <div className="relative z-10">
-                    <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-md mb-6 group-hover:bg-[#1e3a8a] transition-colors">
-                      <MapPin className="text-[#1e3a8a] group-hover:text-white transition-colors" size={28} />
-                    </div>
-                    
-                    <h3 className="text-2xl font-black text-[#1e3a8a] mb-2">{city.name}</h3>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[#00d26a] font-black">{city.jobs} Jobs</span>
-                      <div className="flex items-center gap-1 text-xs font-bold text-gray-400">
-                        <TrendingUp size={14} className="text-green-500" />
-                        {city.growth}
+        <div className="grid lg:grid-cols-3 gap-10">
+          
+          <div className="lg:col-span-2 space-y-6">
+            <h2 className="text-2xl font-black text-[#1e3a8a] mb-8 flex items-center gap-3">
+              <Briefcase className="text-[#00d26a]" /> Available Vacancies
+            </h2>
+
+            {jobs.length > 0 ? (
+              jobs.map((job: any, index) => (
+                <motion.div
+                  key={job._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ scale: 1.01 }}
+                  className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-all group"
+                >
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div className="flex items-center gap-6">
+                      <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-[#1e3a8a] group-hover:bg-[#1e3a8a] group-hover:text-white transition-all">
+                        <Building2 size={28} />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-black text-[#1e3a8a] mb-1">{job.title}</h3>
+                        <div className="flex flex-wrap items-center gap-4 text-gray-400 font-bold text-xs uppercase tracking-wider">
+                          <span className="flex items-center gap-1"><MapPin size={14}/> {job.location}</span>
+                          <span className="flex items-center gap-1"><Clock size={14}/> {new Date(job.createdAt).toLocaleDateString()}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="mt-8 pt-6 border-t border-dashed border-gray-100 flex items-center gap-2 text-[#1e3a8a] font-black text-sm uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-                    Explore Now <ArrowRight size={16} />
+                    <div className="flex items-center gap-4 w-full md:w-auto">
+                      <div className="text-right mr-4 hidden md:block">
+                        <div className="text-[#00d26a] font-black text-lg">{job.salary || "Negotiable"}</div>
+                        <div className="text-[10px] font-bold text-gray-300 uppercase">Monthly Salary</div>
+                      </div>
+                      <Link href={`/jobs/${job._id}`} className="flex-1 md:flex-none text-center bg-slate-50 hover:bg-[#1e3a8a] hover:text-white text-[#1e3a8a] px-6 py-4 rounded-2xl font-black transition-all flex items-center justify-center gap-2">
+                        View Details <ChevronRight size={18} />
+                      </Link>
+                    </div>
                   </div>
+                </motion.div>
+              ))
+            ) : (
+              <div className="bg-white p-20 rounded-[3rem] text-center border-2 border-dashed border-gray-100">
+                <Search className="mx-auto text-gray-200 mb-4" size={60} />
+                <h3 className="text-xl font-black text-[#1e3a8a] mb-2">No Jobs Found</h3>
+                <p className="text-gray-400 font-bold">Try searching in a different city or check back later.</p>
+              </div>
+            )}
+          </div>
+          <aside className="lg:col-span-1 space-y-8">
+             <div className="bg-[#1e3a8a] p-8 rounded-[3rem] text-white shadow-xl shadow-blue-200 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+                <h3 className="text-xl font-black mb-4 relative z-10">Job Alerts</h3>
+                <p className="text-blue-100 font-medium text-sm mb-6 relative z-10">Get notified whenever a new job is posted in {cityName}.</p>
+                <input type="email" placeholder="Enter your email" className="w-full p-4 bg-white/10 rounded-2xl border border-white/20 outline-none mb-4 placeholder:text-blue-200 font-bold" />
+                <button className="w-full bg-[#00d26a] text-[#1e3a8a] font-black py-4 rounded-2xl shadow-lg">Subscribe Now</button>
+             </div>
+
+             <div className="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm">
+                <h3 className="text-xl font-black text-[#1e3a8a] mb-6">Top Cities</h3>
+                <div className="space-y-4">
+                  {['Karachi', 'Lahore', 'Islamabad'].map(city => (
+                    <Link key={city} href={`/cities/${city.toLowerCase()}`} className="flex items-center justify-between p-4 hover:bg-slate-50 rounded-2xl transition-all group">
+                       <span className="font-bold text-gray-500 group-hover:text-[#1e3a8a]">{city}</span>
+                       <ChevronRight size={16} className="text-gray-300" />
+                    </Link>
+                  ))}
                 </div>
-              </Link>
-            </motion.div>
-          ))}
+             </div>
+          </aside>
+
         </div>
       </div>
-    </div>
+    </main>
   );
 }
