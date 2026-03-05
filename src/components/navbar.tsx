@@ -36,6 +36,7 @@ const Navbar = () => {
                 height={50} 
                 priority
                 className="object-contain"
+                style={{ height: 'auto' }}
               />
             </Link>
           </motion.div>

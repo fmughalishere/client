@@ -16,6 +16,7 @@ const Footer = () => {
                 alt="EasyJobs" 
                 width={160} 
                 height={45} 
+                style={{ height: 'auto' }}
               />
             </Link>
             <p className="text-blue-100/70 text-sm leading-relaxed mt-3">
