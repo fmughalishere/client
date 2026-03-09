@@ -29,6 +29,14 @@ export default function BlogsPage() {
   return (
     <main className="min-h-screen bg-[#f8fafc] py-16 lg:py-24">
       <div className="max-w-7xl mx-auto px-6">
+        <div className="mb-8">
+        <Link 
+          href="/" 
+          className="inline-block text-[#00d26a] font-black uppercase text-sm hover:underline"
+        >
+          ← Back to Home
+        </Link>
+      </div>
         <div className="text-center mb-20">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="inline-flex items-center gap-2 bg-[#1e3a8a]/5 px-4 py-2 rounded-full text-[#1e3a8a] text-sm font-black mb-6 border border-[#1e3a8a]/10">
             <BookOpen size={16} className="text-[#00d26a]" />

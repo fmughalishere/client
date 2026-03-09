@@ -24,9 +24,21 @@ const fadeInUp = {
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-white pb-20 overflow-hidden">
-            <section className="relative bg-[#1e3a8a] py-20 lg:py-32 text-white">
+      {/* Hero Section */}
+      <section className="relative bg-[#1e3a8a] py-20 lg:py-32 text-white">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-[#00d26a]/10 skew-x-12 transform origin-right"></div>
-        <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
+        <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col items-start">
+          
+          {/* Back to Home Link (Left aligned) */}
+          <div className="mb-8">
+            <Link 
+              href="/" 
+              className="inline-block text-[#00d26a] font-black uppercase text-sm hover:underline"
+            >
+              ← Back to Home
+            </Link>
+          </div>
+
           <motion.h1 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -39,12 +51,14 @@ export default function AboutPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-blue-100 text-lg md:text-xl max-w-3xl mx-auto font-medium leading-relaxed"
+            className="text-blue-100 text-lg md:text-xl max-w-3xl font-medium leading-relaxed"
           >
             EasyJobs.pk is more than just a job portal. We are a bridge between passion and career, dedicated to helping every Pakistani professional find their dream role.
           </motion.p>
         </div>
       </section>
+
+      {/* Vision Section */}
       <section className="py-24 px-6 max-w-7xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <motion.div {...fadeInUp}>
@@ -100,6 +114,8 @@ export default function AboutPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Values Section */}
       <section className="bg-[#1e3a8a] py-24 px-6 text-white overflow-hidden relative">
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#00d26a]/10 rounded-full blur-[120px]"></div>
         
@@ -110,22 +126,10 @@ export default function AboutPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { 
-                title: "Transparency", 
-                desc: "No hidden fees, no fake ads. We believe in clear communication between employers and seekers.",
-                icon: Zap 
-              },
-              { 
-                title: "Local Excellence", 
-                desc: "Designed specifically for the Pakistani market, understanding the local needs and challenges.",
-                icon: TrendingUp 
-              },
-              { 
-                title: "Empowerment", 
-                desc: "We provide the tools and resources for professionals to own their career path.",
-                icon: Users 
-              }
+            {[ 
+              { title: "Transparency", desc: "No hidden fees, no fake ads. We believe in clear communication between employers and seekers.", icon: Zap },
+              { title: "Local Excellence", desc: "Designed specifically for the Pakistani market, understanding the local needs and challenges.", icon: TrendingUp },
+              { title: "Empowerment", desc: "We provide the tools and resources for professionals to own their career path.", icon: Users }
             ].map((value, idx) => (
               <motion.div 
                 key={idx}
@@ -145,6 +149,8 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* Join Section */}
       <section className="py-24 px-6 max-w-4xl mx-auto text-center">
         <motion.div {...fadeInUp}>
           <h2 className="text-3xl md:text-5xl font-black text-[#1e3a8a] mb-6">Join the Revolution</h2>
@@ -161,7 +167,6 @@ export default function AboutPage() {
           </div>
         </motion.div>
       </section>
-
     </main>
   );
 }

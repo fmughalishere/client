@@ -46,6 +46,14 @@ export default function RegisterPage() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-xl bg-white rounded-[3rem] shadow-2xl p-10 md:p-16 border border-gray-100"
       >
+        <div className="mb-8">
+        <Link 
+          href="/" 
+          className="inline-block text-[#00d26a] font-black uppercase text-sm hover:underline"
+        >
+          ← Back to Home
+        </Link>
+      </div>
         <div className="text-center mb-12">
           <h1 className="text-4xl font-black text-[#1e3a8a] mb-3 tracking-tight">Join EasyJobs</h1>
           <p className="text-gray-500 font-bold">Create your profile and start your journey</p>

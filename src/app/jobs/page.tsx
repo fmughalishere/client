@@ -44,7 +44,15 @@ export default function JobsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
-      <div className="mb-12 bg-white p-4 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 flex flex-col md:flex-row gap-4">
+      <div className="mb-8">
+        <Link 
+          href="/" 
+          className="inline-block text-[#00d26a] font-black uppercase text-sm hover:underline"
+        >
+          ← Back to Home
+        </Link>
+      </div>
+      <div className="mb-4 bg-white p-4 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 flex flex-col md:flex-row gap-4">
         <div className="flex-1 flex items-center gap-3 px-4">
           <Search className="text-[#1e3a8a]" size={20} />
           <input 
@@ -67,7 +75,6 @@ export default function JobsPage() {
           />
         </div>
       </div>
-
       <div className="flex flex-col md:flex-row gap-10">
         <aside className="w-full md:w-80 space-y-6">
           <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm sticky top-32">
@@ -76,7 +83,7 @@ export default function JobsPage() {
             </h3>
             
             <div className="space-y-4">
-              {['Full-time', 'Part-time', 'Remote', 'Contract'].map(type => (
+              {['One Day Task', 'Part-time', 'Full-time', 'Remote', 'Contract'].map(type => (
                 <label key={type} className="flex items-center gap-3 py-1 cursor-pointer group">
                   <input type="checkbox" className="w-5 h-5 accent-[#00d26a] rounded-lg border-2" />
                   <span className="text-gray-500 font-bold group-hover:text-[#1e3a8a] transition-colors">{type}</span>

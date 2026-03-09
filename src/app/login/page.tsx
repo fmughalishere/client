@@ -46,6 +46,14 @@ export default function LoginPage() {
         animate={{ opacity: 1, scale: 1 }}
         className="w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200 border border-gray-100 overflow-hidden p-8 md:p-12"
       >
+        <div className="mb-8">
+        <Link 
+          href="/" 
+          className="inline-block text-[#00d26a] font-black uppercase text-sm hover:underline"
+        >
+          ← Back to Home
+        </Link>
+      </div>
         <div className="text-center mb-10">
           <h1 className="text-3xl font-black text-[#1e3a8a] mb-2 tracking-tight">Welcome Back</h1>
           <p className="text-gray-500 font-medium">Log in to manage your career</p>

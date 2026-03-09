@@ -9,7 +9,8 @@ const Footer = () => {
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#00d26a]/10 rounded-full blur-3xl"></div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-                    <div className="space-y-6">
+
+          <div className="space-y-6">
             <Link href="/">
               <Image 
                 src="/images/logo.png" 
@@ -25,13 +26,14 @@ const Footer = () => {
             <div className="flex space-x-3">
               {[Facebook, Twitter, Linkedin, Instagram].map((Icon, i) => (
                 <Link key={i} href="#" className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-[#00d26a] hover:scale-110 transition-all duration-300">
-                  <Icon size={18} />
+                  <Icon size={18} className="text-[#00d26a]" />
                 </Link>
               ))}
             </div>
           </div>
+
           <div>
-            <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
+            <h3 className="text-lg font-bold mb-6 flex items-center gap-2 text-[#00d26a]">
               For Candidates <span className="w-6 h-[2px] bg-[#00d26a]"></span>
             </h3>
             <ul className="space-y-4 text-sm font-medium text-blue-100/70">
@@ -41,8 +43,9 @@ const Footer = () => {
               <li><Link href="#" className="hover:text-[#00d26a] transition-colors">Resume Help</Link></li>
             </ul>
           </div>
+
           <div>
-            <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
+            <h3 className="text-lg font-bold mb-6 flex items-center gap-2 text-[#00d26a]">
               Company <span className="w-6 h-[2px] bg-[#00d26a]"></span>
             </h3>
             <ul className="space-y-4 text-sm font-medium text-blue-100/70">
@@ -52,8 +55,9 @@ const Footer = () => {
               <li><Link href="#" className="hover:text-[#00d26a] transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
+
           <div>
-            <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
+            <h3 className="text-lg font-bold mb-6 flex items-center gap-2 text-[#00d26a]">
               Get in Touch <span className="w-6 h-[2px] bg-[#00d26a]"></span>
             </h3>
             <ul className="space-y-4 text-sm font-medium text-blue-100/70">
@@ -71,7 +75,9 @@ const Footer = () => {
               </li>
             </ul>
           </div>
+
         </div>
+
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-blue-100/40 font-medium">
             © {new Date().getFullYear()} EasyJobs.pk. Built with Passion in Pakistan.
@@ -81,6 +87,7 @@ const Footer = () => {
             <ArrowRight size={14} />
           </div>
         </div>
+
       </div>
     </footer>
   );

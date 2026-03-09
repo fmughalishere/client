@@ -15,6 +15,7 @@ import {
   CheckCircle2
 } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function ContactPage() {
   const [formState, setFormState] = useState("idle");
@@ -55,7 +56,19 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen bg-[#f8fafc] py-16 lg:py-24">
       <div className="max-w-7xl mx-auto px-6">
-                <div className="text-center mb-20">
+        
+        {/* Hero Section */}
+        <div className="text-center mb-10 relative">
+          {/* Back to Home Link on Left */}
+          <div className="absolute left-0 top-0">
+            <Link 
+              href="/" 
+              className="inline-block text-[#00d26a] font-black uppercase text-sm hover:underline"
+            >
+              ← Back to Home
+            </Link>
+          </div>
+
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -72,8 +85,9 @@ export default function ContactPage() {
           </motion.p>
         </div>
 
+        {/* Contact Info & Socials */}
         <div className="grid lg:grid-cols-3 gap-12">
-                    <div className="space-y-6">
+          <div className="space-y-6">
             {contactInfo.map((item, i) => (
               <motion.div
                 key={i}
@@ -93,17 +107,19 @@ export default function ContactPage() {
               </motion.div>
             ))}
             <div className="bg-[#1e3a8a] p-10 rounded-[2.5rem] text-white relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-[#00d26a]/10 rounded-bl-full blur-2xl"></div>
-               <h3 className="text-xl font-black mb-6 relative z-10">Follow Our Journey</h3>
-               <div className="flex gap-4 relative z-10">
-                  {[Facebook, Twitter, Linkedin, Instagram].map((Icon, i) => (
-                    <button key={i} className="w-12 h-12 bg-white/10 hover:bg-[#00d26a] rounded-xl flex items-center justify-center transition-all">
-                      <Icon size={20} />
-                    </button>
-                  ))}
-               </div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#00d26a]/10 rounded-bl-full blur-2xl"></div>
+              <h3 className="text-xl font-black mb-6 relative z-10">Follow Our Journey</h3>
+              <div className="flex gap-4 relative z-10">
+                {[Facebook, Twitter, Linkedin, Instagram].map((Icon, i) => (
+                  <button key={i} className="w-12 h-12 bg-white/10 hover:bg-[#00d26a] rounded-xl flex items-center justify-center transition-all">
+                    <Icon size={20} />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
+
+          {/* Contact Form */}
           <div className="lg:col-span-2">
             <motion.div 
               initial={{ opacity: 0, y: 30 }}
@@ -175,14 +191,16 @@ export default function ContactPage() {
             </motion.div>
           </div>
         </div>
+
+        {/* Map Section */}
         <motion.div 
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           className="mt-24 h-96 w-full bg-slate-200 rounded-[4rem] relative overflow-hidden flex items-center justify-center border-8 border-white shadow-2xl"
         >
           <div className="absolute inset-0 bg-[#1e3a8a]/5 flex flex-col items-center justify-center">
-             <MapPin size={48} className="text-[#1e3a8a] mb-4 animate-bounce" />
-             <p className="text-[#1e3a8a] font-black text-xl">Find us on Google Maps</p>
+            <MapPin size={48} className="text-[#1e3a8a] mb-4 animate-bounce" />
+            <p className="text-[#1e3a8a] font-black text-xl">Find us on Google Maps</p>
           </div>
         </motion.div>
 
