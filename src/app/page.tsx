@@ -35,6 +35,7 @@ export default function HomePage() {
     if (token && storedUser) {
       setIsLoggedIn(true);
       const user = JSON.parse(storedUser);
+
       if (user.role === "employer") {
         setUserLink("/dashboard/employer");
       } else {
@@ -45,7 +46,7 @@ export default function HomePage() {
       setUserLink("/login");
     }
 
-    window.addEventListener("beforeinstallprompt", (e) => {
+    window.addEventListener("beforeinstallprompt", (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
       setShowInstallBtn(true);
@@ -64,8 +65,10 @@ export default function HomePage() {
       );
       return;
     }
+
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
+
     if (outcome === "accepted") {
       setDeferredPrompt(null);
       setShowInstallBtn(false);
@@ -87,57 +90,55 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white pb-16">
-
-      <button
-        onClick={handleInstallClick}
-        className="fixed bottom-6 right-6 z-50 bg-[#00d26a] text-white p-4 rounded-full shadow-2xl flex items-center gap-2 hover:scale-110 transition-all active:scale-95 group"
-      >
-        <Smartphone size={24} />
-        <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 font-bold whitespace-nowrap text-sm">
-          Add Shortcut
-        </span>
-      </button>
-
       <section className="bg-[#1e3a8a] text-white py-12 px-6 text-center relative overflow-hidden">
+        <div className="absolute top-2 left-3 right-3 flex justify-between items-center z-30">
 
-        <Link
-          href={userLink}
-          className="absolute top-2 left-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 px-4 py-2 rounded-2xl flex items-center gap-2 transition-all active:scale-95 group z-30"
-        >
-          {isLoggedIn ? (
-            <>
-              <LayoutDashboard size={18} className="text-[#00d26a]" />
-              <span className="text-xs font-bold">Dashboard</span>
-            </>
-          ) : (
-            <>
-              <User size={18} />
-              <span className="text-xs font-bold">Login / Register</span>
-            </>
-          )}
-        </Link>
+          <Link
+            href={userLink}
+            className="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 px-4 py-2 rounded-2xl flex items-center gap-2 transition-all active:scale-95"
+          >
+            {isLoggedIn ? (
+              <>
+                <LayoutDashboard size={18} className="text-[#00d26a]" />
+                <span className="text-xs font-bold">My Dashboard</span>
+              </>
+            ) : (
+              <>
+                <User size={18} />
+                <span className="text-xs font-bold">My Dashboard</span>
+              </>
+            )}
+          </Link>
 
-        <h1 className="text-2xl md:text-5xl font-black mb-3 tracking-tight text-[#00d26a]">
+         <button
+         onClick={handleInstallClick}
+         className="bg-[#00d26a] hover:bg-green-500 text-white px-4 py-2 rounded-2xl flex items-center gap-2 text-xs font-bold shadow-lg transition-all active:scale-95"
+         >
+       <Smartphone size={16} />
+       <span>Add Shortcut</span>
+     </button>
+        </div>
+        <h1 className="text-2xl mt-5 md:text-5xl font-black mb-3 tracking-tight text-[#00d26a]">
           Hire Easy, Get Hired Easy
         </h1>
 
         <p className="text-sm md:text-lg text-blue-100 mb-8 opacity-90">
           Explore thousands of jobs across Pakistan & International Locations
         </p>
-
         <div className="max-w-2xl mx-auto relative group">
           <input
             type="text"
             placeholder="Search jobs, skills, companies..."
             className="w-full py-4 pl-6 pr-12 rounded-full text-base font-bold text-[#1e3a8a] placeholder:text-[#1e3a8a]/60 outline-none bg-white border-4 border-[#00d26a] shadow-2xl focus:ring-4 focus:ring-[#00d26a]/40 transition-all"
           />
-          <Search size={24} className="absolute right-5 top-1/2 -translate-y-1/2 text-[#1e3a8a]" />
+
+          <Search
+            size={24}
+            className="absolute right-5 top-1/2 -translate-y-1/2 text-[#1e3a8a]"
+          />
         </div>
       </section>
-
       <section className="max-w-6xl mx-auto px-6 -mt-10 relative z-20">
-
-        {/* Desktop Tabs */}
         <div className="hidden md:grid bg-[#1e3a8a] shadow-2xl rounded-3xl p-8 grid-cols-4 gap-6 border border-slate-100">
           {quickActions.map((action, i) => (
             <div key={i} className="flex flex-col items-center">
@@ -163,12 +164,13 @@ export default function HomePage() {
                   Australia, New Zealand, Canada, USA, UK and other countries.
                 </p>
               )}
+
             </div>
           ))}
-        </div>
 
-        {/* Mobile Tabs */}
+        </div>
         <div className="md:hidden space-y-3 mt-4">
+
           {quickActions.map((action, i) => (
             <div key={i}>
 
@@ -176,6 +178,7 @@ export default function HomePage() {
                 href={action.href}
                 className="flex items-center justify-between bg-[#1e3a8a] border border-slate-100 p-4 rounded-2xl shadow-sm"
               >
+
                 <div className="flex items-center gap-4">
 
                   <div className="bg-blue-900 p-2 rounded-xl text-[#00d26a]">
@@ -187,10 +190,11 @@ export default function HomePage() {
                   </span>
 
                 </div>
+
               </Link>
 
               {action.title === "Foreign Jobs" && (
-                <p className="text-xs text-[#00d26a] mt-1 px-2 leading-tight font-medium">
+                <p className="text-xs text-[#1E3A8A] mt-1 px-2 leading-tight font-medium">
                   Pay a small fee and let us share your CV with trusted international job providers in the Gulf,
                   Australia, New Zealand, Canada, USA, UK and other countries.
                 </p>
@@ -198,25 +202,32 @@ export default function HomePage() {
 
             </div>
           ))}
+
         </div>
 
       </section>
-
       <section className="max-w-6xl mx-auto px-6 mt-16">
 
         <div className="flex justify-between items-center mb-8 border-b pb-4 border-slate-100">
+
           <h3 className="text-2xl md:text-3xl font-black text-[#1e3a8a] flex items-center gap-3">
-            <TrendingUp size={28} className="text-[#00d26a]" /> Featured Jobs
+            <TrendingUp size={28} className="text-[#00d26a]" />
+            Featured Jobs
           </h3>
 
-          <Link href="/jobs" className="text-sm font-bold text-white bg-[#1e3a8a] px-4 py-2 rounded-lg">
+          <Link
+            href="/jobs"
+            className="text-sm font-bold text-white bg-[#1e3a8a] px-4 py-2 rounded-lg"
+          >
             View All
           </Link>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
           {featuredJobs.map((job, idx) => (
+
             <div
               key={idx}
               className="bg-white rounded-3xl border border-slate-100 p-6 flex flex-col gap-4 hover:shadow-2xl transition-all group"
@@ -254,7 +265,9 @@ export default function HomePage() {
               </button>
 
             </div>
+
           ))}
+
         </div>
 
       </section>
