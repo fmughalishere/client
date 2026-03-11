@@ -47,6 +47,14 @@ export default function EmployerDashboard() {
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col md:flex-row">
       <aside className="w-full md:w-72 bg-white border-r border-gray-100 p-8 flex flex-col gap-8">
+        <div className="mb-8">
+        <Link 
+          href="/" 
+          className="inline-block text-[#00d26a] font-black uppercase text-sm hover:underline"
+        >
+          ← Back to Home
+        </Link>
+      </div>
         <div className="font-black text-[#1e3a8a] text-xl px-2 uppercase tracking-tighter">Employer Panel</div>
         <nav className="space-y-2">
           {navItems.map((item) => (

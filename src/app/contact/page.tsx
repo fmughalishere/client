@@ -7,7 +7,6 @@ import {
   MapPin, 
   Send, 
   MessageSquare, 
-  Clock, 
   Facebook, 
   Twitter, 
   Linkedin, 
@@ -56,19 +55,15 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen bg-[#f8fafc] py-16 lg:py-24">
       <div className="max-w-7xl mx-auto px-6">
-        
-        {/* Hero Section */}
-        <div className="text-center mb-10 relative">
-          {/* Back to Home Link on Left */}
-          <div className="absolute left-0 top-0">
-            <Link 
-              href="/" 
-              className="inline-block text-[#00d26a] font-black uppercase text-sm hover:underline"
-            >
-              ← Back to Home
-            </Link>
-          </div>
-
+        <div className="mb-8">
+          <Link 
+            href="/" 
+            className="inline-block text-[#00d26a] font-black uppercase text-sm hover:underline"
+          >
+            ← Back to Home
+          </Link>
+        </div>
+        <div className="text-center mb-10">
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -84,8 +79,6 @@ export default function ContactPage() {
             Have questions about a job or need help with hiring? Our team is here to support you every step of the way.
           </motion.p>
         </div>
-
-        {/* Contact Info & Socials */}
         <div className="grid lg:grid-cols-3 gap-12">
           <div className="space-y-6">
             {contactInfo.map((item, i) => (
@@ -108,7 +101,11 @@ export default function ContactPage() {
             ))}
             <div className="bg-[#1e3a8a] p-10 rounded-[2.5rem] text-white relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#00d26a]/10 rounded-bl-full blur-2xl"></div>
-              <h3 className="text-xl font-black mb-6 relative z-10">Follow Our Journey</h3>
+
+              <h3 className="text-xl font-black mb-6 relative z-10">
+                Follow Our Journey
+              </h3>
+
               <div className="flex gap-4 relative z-10">
                 {[Facebook, Twitter, Linkedin, Instagram].map((Icon, i) => (
                   <button key={i} className="w-12 h-12 bg-white/10 hover:bg-[#00d26a] rounded-xl flex items-center justify-center transition-all">
@@ -118,14 +115,13 @@ export default function ContactPage() {
               </div>
             </div>
           </div>
-
-          {/* Contact Form */}
           <div className="lg:col-span-2">
             <motion.div 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               className="bg-white p-10 md:p-16 rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-gray-100 relative"
             >
+
               {formState === "success" ? (
                 <motion.div 
                   initial={{ scale: 0.9, opacity: 0 }} 
@@ -135,64 +131,82 @@ export default function ContactPage() {
                   <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-8">
                     <CheckCircle2 size={60} className="text-[#00d26a]" />
                   </div>
-                  <h2 className="text-3xl font-black text-[#1e3a8a] mb-4">Message Sent!</h2>
-                  <p className="text-gray-500 font-bold mb-10">Thanks! We've received your message and will get back to you within 24 hours.</p>
-                  <button onClick={() => setFormState("idle")} className="bg-[#1e3a8a] text-white px-10 py-4 rounded-2xl font-black transition-all">
+
+                  <h2 className="text-3xl font-black text-[#1e3a8a] mb-4">
+                    Message Sent!
+                  </h2>
+
+                  <p className="text-gray-500 font-bold mb-10">
+                    Thanks! We've received your message and will get back to you within 24 hours.
+                  </p>
+
+                  <button 
+                    onClick={() => setFormState("idle")} 
+                    className="bg-[#1e3a8a] text-white px-10 py-4 rounded-2xl font-black"
+                  >
                     Send Another Message
                   </button>
                 </motion.div>
+
               ) : (
+
                 <>
                   <div className="mb-10">
                     <h2 className="text-3xl font-black text-[#1e3a8a] mb-2 flex items-center gap-3">
                       <MessageSquare className="text-[#00d26a]" /> Send Message
                     </h2>
-                    <p className="text-gray-400 font-bold">Fill out the form below and our team will reach out.</p>
+                    <p className="text-gray-400 font-bold">
+                      Fill out the form below and our team will reach out.
+                    </p>
                   </div>
 
                   <form onSubmit={handleSubmit} className="space-y-8">
+
                     <div className="grid md:grid-cols-2 gap-8">
-                      <div className="space-y-2">
-                        <label className="text-xs font-black text-[#1e3a8a] ml-1 uppercase tracking-widest">Full Name</label>
-                        <input required type="text" placeholder="Your Name" className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent focus:border-[#1e3a8a] focus:bg-white rounded-2xl outline-none transition-all font-bold text-[#1e3a8a]" />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-black text-[#1e3a8a] ml-1 uppercase tracking-widest">Email Address</label>
-                        <input required type="email" placeholder="email@example.com" className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent focus:border-[#1e3a8a] focus:bg-white rounded-2xl outline-none transition-all font-bold text-[#1e3a8a]" />
-                      </div>
+                      <input
+                        required
+                        type="text"
+                        placeholder="Your Name"
+                        className="w-full px-6 py-4 bg-slate-50 rounded-2xl outline-none font-bold"
+                      />
+
+                      <input
+                        required
+                        type="email"
+                        placeholder="email@example.com"
+                        className="w-full px-6 py-4 bg-slate-50 rounded-2xl outline-none font-bold"
+                      />
                     </div>
 
-                    <div className="space-y-2">
-                      <label className="text-xs font-black text-[#1e3a8a] ml-1 uppercase tracking-widest">Subject</label>
-                      <select className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent focus:border-[#1e3a8a] focus:bg-white rounded-2xl outline-none transition-all font-bold text-[#1e3a8a] appearance-none cursor-pointer">
-                        <option>General Inquiry</option>
-                        <option>Job Seeker Support</option>
-                        <option>Employer Business</option>
-                        <option>Report an Issue</option>
-                      </select>
-                    </div>
+                    <select className="w-full px-6 py-4 bg-slate-50 rounded-2xl font-bold">
+                      <option>General Inquiry</option>
+                      <option>Job Seeker Support</option>
+                      <option>Employer Business</option>
+                      <option>Report an Issue</option>
+                    </select>
 
-                    <div className="space-y-2">
-                      <label className="text-xs font-black text-[#1e3a8a] ml-1 uppercase tracking-widest">Your Message</label>
-                      <textarea required rows={5} placeholder="How can we help you?" className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent focus:border-[#1e3a8a] focus:bg-white rounded-2xl outline-none transition-all font-bold text-[#1e3a8a] resize-none"></textarea>
-                    </div>
+                    <textarea
+                      required
+                      rows={5}
+                      placeholder="How can we help you?"
+                      className="w-full px-6 py-4 bg-slate-50 rounded-2xl font-bold resize-none"
+                    ></textarea>
 
-                    <button 
+                    <button
                       type="submit"
-                      disabled={formState === "sending"}
-                      className="w-full bg-[#1e3a8a] hover:bg-blue-900 text-white py-5 rounded-2xl font-black text-xl transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-3 active:scale-95 disabled:opacity-70"
+                      className="w-full bg-[#1e3a8a] text-white py-5 rounded-2xl font-black text-xl flex items-center justify-center gap-3"
                     >
-                      {formState === "sending" ? "Sending..." : "Submit Message"}
+                      Submit Message
                       <Send size={22} />
                     </button>
+
                   </form>
                 </>
               )}
+
             </motion.div>
           </div>
         </div>
-
-        {/* Map Section */}
         <motion.div 
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -200,7 +214,9 @@ export default function ContactPage() {
         >
           <div className="absolute inset-0 bg-[#1e3a8a]/5 flex flex-col items-center justify-center">
             <MapPin size={48} className="text-[#1e3a8a] mb-4 animate-bounce" />
-            <p className="text-[#1e3a8a] font-black text-xl">Find us on Google Maps</p>
+            <p className="text-[#1e3a8a] font-black text-xl">
+              Find us on Google Maps
+            </p>
           </div>
         </motion.div>
 

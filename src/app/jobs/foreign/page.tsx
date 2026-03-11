@@ -30,18 +30,10 @@ export default function ForeignJobsPage() {
   const [jobs, setJobs] = useState<ForeignJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-
-  // --- API Fetch Logic ---
   useEffect(() => {
     const fetchForeignJobs = async () => {
       try {
         setLoading(true);
-        
-        // When your API is ready, uncomment the lines below:
-        // const res = await fetch("/api/jobs/foreign");
-        // const data = await res.json();
-        // setJobs(data);
-
         setLoading(false);
       } catch (error) {
         console.error("Error fetching jobs:", error);
@@ -59,14 +51,16 @@ export default function ForeignJobsPage() {
 
   return (
     <main className="min-h-screen bg-slate-50 pb-20">
-      
-      {/* Header Section */}
-      <section className="bg-[#1e3a8a] text-white py-12 px-6">
+            <section className="bg-[#1e3a8a] text-white py-12 px-6">
         <div className="max-w-6xl mx-auto">
-          <Link href="/" className="inline-flex items-center gap-2 text-blue-200 hover:text-white mb-6 transition-colors font-medium">
-            <ChevronLeft size={20} /> Back to Home
-          </Link>
-          
+          <div className="mb-8">
+        <Link 
+          href="/" 
+          className="inline-block text-[#00d26a] font-black uppercase text-sm hover:underline"
+        >
+          ← Back to Home
+        </Link>
+      </div>    
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div>
               <h1 className="text-3xl md:text-5xl font-black mb-3 flex items-center gap-3">
@@ -77,8 +71,6 @@ export default function ForeignJobsPage() {
                 Explore thousands of verified job opportunities abroad.
               </p>
             </div>
-
-            {/* Search Bar - Matches Home Page Design */}
             <div className="relative w-full md:w-96 group">
               <input
                 type="text"
@@ -97,10 +89,7 @@ export default function ForeignJobsPage() {
           </div>
         </div>
       </section>
-
-      {/* Jobs List Section */}
       <section className="max-w-6xl mx-auto px-6 -mt-8 relative z-10">
-        
         {loading ? (
           <div className="bg-white rounded-3xl p-20 shadow-xl flex flex-col items-center justify-center text-slate-500 border border-slate-100">
             <Loader2 className="animate-spin text-[#1e3a8a] mb-4" size={48} />
@@ -126,7 +115,6 @@ export default function ForeignJobsPage() {
                         {job.type}
                       </span>
                     </div>
-
                     <h3 className="text-lg font-bold text-[#1e3a8a] mb-1 group-hover:text-[#00d26a] transition-colors leading-tight">
                       {job.title}
                     </h3>
@@ -163,8 +151,6 @@ export default function ForeignJobsPage() {
           </div>
         )}
       </section>
-
-      {/* Safety Note */}
       <section className="max-w-6xl mx-auto px-6 mt-16">
         <div className="bg-white border border-blue-100 p-8 rounded-3xl flex flex-col md:flex-row items-center gap-6 shadow-sm">
           <div className="bg-blue-50 p-4 rounded-2xl text-[#1e3a8a]">

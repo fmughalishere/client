@@ -24,13 +24,10 @@ const fadeInUp = {
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-white pb-20 overflow-hidden">
-      {/* Hero Section */}
       <section className="relative bg-[#1e3a8a] py-20 lg:py-32 text-white">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-[#00d26a]/10 skew-x-12 transform origin-right"></div>
         <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col items-start">
-          
-          {/* Back to Home Link (Left aligned) */}
-          <div className="mb-8">
+            <div className="mb-8">
             <Link 
               href="/" 
               className="inline-block text-[#00d26a] font-black uppercase text-sm hover:underline"
@@ -57,8 +54,6 @@ export default function AboutPage() {
           </motion.p>
         </div>
       </section>
-
-      {/* Vision Section */}
       <section className="py-24 px-6 max-w-7xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <motion.div {...fadeInUp}>
@@ -80,7 +75,6 @@ export default function AboutPage() {
               ))}
             </ul>
           </motion.div>
-
           <motion.div 
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -114,8 +108,6 @@ export default function AboutPage() {
           </motion.div>
         </div>
       </section>
-
-      {/* Values Section */}
       <section className="bg-[#1e3a8a] py-24 px-6 text-white overflow-hidden relative">
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#00d26a]/10 rounded-full blur-[120px]"></div>
         
@@ -149,8 +141,6 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-
-      {/* Join Section */}
       <section className="py-24 px-6 max-w-4xl mx-auto text-center">
         <motion.div {...fadeInUp}>
           <h2 className="text-3xl md:text-5xl font-black text-[#1e3a8a] mb-6">Join the Revolution</h2>
