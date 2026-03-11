@@ -71,21 +71,18 @@ export default function ForeignJobsPage() {
                 Explore thousands of verified job opportunities abroad.
               </p>
             </div>
-            <div className="relative w-full md:w-96 group">
-              <input
-                type="text"
-                id="foreign-search"
-                name="query"
-                placeholder="Search country or job title..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full py-4 pl-6 pr-12 rounded-full text-base text-black outline-none shadow-2xl focus:ring-4 focus:ring-blue-400/30 transition-all border-none"
-              />
-              <Search 
-                size={22} 
-                className="absolute right-5 top-1/2 -translate-y-1/2 text-[#1e3a8a] group-hover:scale-110 transition-transform cursor-pointer" 
-              />
-            </div>
+            <div className="max-w-2xl mx-auto relative group">
+          <input
+            type="text"
+            placeholder="Search jobs, skills, companies..."
+            className="w-full py-4 pl-6 pr-12 rounded-full text-base font-bold text-[#1e3a8a] placeholder:text-[#1e3a8a]/60 outline-none bg-white border-4 border-[#00d26a] shadow-2xl focus:ring-4 focus:ring-[#00d26a]/40 transition-all"
+          />
+
+          <Search
+            size={24}
+            className="absolute right-5 top-1/2 -translate-y-1/2 text-[#1e3a8a]"
+          />
+        </div>
           </div>
         </div>
       </section>
