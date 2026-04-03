@@ -6,21 +6,14 @@ import Image from "next/image";
 import {
   Search,
   MapPin,
-  Briefcase,
   Heart,
-  FileText,
-  UserCheck,
   TrendingUp,
-  Globe,
   Smartphone,
-  LayoutDashboard,
-  User
 } from "lucide-react";
 
 export default function HomePage() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showInstallBtn, setShowInstallBtn] = useState(false);
-
   const [userLink, setUserLink] = useState("/login");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -35,12 +28,7 @@ export default function HomePage() {
     if (token && storedUser) {
       setIsLoggedIn(true);
       const user = JSON.parse(storedUser);
-
-      if (user.role === "employer") {
-        setUserLink("/dashboard/employer");
-      } else {
-        setUserLink("/dashboard/jobseeker");
-      }
+      setUserLink(user.role === "employer" ? "/dashboard/employer" : "/dashboard/jobseeker");
     } else {
       setIsLoggedIn(false);
       setUserLink("/login");
@@ -51,24 +39,12 @@ export default function HomePage() {
       setDeferredPrompt(e);
       setShowInstallBtn(true);
     });
-
-    window.addEventListener("appinstalled", () => {
-      setShowInstallBtn(false);
-      setDeferredPrompt(null);
-    });
   }, []);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) {
-      alert(
-        "Shortcut feature is ready! If you don't see the popup, please use the browser menu (3 dots) and click 'Install App'."
-      );
-      return;
-    }
-
+    if (!deferredPrompt) return;
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-
     if (outcome === "accepted") {
       setDeferredPrompt(null);
       setShowInstallBtn(false);
@@ -76,10 +52,10 @@ export default function HomePage() {
   };
 
   const quickActions = [
-    { title: "Start Applying", icon: FileText, href: "/jobs" },
-    { title: "Start Hiring", icon: UserCheck, href: "/dashboard/employer" },
-    { title: "Browse CVs", icon: Briefcase, href: "/dashboard/employer" },
-    { title: "Foreign Jobs", icon: Globe, href: "/jobs/foreign" },
+    { src: "/images/IMG (5).png", alt: "Apply For A Job", href: "/jobs" },
+    { src: "/images/IMG (2).png", alt: "Post A Job", href: "/dashboard/employer" },
+    { src: "/images/IMG (4).png", alt: "Job Seekers", href: "/dashboard/employer" },
+    { src: "/images/IMG (3).png", alt: "Job Offers", href: "/jobs" },
   ];
 
   const featuredJobs = [
@@ -89,189 +65,88 @@ export default function HomePage() {
   ];
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white pb-16">
-      <section className="bg-[#1e3a8a] text-white py-12 px-6 text-center relative overflow-hidden">
-        <div className="absolute top-2 left-3 right-3 flex justify-between items-center z-30">
-
-          <Link
-            href={userLink}
-            className="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 px-4 py-2 rounded-2xl flex items-center gap-2 transition-all active:scale-95"
+    <main className="min-h-screen bg-white pb-16">
+            <section className="px-5 pt-0 ">
+        <div className="bg-[#DCC5A1] rounded-b-[45px] pt-8 pb-10 px-6 flex flex-col items-center h-50">          <div className="text-center mb-12">
+            <h1 className="text-[24px] font-bold text-[#002D62] leading-tight">
+              Hire easy
+            </h1>
+            <h1 className="text-[24px] font-bold text-[#002D62] leading-tight">
+              Get hired easy
+            </h1>
+          </div>
+          <div className="relative w-full max-w-[320px]">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="h-6 w-6 text-gray-700" strokeWidth={2} />
+            </div>
+            <input
+              type="text"
+              placeholder=""
+              className="block w-full pl-12 pr-4 py-3 bg-white border border-gray-300 rounded-full shadow-md focus:outline-none focus:ring-0"
+            />
+          </div>
+        </div>
+      </section>
+      {showInstallBtn && (
+        <div className="fixed bottom-20 right-4 z-40">
+           <button
+            onClick={handleInstallClick}
+            className="bg-[#00d26a] text-white p-3 rounded-full shadow-2xl flex items-center gap-2 font-bold animate-bounce"
           >
-            {isLoggedIn ? (
-              <>
-                <LayoutDashboard size={18} className="text-[#00d26a]" />
-                <span className="text-xs font-bold">My Dashboard</span>
-              </>
-            ) : (
-              <>
-                <User size={18} />
-                <span className="text-xs font-bold">My Dashboard</span>
-              </>
-            )}
-          </Link>
-
-         <button
-         onClick={handleInstallClick}
-         className="bg-[#00d26a] hover:bg-green-500 text-white px-4 py-2 rounded-2xl flex items-center gap-2 text-xs font-bold shadow-lg transition-all active:scale-95"
-         >
-       <Smartphone size={16} />
-       <span>Add Shortcut</span>
-     </button>
+            <Smartphone size={20} />
+            <span className="text-xs">Install App</span>
+          </button>
         </div>
-        <h1 className="text-2xl mt-5 md:text-5xl font-black mb-3 tracking-tight text-[#00d26a]">
-          Hire Easy, Get Hired Easy
-        </h1>
-
-        <p className="text-sm md:text-lg text-blue-100 mb-8 opacity-90">
-          Explore thousands of jobs across Pakistan & International Locations
-        </p>
-        <div className="max-w-2xl mx-auto relative group">
-          <input
-            type="text"
-            placeholder="Search jobs, skills, companies..."
-            className="w-full py-4 pl-6 pr-12 rounded-full text-base font-bold text-[#1e3a8a] placeholder:text-[#1e3a8a]/60 outline-none bg-white border-4 border-[#00d26a] shadow-2xl focus:ring-4 focus:ring-[#00d26a]/40 transition-all"
-          />
-
-          <Search
-            size={24}
-            className="absolute right-5 top-1/2 -translate-y-1/2 text-[#1e3a8a]"
-          />
+      )}
+      <section className="max-w-6xl mx-auto px-6 mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {quickActions.map((action, i) => (
+            <Link key={i} href={action.href} className="block transition-transform active:scale-95">
+              <div className="relative h-20 w-full overflow-hidden rounded-2xl shadow-md border border-gray-100">
+                <Image
+                  src={action.src}
+                  alt={action.alt}
+                  fill
+                  className="object-contain bg-white px-2"
+                />
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
-      <section className="max-w-6xl mx-auto px-6 -mt-10 relative z-20">
-        <div className="hidden md:grid bg-[#1e3a8a] shadow-2xl rounded-3xl p-8 grid-cols-4 gap-6 border border-slate-100">
-          {quickActions.map((action, i) => (
-            <div key={i} className="flex flex-col items-center">
-
-              <Link
-                href={action.href}
-                className="flex flex-col items-center gap-3 p-5 rounded-2xl hover:bg-blue-800 transition-all group"
-              >
-
-                <div className="p-4 bg-blue-900 rounded-2xl group-hover:bg-[#00d26a] group-hover:text-white transition-all shadow-sm text-[#00d26a]">
-                  <action.icon size={32} />
-                </div>
-
-                <span className="text-sm font-bold text-[#00d26a] text-center group-hover:text-white">
-                  {action.title}
-                </span>
-
-              </Link>
-
-              {action.title === "Foreign Jobs" && (
-                <p className="text-xs text-[#00d26a] text-center mt-1 max-w-[200px] leading-tight font-medium">
-                  Pay a small fee and let us share your CV with trusted international job providers in the Gulf,
-                  Australia, New Zealand, Canada, USA, UK and other countries.
-                </p>
-              )}
-
-            </div>
-          ))}
-
-        </div>
-        <div className="md:hidden space-y-3 mt-4">
-
-          {quickActions.map((action, i) => (
-            <div key={i}>
-
-              <Link
-                href={action.href}
-                className="flex items-center justify-between bg-[#1e3a8a] border border-slate-100 p-4 rounded-2xl shadow-sm"
-              >
-
-                <div className="flex items-center gap-4">
-
-                  <div className="bg-blue-900 p-2 rounded-xl text-[#00d26a]">
-                    <action.icon size={24} />
-                  </div>
-
-                  <span className="text-base font-bold text-[#00d26a]">
-                    {action.title}
-                  </span>
-
-                </div>
-
-              </Link>
-
-              {action.title === "Foreign Jobs" && (
-                <p className="text-xs text-[#1E3A8A] mt-1 px-2 leading-tight font-medium">
-                  Pay a small fee and let us share your CV with trusted international job providers in the Gulf,
-                  Australia, New Zealand, Canada, USA, UK and other countries.
-                </p>
-              )}
-
-            </div>
-          ))}
-
-        </div>
-
-      </section>
-      <section className="max-w-6xl mx-auto px-6 mt-16">
-
-        <div className="flex justify-between items-center mb-8 border-b pb-4 border-slate-100">
-
-          <h3 className="text-2xl md:text-3xl font-black text-[#1e3a8a] flex items-center gap-3">
-            <TrendingUp size={28} className="text-[#00d26a]" />
+      <section className="max-w-6xl mx-auto px-6 mt-12">
+        <div className="flex justify-between items-center mb-6 border-b pb-4 border-slate-100">
+          <h3 className="text-xl font-black text-[#002D62] flex items-center gap-2">
+            <TrendingUp size={22} className="text-green-500" />
             Featured Jobs
           </h3>
-
-          <Link
-            href="/jobs"
-            className="text-sm font-bold text-white bg-[#1e3a8a] px-4 py-2 rounded-lg"
-          >
+          <Link href="/jobs" className="text-xs font-bold text-white bg-[#002D62] px-4 py-2 rounded-lg">
             View All
           </Link>
-
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {featuredJobs.map((job, idx) => (
-
-            <div
-              key={idx}
-              className="bg-white rounded-3xl border border-slate-100 p-6 flex flex-col gap-4 hover:shadow-2xl transition-all group"
-            >
-
+            <div key={idx} className="bg-white rounded-3xl border border-slate-100 p-5 flex flex-col gap-4 hover:shadow-xl transition-all group">
               <div className="flex justify-between items-start">
-
-                <div className="w-16 h-16 rounded-2xl overflow-hidden relative border">
-                  <Image
-                    src={job.img}
-                    alt="job"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover"
-                  />
+                <div className="w-14 h-14 rounded-xl overflow-hidden relative border">
+                  <Image src={job.img} alt="job" fill className="object-cover" />
                 </div>
-
                 <button className="text-slate-300 hover:text-red-500 transition-colors bg-slate-50 p-2 rounded-full">
-                  <Heart size={20} />
+                  <Heart size={18} />
                 </button>
-
               </div>
-
-              <h4 className="font-bold text-[#1e3a8a] text-lg mb-1 leading-tight">
-                {job.title}
-              </h4>
-
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <MapPin size={16} className="text-[#00d26a]" />
+              <h4 className="font-bold text-[#002D62] text-md leading-tight">{job.title}</h4>
+              <div className="flex items-center gap-2 text-xs text-gray-500">
+                <MapPin size={14} className="text-green-500" />
                 {job.loc}
               </div>
-
-              <button className="w-full py-3 bg-slate-50 text-[#1e3a8a] font-bold rounded-xl group-hover:bg-[#1e3a8a] group-hover:text-white transition-all">
+              <button className="w-full py-2.5 bg-slate-100 text-[#002D62] text-sm font-bold rounded-xl group-hover:bg-[#002D62] group-hover:text-white transition-all">
                 Apply Now
               </button>
-
             </div>
-
           ))}
-
         </div>
-
       </section>
-
     </main>
   );
 }

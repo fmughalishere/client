@@ -30,7 +30,7 @@ const Navbar = () => {
           >
             <Link href="/" className="flex items-center">
               <Image 
-                src="/images/nav-logo.png" 
+                src="/images/logo.jpeg" 
                 alt="EasyJobs.pk" 
                 width={180} 
                 height={50} 
