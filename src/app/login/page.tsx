@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Mail, Lock, ArrowRight, Check } from "lucide-react";
+import { Mail, Lock, ArrowRight, Check, ArrowLeft } from "lucide-react";
 import api from "../../lib/axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -39,79 +39,80 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[90vh] flex items-center justify-center px-6 py-12 bg-slate-50">
+    <div className="min-h-screen flex items-center justify-center px-6 py-12 bg-[#fcfcfc]">
       <Toaster />
+      
       <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200 border border-gray-100 overflow-hidden p-8 md:p-12"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-md bg-white rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,77,0.05)] border border-gray-50 overflow-hidden p-8 md:p-12 relative"
       >
-        <div className="mb-8">
-        <Link 
-          href="/" 
-          className="inline-block text-[#00d26a] font-black uppercase text-sm hover:underline"
-        >
-          ← Back to Home
-        </Link>
-      </div>
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-black text-[#1e3a8a] mb-2 tracking-tight">Welcome Back</h1>
-          <p className="text-gray-500 font-medium">Log in to manage your career</p>
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#e2f2f5] rounded-full blur-3xl opacity-50"></div>
+
+        <div className="mb-10 relative z-10">
+          <Link 
+            href="/" 
+            className="inline-flex items-center text-[#00d26a] font-black uppercase text-[10px] tracking-widest hover:underline"
+          >
+            <ArrowLeft size={14} className="mr-1" /> Back to Home
+          </Link>
         </div>
 
-        <form className="space-y-6" onSubmit={handleLogin}>
-          <div className="space-y-2">
-            <label className="text-sm font-black text-[#1e3a8a] ml-1 uppercase tracking-wider">Email Address</label>
+        <div className="text-center mb-10 relative z-10">
+          <h1 className="text-3xl font-black text-[#00004d] mb-2 uppercase tracking-tighter">Welcome Back</h1>
+          <p className="text-gray-400 font-bold text-sm">Log in to your professional portal</p>
+        </div>
+
+        <form className="space-y-6 relative z-10" onSubmit={handleLogin}>
+                    <div className="space-y-2">
+            <label className="text-[10px] font-black text-[#00004d] ml-6 uppercase tracking-widest">Email Address</label>
             <div className="relative flex items-center group">
-              <Mail className="absolute left-5 text-gray-400 group-focus-within:text-[#1e3a8a] transition-colors" size={20} />
+              <Mail className="absolute left-6 text-gray-300 group-focus-within:text-[#00004d] transition-colors" size={18} />
               <input 
                 required type="email" placeholder="name@email.com" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-14 pr-6 py-4 bg-slate-50 border-2 border-transparent focus:border-[#1e3a8a] focus:bg-white rounded-2xl outline-none transition-all font-bold text-[#1e3a8a]" 
+                className="w-full pl-14 pr-6 py-4 bg-slate-50 border-2 border-transparent focus:border-[#00004d] focus:bg-white rounded-full outline-none transition-all font-bold text-[#00004d] text-sm" 
               />
             </div>
           </div>
-
           <div className="space-y-2">
-            <div className="flex justify-between items-center px-1">
-              <label className="text-sm font-black text-[#1e3a8a] uppercase tracking-wider">Password</label>
-              <Link href="#" className="text-xs font-black text-[#00d26a] hover:underline uppercase">Forgot Password?</Link>
+            <div className="flex justify-between items-center px-6">
+              <label className="text-[10px] font-black text-[#00004d] uppercase tracking-widest">Password</label>
+              <Link href="#" className="text-[9px] font-black text-[#00d26a] hover:underline uppercase tracking-widest">Forgot?</Link>
             </div>
             <div className="relative flex items-center group">
-              <Lock className="absolute left-5 text-gray-400 group-focus-within:text-[#1e3a8a] transition-colors" size={20} />
+              <Lock className="absolute left-6 text-gray-300 group-focus-within:text-[#00004d] transition-colors" size={18} />
               <input 
                 required type="password" placeholder="••••••••" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-14 pr-6 py-4 bg-slate-50 border-2 border-transparent focus:border-[#1e3a8a] focus:bg-white rounded-2xl outline-none transition-all font-bold text-[#1e3a8a]" 
+                className="w-full pl-14 pr-6 py-4 bg-slate-50 border-2 border-transparent focus:border-[#00004d] focus:bg-white rounded-full outline-none transition-all font-bold text-[#00004d] text-sm" 
               />
             </div>
           </div>
-
-          <div className="flex items-start gap-3 px-1 py-2 cursor-pointer group" onClick={() => setAgreed(!agreed)}>
-            <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center shrink-0 transition-all duration-300 ${agreed ? 'bg-[#00d26a] border-[#00d26a] shadow-lg shadow-green-100' : 'border-gray-200 bg-white group-hover:border-[#1e3a8a]'}`}>
-              {agreed && <Check size={16} className="text-white" strokeWidth={4} />}
+          <div className="flex items-center gap-3 px-2 py-2 cursor-pointer group" onClick={() => setAgreed(!agreed)}>
+            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-300 ${agreed ? 'bg-[#00d26a] border-[#00d26a] shadow-lg shadow-green-100' : 'border-gray-200 bg-white group-hover:border-[#00004d]'}`}>
+              {agreed && <Check size={14} className="text-[#00004d]" strokeWidth={4} />}
             </div>
-            <p className="text-xs font-bold text-gray-500 leading-snug">
-              I agree to the <span className="text-[#1e3a8a] underline cursor-pointer hover:text-[#00d26a]">Terms of Service</span> and <span className="text-[#1e3a8a] underline cursor-pointer hover:text-[#00d26a]">Privacy Policy</span> of EasyJobs.pk
+            <p className="text-[10px] font-bold text-gray-400 leading-snug uppercase tracking-tight">
+              I agree to the <span className="text-[#00004d] underline font-black">Terms</span> & <span className="text-[#00004d] underline font-black">Privacy</span>
             </p>
           </div>
-
           <button 
             type="submit"
             disabled={!agreed}
-            className={`w-full py-5 rounded-2xl font-black text-lg transition-all shadow-xl flex items-center justify-center gap-3 group 
+            className={`w-full py-5 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-xl flex items-center justify-center gap-3 active:scale-95
               ${agreed 
-                ? 'bg-[#1e3a8a] hover:bg-blue-900 text-white shadow-blue-100 cursor-pointer active:scale-95' 
+                ? 'bg-[#00004d] text-white hover:bg-black shadow-blue-900/10' 
                 : 'bg-slate-100 text-gray-300 cursor-not-allowed shadow-none'}`}
           >
-            Login to Account <ArrowRight size={20} className={`${agreed ? 'group-hover:translate-x-1' : ''} transition-transform`} />
+            Login to Account <ArrowRight size={18} className={`${agreed ? 'group-hover:translate-x-1' : ''} transition-transform`} />
           </button>
         </form>
 
-        <div className="mt-10 text-center">
-          <p className="text-gray-500 font-bold">
+        <div className="mt-12 text-center relative z-10 border-t border-gray-50 pt-8">
+          <p className="text-gray-400 font-bold text-xs uppercase tracking-tight">
             New here? <Link href="/register" className="text-[#00d26a] font-black hover:underline ml-1">Create Account</Link>
           </p>
         </div>
