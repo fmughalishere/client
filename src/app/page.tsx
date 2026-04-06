@@ -8,32 +8,17 @@ import {
   MapPin,
   Heart,
   TrendingUp,
-  Smartphone,
+  PlusCircle,
+  Briefcase,
+  Users,
+  ClipboardList,
 } from "lucide-react";
 
 export default function HomePage() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showInstallBtn, setShowInstallBtn] = useState(false);
-  const [userLink, setUserLink] = useState("/login");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch((err) => console.log("SW error", err));
-    }
-
-    const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
-
-    if (token && storedUser) {
-      setIsLoggedIn(true);
-      const user = JSON.parse(storedUser);
-      setUserLink(user.role === "employer" ? "/dashboard/employer" : "/dashboard/jobseeker");
-    } else {
-      setIsLoggedIn(false);
-      setUserLink("/login");
-    }
-
     window.addEventListener("beforeinstallprompt", (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
@@ -51,102 +36,111 @@ export default function HomePage() {
     }
   };
 
-  const quickActions = [
-    { src: "/images/IMG (5).png", alt: "Apply For A Job", href: "/jobs" },
-    { src: "/images/IMG (2).png", alt: "Post A Job", href: "/dashboard/employer" },
-    { src: "/images/IMG (4).png", alt: "Job Seekers", href: "/dashboard/employer" },
-    { src: "/images/IMG (3).png", alt: "Job Offers", href: "/jobs" },
+  const featuredJobs = [
+    { title: "Junior Accounts Assistant", loc: "Urdu Bazar, Lahore", img: "/images/app_logo.jpeg" },
+    { title: "Europe Jobs / Greece Visa", loc: "Allama Iqbal Town, Lahore", img: "/images/app_logo.jpeg" },
+    { title: "Factory Hiring Helper", loc: "S.I.E, Gujranwala", img: "/images/app_logo.jpeg" },
   ];
 
-  const featuredJobs = [
-    { title: "Junior Accounts Assistant", loc: "Urdu Bazar, Lahore", img: "/images/icon.jpeg" },
-    { title: "Europe Jobs / Greece Visa", loc: "Allama Iqbal Town, Lahore", img: "/images/icon.jpeg" },
-    { title: "Factory Hiring Helper", loc: "S.I.E, Gujranwala", img: "/images/icon.jpeg" },
+  const quickActions = [
+    { label: "Apply For Job", icon: <Briefcase size={20} />, href: "/jobs" },
+    { label: "Post A Job", icon: <PlusCircle size={20} />, href: "/dashboard/employer" },
+    { label: "Job Seekers", icon: <Users size={20} />, href: "/dashboard/employer" },
+    { label: "Job Offers", icon: <ClipboardList size={20} />, href: "/jobs" },
   ];
 
   return (
-    <main className="min-h-screen bg-white pb-16">
-            <section className="px-5 pt-0 ">
-        <div className="bg-[#DCC5A1] rounded-b-[45px] pt-8 pb-10 px-6 flex flex-col items-center h-50">          <div className="text-center mb-12">
-            <h1 className="text-[24px] font-bold text-[#002D62] leading-tight">
+    <main className="min-h-screen bg-gray-50 pb-16">
+      <section className="px-0 pt-0">
+        <div className="bg-[#000a31] rounded-b-[45px] pt-8 pb-14 px-6 flex flex-col items-center shadow-lg">
+          <div className="text-center mb-5 mt-2"> 
+            <h1 className="text-[26px] font-extrabold text-white leading-[1.1]">
               Hire easy
             </h1>
-            <h1 className="text-[24px] font-bold text-[#002D62] leading-tight">
+            <h1 className="text-[26px] font-extrabold text-[#94a3b8] leading-[1.1]">
               Get hired easy
             </h1>
-          </div>
-          <div className="relative w-full max-w-[320px]">
+          </div>      
+          <div className="relative w-full max-w-[310px]">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search className="h-6 w-6 text-gray-700" strokeWidth={2} />
+              <Search className="h-5 w-5 text-gray-400" strokeWidth={2} />
             </div>
             <input
               type="text"
-              placeholder=""
-              className="block w-full pl-12 pr-4 py-3 bg-white border border-gray-300 rounded-full shadow-md focus:outline-none focus:ring-0"
+              placeholder="Search jobs..."
+              className="block w-full pl-12 pr-4 py-3 bg-white border-none rounded-full shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-700"
             />
           </div>
         </div>
       </section>
-      {showInstallBtn && (
-        <div className="fixed bottom-20 right-4 z-40">
-           <button
-            onClick={handleInstallClick}
-            className="bg-[#00d26a] text-white p-3 rounded-full shadow-2xl flex items-center gap-2 font-bold animate-bounce"
-          >
-            <Smartphone size={20} />
-            <span className="text-xs">Install App</span>
-          </button>
-        </div>
-      )}
-      <section className="max-w-6xl mx-auto px-6 mt-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <section className="max-w-md mx-auto px-10 -mt-7">
+        <div className="flex flex-col gap-3 items-center">
           {quickActions.map((action, i) => (
-            <Link key={i} href={action.href} className="block transition-transform active:scale-95">
-              <div className="relative h-20 w-full overflow-hidden rounded-2xl shadow-md border border-gray-100">
-                <Image
-                  src={action.src}
-                  alt={action.alt}
-                  fill
-                  className="object-contain bg-white px-2"
-                />
+            <Link key={i} href={action.href} className="w-full max-w-[240px] transition-transform active:scale-95">
+              <div className="flex items-center justify-start gap-4 py-3.5 px-6 bg-white rounded-full shadow-md border border-gray-100 text-[#000a31] hover:shadow-lg transition-all">
+                <span className="text-[#000a31]">{action.icon}</span>
+                <span className="font-bold text-[13px] tracking-tight">{action.label}</span>
               </div>
             </Link>
           ))}
         </div>
       </section>
       <section className="max-w-6xl mx-auto px-6 mt-12">
-        <div className="flex justify-between items-center mb-6 border-b pb-4 border-slate-100">
-          <h3 className="text-xl font-black text-[#002D62] flex items-center gap-2">
-            <TrendingUp size={22} className="text-green-500" />
+        <div className="flex justify-between items-center mb-6 border-b pb-4 border-gray-200">
+          <h3 className="text-lg font-black text-[#000a31] flex items-center gap-2">
+            <TrendingUp size={20} className="text-blue-600" />
             Featured Jobs
           </h3>
-          <Link href="/jobs" className="text-xs font-bold text-white bg-[#002D62] px-4 py-2 rounded-lg">
+          <Link href="/jobs" className="text-[10px] font-bold text-white bg-[#000a31] px-4 py-2 rounded-full uppercase">
             View All
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {featuredJobs.map((job, idx) => (
-            <div key={idx} className="bg-white rounded-3xl border border-slate-100 p-5 flex flex-col gap-4 hover:shadow-xl transition-all group">
+            <div key={idx} className="bg-white rounded-[2.5rem] border border-gray-100 p-6 flex flex-col gap-4 hover:shadow-2xl transition-all group">
               <div className="flex justify-between items-start">
-                <div className="w-14 h-14 rounded-xl overflow-hidden relative border">
-                  <Image src={job.img} alt="job" fill className="object-cover" />
+                <div className="w-16 h-16 rounded-2xl overflow-hidden relative border border-gray-100 shadow-sm bg-white">
+                  <Image 
+                    src={job.img}
+                    alt="job logo" 
+                    fill 
+                    unoptimized={true} 
+                    className="object-contain p-1"
+                  />
                 </div>
-                <button className="text-slate-300 hover:text-red-500 transition-colors bg-slate-50 p-2 rounded-full">
+                <button className="text-gray-200 hover:text-red-500 transition-colors bg-gray-50 p-2.5 rounded-full">
                   <Heart size={18} />
                 </button>
               </div>
-              <h4 className="font-bold text-[#002D62] text-md leading-tight">{job.title}</h4>
-              <div className="flex items-center gap-2 text-xs text-gray-500">
-                <MapPin size={14} className="text-green-500" />
-                {job.loc}
+              
+              <div>
+                <h4 className="font-bold text-[#000a31] text-md leading-tight group-hover:text-blue-900 transition-colors">
+                  {job.title}
+                </h4>
+                <div className="flex items-center gap-2 mt-2 text-[11px] text-gray-500 font-medium">
+                  <MapPin size={12} className="text-blue-500" />
+                  {job.loc}
+                </div>
               </div>
-              <button className="w-full py-2.5 bg-slate-100 text-[#002D62] text-sm font-bold rounded-xl group-hover:bg-[#002D62] group-hover:text-white transition-all">
+
+              <button className="w-full py-3 bg-[#f1f5f9] text-[#000a31] text-xs font-black rounded-2xl group-hover:bg-[#000a31] group-hover:text-white transition-all shadow-sm">
                 Apply Now
               </button>
             </div>
           ))}
         </div>
       </section>
+      {showInstallBtn && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <button
+            onClick={handleInstallClick}
+            className="bg-[#000a31] text-white py-3 px-6 rounded-full shadow-2xl flex items-center gap-2 font-bold active:scale-95 transition-all animate-bounce"
+          >
+            <PlusCircle size={20} />
+            <span className="text-sm">Add Shortcut</span>
+          </button>
+        </div>
+      )}
     </main>
   );
 }

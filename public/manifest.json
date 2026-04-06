@@ -1,10 +1,6 @@
 {
   "name": "EasyJobs Pakistan",
   "short_name": "EasyJobs",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#1e3a8a",
-  "theme_color": "#1e3a8a",
   "icons": [
     {
       "src": "/images/icon.jpeg",
@@ -16,5 +12,9 @@
       "sizes": "512x512",
       "type": "image/jpeg"
     }
-  ]
+  ],
+  "start_url": "/",
+  "display": "minimal-ui", 
+  "background_color": "#ffffff",
+  "theme_color": "#000a31"
 }

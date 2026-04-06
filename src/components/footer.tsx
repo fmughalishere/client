@@ -3,15 +3,17 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Facebook, Instagram, Linkedin } from 'lucide-react';
-import { AiFillTikTok } from "react-icons/ai";
+import { MdFacebook } from "react-icons/md";
+import { GrLinkedin } from "react-icons/gr";
+import { FaTiktok } from "react-icons/fa6";
+import { FaInstagram } from "react-icons/fa";
 
 const Footer = () => {
   return (
     <footer className="w-full bg-[#f3ead8]">
       <div className="relative w-full h-[180px] md:h-[280px]">
         <Image 
-          src="/images/IMG (1).png" 
+          src="/images/IMG (1).jpeg" 
           alt="Illustration" 
           fill 
           className="object-cover object-top"
@@ -20,27 +22,27 @@ const Footer = () => {
                 <div className="absolute inset-0 flex flex-col items-center justify-start pt-4 px-4 z-10">
                     <div className="flex items-center justify-between w-full max-w-sm mb-5">
             <Link href="https://facebook.com" target="_blank" className="text-[#1877F2]">
-              <Facebook size={26} fill="currentColor" />
+              <MdFacebook size={26} fill="currentColor" />
             </Link>
             <Link href="https://linkedin.com" target="_blank" className="flex items-center gap-1">
               <div className="bg-[#0a66c2] text-white p-0.5 rounded-[2px]">
-                <Linkedin size={14} fill="currentColor" strokeWidth={0} />
+                <GrLinkedin size={14} fill="currentColor" strokeWidth={0} />
               </div>
             </Link>
             <Link 
               href="/help" 
               className="bg-[#1e3a8a] text-white px-6 py-1.5 rounded-full text-[12px] font-bold shadow-md hover:bg-blue-900 transition-colors"
             >
-              HELP
+              GET HELP
             </Link>
             <Link href="https://tiktok.com" target="_blank" className="text-black">
                <div className="bg-black text-white p-1 rounded-full flex items-center justify-center">
-                  <AiFillTikTok size={16} fill="white" />
+                  <FaTiktok size={16} fill="white" />
                </div>
             </Link>
             <Link href="https://instagram.com" target="_blank">
               <div className="rounded-lg p-0.5 bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white">
-                 <Instagram size={22} />
+                 <FaInstagram size={22} />
               </div>
             </Link>        
           </div>
