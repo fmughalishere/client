@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import api from "../../lib/axios";
 import { 
-  Search, Calendar, User, ArrowRight, Clock, BookOpen, Loader2 
+  Calendar, ArrowRight, BookOpen, Loader2 
 } from "lucide-react";
 
 export default function BlogsPage() {
@@ -27,62 +27,101 @@ export default function BlogsPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#f8fafc] py-16 lg:py-24">
+    <main className="min-h-screen bg-[#f8fafc] py-10 md:py-20 lg:py-24">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="mb-8">
-        <Link 
-          href="/" 
-          className="inline-block text-[#00d26a] font-black uppercase text-sm hover:underline"
-        >
-          ← Back to Home
-        </Link>
-      </div>
-        <div className="text-center mb-20">
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="inline-flex items-center gap-2 bg-[#1e3a8a]/5 px-4 py-2 rounded-full text-[#1e3a8a] text-sm font-black mb-6 border border-[#1e3a8a]/10">
-            <BookOpen size={16} className="text-[#00d26a]" />
-            <span className="uppercase tracking-widest">EasyJobs Career Insights</span>
+        
+        <div className="mb-8 md:mb-12">
+          <Link 
+            href="/" 
+            className="inline-flex items-center text-[#00d26a] font-black uppercase text-[10px] md:text-xs tracking-widest hover:underline"
+          >
+            ← Back to Home
+          </Link>
+        </div>
+        <div className="text-center mb-12 md:mb-20">
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            className="inline-flex items-center gap-2 bg-[#000a31]/5 px-4 py-2 rounded-full text-[#000a31] text-[10px] md:text-xs font-black mb-6 border border-[#000a31]/10 uppercase tracking-widest"
+          >
+            <BookOpen size={14} className="text-[#00d26a]" />
+            <span>Career Insights</span>
           </motion.div>
-          <h1 className="text-4xl md:text-6xl font-black text-[#1e3a8a] mb-6">Latest <span className="text-[#00d26a]">Blogs</span> & News</h1>
-          <p className="text-gray-500 font-bold text-lg max-w-2xl mx-auto">Real-time insights from our database to help your career growth.</p>
+          
+          <h1 className="text-3xl md:text-6xl font-black text-[#000a31] mb-4 md:mb-6 leading-tight">
+            Latest <span className="text-[#00d26a]">Blogs</span> & News
+          </h1>
+          <p className="text-gray-500 font-bold text-sm md:text-lg max-w-2xl mx-auto px-4">
+            Real-time insights and professional tips to help your career growth in Pakistan.
+          </p>
         </div>
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="animate-spin text-[#1e3a8a] mb-4" size={48} />
-            <p className="text-gray-400 font-black uppercase tracking-widest text-sm">Fetching Articles...</p>
+            <Loader2 className="animate-spin text-[#000a31] mb-4" size={40} />
+            <p className="text-gray-400 font-black uppercase tracking-widest text-[10px]">Fetching Articles...</p>
           </div>
         ) : blogs.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
             {blogs.map((post: any, index: number) => (
               <motion.article
                 key={post._id}
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group bg-white rounded-[3rem] border border-gray-100 shadow-xl overflow-hidden flex flex-col h-full hover:shadow-2xl transition-all"
+                className="group bg-white rounded-[2.5rem] md:rounded-[3rem] border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full hover:shadow-2xl transition-all duration-500"
               >
-                <div className="relative h-64 overflow-hidden">
-                  <img src={post.image || "https://via.placeholder.com/600x400"} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                  <div className="absolute top-6 left-6">
-                    <span className="bg-[#00d26a] text-[#1e3a8a] px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">{post.category}</span>
+                <div className="relative h-56 md:h-72 overflow-hidden">
+                  <img 
+                    src={post.image || "https://via.placeholder.com/600x400"} 
+                    alt={post.title} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                  />
+                  <div className="absolute top-4 left-4 md:top-6 md:left-6">
+                    <span className="bg-[#00d26a] text-[#000a31] px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest shadow-lg">
+                      {post.category || "General"}
+                    </span>
                   </div>
                 </div>
-                <div className="p-8 md:p-10 flex flex-grow flex-col">
-                  <div className="flex items-center gap-4 text-xs font-bold text-gray-400 mb-4">
-                    <span className="flex items-center gap-1.5"><Calendar size={14} className="text-[#00d26a]" /> {new Date(post.createdAt).toLocaleDateString()}</span>
+
+                <div className="p-6 md:p-10 flex flex-grow flex-col">
+                  <div className="flex items-center gap-3 text-[10px] md:text-xs font-bold text-gray-400 mb-4 uppercase tracking-wide">
+                    <Calendar size={14} className="text-[#00d26a]" /> 
+                    {new Date(post.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </div>
-                  <h2 className="text-2xl font-black text-[#1e3a8a] mb-4 leading-tight group-hover:text-[#00d26a] transition-colors">{post.title}</h2>
-                  <p className="text-gray-500 font-medium mb-8 line-clamp-2">{post.content.replace(/<[^>]*>?/gm, '').substring(0, 100)}...</p>
-                  <div className="mt-auto flex items-center justify-between pt-6 border-t">
-                    <span className="text-sm font-black text-[#1e3a8a]">{post.author || "EasyJobs Team"}</span>
-                    <Link href={`/blogs/${post._id}`} className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-[#1e3a8a] group-hover:bg-[#1e3a8a] group-hover:text-white transition-all"><ArrowRight size={24} /></Link>
+                  
+                  <h2 className="text-xl md:text-2xl font-black text-[#000a31] mb-4 leading-snug group-hover:text-[#00d26a] transition-colors">
+                    {post.title}
+                  </h2>
+                  
+                  <p className="text-gray-500 text-xs md:text-sm font-medium mb-8 line-clamp-3 md:line-clamp-2 leading-relaxed">
+                    {post.content.replace(/<[^>]*>?/gm, '').substring(0, 120)}...
+                  </p>
+
+                  <div className="mt-auto flex items-center justify-between pt-6 border-t border-gray-50">
+                    <div className="flex flex-col">
+                      <span className="text-[9px] uppercase font-bold text-gray-400 tracking-widest">Posted by</span>
+                      <span className="text-xs md:text-sm font-black text-[#000a31]">{post.author || "EasyJobs Team"}</span>
+                    </div>
+                    
+                    <Link 
+                      href={`/blogs/${post._id}`} 
+                      className="w-10 h-10 md:w-12 md:h-12 bg-[#000a31] rounded-2xl flex items-center justify-center text-white group-hover:bg-[#00d26a] group-hover:text-[#000a31] transition-all active:scale-90"
+                    >
+                      <ArrowRight size={22} />
+                    </Link>
                   </div>
                 </div>
               </motion.article>
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 font-bold text-gray-400">No blogs found in database.</div>
+          <div className="text-center py-20">
+             <div className="bg-white p-12 rounded-[3rem] inline-block shadow-sm border border-gray-50">
+                <p className="font-bold text-gray-400 uppercase text-xs tracking-widest">No blogs found in database.</p>
+             </div>
+          </div>
         )}
       </div>
     </main>

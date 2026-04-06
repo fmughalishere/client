@@ -33,7 +33,7 @@ const Footer = () => {
               href="/help" 
               className="bg-[#1e3a8a] text-white px-6 py-1.5 rounded-full text-[12px] font-bold shadow-md hover:bg-blue-900 transition-colors"
             >
-              GET HELP
+              GET{" "}HELP
             </Link>
             <Link href="https://tiktok.com" target="_blank" className="text-black">
                <div className="bg-black text-white p-1 rounded-full flex items-center justify-center">
