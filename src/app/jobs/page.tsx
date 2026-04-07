@@ -1,21 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import {
-  User,
   MapPin,
-  Briefcase,
-  GraduationCap,
-  History,
-  ArrowLeft,
   Globe,
-  Mail,
-  Phone,
-  Send,
   Lock,
+  Send,
   ChevronDown
 } from "lucide-react";
 
@@ -35,8 +27,70 @@ export default function JobApplicationPage() {
     experience: ""
   });
 
-  const cities = ["Karachi", "Lahore", "RWP/ISB", "Peshawar", "Quetta", "Multan", "Faisalabaad"];
-  const categories = ["IT & Software", "Accounts & Finance", "Management", "Education", "Medical", "Sales & Marketing", "Other"];
+  const cities = ["Karachi", "Lahore", "RWP/ISB", "Peshawar", "Quetta", "Multan", "Faisalabad"];
+
+  const categories = [
+    "Administration & Management",
+    "Agriculture & Farming",
+    "Arts & Design",
+    "Automotive & Mechanical",
+    "Banking & Finance",
+    "Business Development",
+    "Business Operations & Strategy",
+    "Customer Service",
+    "Civil Engineering & Infrastructure",
+    "Data Science & Analytics",
+    "Digital Marketing & Social Media",
+    "Education & Training",
+    "E-commerce & Online Business",
+    "Electrical Engineering & Electronics",
+    "Fashion & Textile Design",
+    "Finance & Accounting",
+    "Food & Hospitality",
+    "Graphic Design & Multimedia",
+    "Healthcare & Medical",
+    "Human Resources & Recruitment",
+    "Information Technology (IT) & Software",
+    "Internet & Web Development",
+    "Legal & Law Enforcement",
+    "Logistics & Supply Chain",
+    "Marketing & Sales",
+    "Mechanical Engineering",
+    "Media & Entertainment",
+    "Mining & Natural Resources",
+    "Pharmaceutical & Biotech",
+    "Project Management",
+    "Research & Development",
+    "Science & Laboratory",
+    "Security Services",
+    "Social Work & NGO",
+    "Telecommunications",
+    "Tourism & Travel",
+    "Veterinary & Animal Care",
+    "Freelance & Online Work",
+    "Other"
+  ].sort();
+
+  const educationLevels = [
+    "Matric",
+    "Intermediate",
+    "Bachelor's",
+    "Master's",
+    "M.Phil / PhD",
+    "Other"
+  ];
+
+  const categoryRef = useRef<HTMLSelectElement>(null);
+
+  const handleJumpByLetter = (letter: string) => {
+    if (!categoryRef.current) return;
+    const options = Array.from(categoryRef.current.options);
+    const match = options.find(opt => opt.value.toLowerCase().startsWith(letter.toLowerCase()));
+    if (match) {
+      categoryRef.current.value = match.value;
+      setFormData({ ...formData, category: match.value });
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,13 +105,12 @@ export default function JobApplicationPage() {
 
   return (
     <main className="min-h-screen bg-[#f8fafc] pb-20">
-      <section className="bg-[#00004d] pt-12 pb-24 px-6 rounded-b-[60px] text-center shadow-lg">
+      <section className="bg-[#e2f2f5] pt-12 pb-24 px-6 rounded-b-[60px] text-center shadow-lg">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter">
-            Applying for <span className="text-[#00d26a]">Job</span>
+          <h1 className="text-3xl md:text-5xl font-black text-[#00004d] tracking-tighter">
+            Applying for <span className="text-[#00d26a]"> A Job</span>
           </h1>
-
-          <p className="text-gray-400 font-bold text-xs uppercase tracking-widest mt-4">
+          <p className="text-[#00004d] font-bold text-xs tracking-widest mt-4">
             Fill the single form below to apply
           </p>
         </div>
@@ -99,7 +152,6 @@ export default function JobApplicationPage() {
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
               />
             </div>
-
             <div className="space-y-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Applying For (Positions)</label>
               <input
@@ -110,7 +162,28 @@ export default function JobApplicationPage() {
                 onChange={(e) => setFormData({ ...formData, applyingFor: e.target.value })}
               />
             </div>
-
+            <div className="md:col-span-2 flex flex-col gap-2">
+              <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Jump to Category (by first letter)</label>
+              <input
+                type="text"
+                maxLength={1}
+                placeholder="Enter first letter..."
+                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#00d26a]"
+                onChange={(e) => handleJumpByLetter(e.target.value)}
+              />
+            </div>  
+            <div className="md:col-span-2 space-y-2">
+              <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Job Category</label>
+              <select
+                required
+                ref={categoryRef}
+                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#00d26a]"
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              >
+                <option value="">Select a Category</option>
+                {categories.map(cat => <option key={cat}>{cat}</option>)}
+              </select>
+            </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Email Address</label>
               <input
@@ -121,7 +194,6 @@ export default function JobApplicationPage() {
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
             </div>
-
             <div className="space-y-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Phone Number</label>
               <input
@@ -133,25 +205,16 @@ export default function JobApplicationPage() {
               />
             </div>
             <div className="md:col-span-2 space-y-2">
-              <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Job Category</label>
+              <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Education Degrees & Qualification</label>
               <select
                 required
                 className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#00d26a]"
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, education: e.target.value })}
               >
-                <option value="">Select a Category</option>
-                {categories.map(cat => <option key={cat}>{cat}</option>)}
+                <option value="">Select Education</option>
+                {educationLevels.map(level => <option key={level}>{level}</option>)}
               </select>
             </div>
-            <div className="md:col-span-2 space-y-2">
-              <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Education Degrees & Qualification</label>
-              <textarea
-                required
-                className="w-full h-32 bg-slate-50 p-6 rounded-[30px] font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#00d26a]"
-                onChange={(e) => setFormData({ ...formData, education: e.target.value })}
-              />
-            </div>
-
             <div className="md:col-span-2 space-y-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Professional Experience</label>
               <textarea
@@ -191,14 +254,8 @@ export default function JobApplicationPage() {
               className="bg-white p-8 rounded-[30px] w-[90%] max-w-sm text-center shadow-2xl"
             >
               <Lock size={36} className="mx-auto text-[#00d26a] mb-4" />
-
-              <h2 className="text-lg font-black text-[#00004d] uppercase">
-                Login Required
-              </h2>
-
-              <p className="text-gray-400 text-sm mt-2">
-                Please login first to submit your application.
-              </p>
+              <h2 className="text-lg font-black text-[#00004d] uppercase">Login Required</h2>
+              <p className="text-gray-400 text-sm mt-2">Please login first to submit your application.</p>
 
               <div className="flex gap-3 mt-6">
                 <button
@@ -207,7 +264,6 @@ export default function JobApplicationPage() {
                 >
                   Cancel
                 </button>
-
                 <button
                   onClick={() => router.push("/login")}
                   className="w-full py-3 rounded-full bg-[#00004d] text-white font-bold"
@@ -219,7 +275,6 @@ export default function JobApplicationPage() {
           </motion.div>
         )}
       </AnimatePresence>
-
     </main>
   );
 }
