@@ -1,15 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import {
-  MapPin,
-  Globe,
-  Lock,
-  Send,
-  ChevronDown
-} from "lucide-react";
+import { MapPin, Globe, Lock, Send, ChevronDown } from "lucide-react";
 
 export default function JobApplicationPage() {
   const router = useRouter();
@@ -44,6 +38,9 @@ export default function JobApplicationPage() {
     "Education & Training",
     "E-commerce & Online Business",
     "Electrical Engineering & Electronics",
+    "Visa Processing Officer",
+    "Study Abroad Consultant",
+    "Ticketing Officer",
     "Fashion & Textile Design",
     "Finance & Accounting",
     "Food & Hospitality",
@@ -94,12 +91,10 @@ export default function JobApplicationPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!isLoggedIn) {
       setShowLoginPopup(true);
       return;
     }
-
     console.log("Form Data Submitted:", formData);
   };
 
@@ -115,6 +110,7 @@ export default function JobApplicationPage() {
           </p>
         </div>
       </section>
+
       <div className="max-w-4xl mx-auto px-4 -mt-16">
         <form
           onSubmit={handleSubmit}
@@ -171,7 +167,7 @@ export default function JobApplicationPage() {
                 className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#00d26a]"
                 onChange={(e) => handleJumpByLetter(e.target.value)}
               />
-            </div>  
+            </div>
             <div className="md:col-span-2 space-y-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Job Category</label>
               <select
@@ -224,6 +220,7 @@ export default function JobApplicationPage() {
               />
             </div>
           </div>
+
           <div className="mt-12 text-center">
             <motion.button
               whileHover={{ scale: 1.02 }}
@@ -237,6 +234,7 @@ export default function JobApplicationPage() {
           </div>
         </form>
       </div>
+
       <AnimatePresence>
         {showLoginPopup && (
           <motion.div
