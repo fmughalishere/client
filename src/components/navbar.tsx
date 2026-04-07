@@ -114,7 +114,7 @@ const Navbar = () => {
         >
           <PlusCircle size={18} className="shrink-0 text-white" />
           <span className="text-[10px] sm:text-[13px] font-bold whitespace-nowrap tracking-tight">
-            Add to home screen
+            Add to Home Screen
           </span>
         </button>
       </div>
