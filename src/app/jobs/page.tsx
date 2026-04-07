@@ -53,10 +53,6 @@ export default function JobApplicationPage() {
     <main className="min-h-screen bg-[#f8fafc] pb-20">
       <section className="bg-[#00004d] pt-12 pb-24 px-6 rounded-b-[60px] text-center shadow-lg">
         <div className="max-w-4xl mx-auto">
-          <Link href="/" className="inline-flex items-center text-[#00d26a] font-black uppercase text-[10px] tracking-widest mb-6 hover:opacity-80 transition-all">
-            <ArrowLeft size={16} className="mr-2" /> Back to Home
-          </Link>
-
           <h1 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter">
             Applying for <span className="text-[#00d26a]">Job</span>
           </h1>
