@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -15,27 +14,6 @@ import {
 } from "lucide-react";
 
 export default function HomePage() {
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [showInstallBtn, setShowInstallBtn] = useState(false);
-
-  useEffect(() => {
-    window.addEventListener("beforeinstallprompt", (e: any) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setShowInstallBtn(true);
-    });
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === "accepted") {
-      setDeferredPrompt(null);
-      setShowInstallBtn(false);
-    }
-  };
-
   const featuredJobs = [
     { title: "Junior Accounts Assistant", loc: "Urdu Bazar, Lahore", img: "/images/app_logo.png" },
     { title: "Europe Jobs / Greece Visa", loc: "Allama Iqbal Town, Lahore", img: "/images/app_logo.png" },
@@ -51,12 +29,9 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-16">
-      {/* Header Section with Footer Color Background */}
       <section className="px-0 pt-0">
-        {/* Background color changed to the light grayish blue from footer */}
         <div className="bg-[#e2f2f5] rounded-b-[45px] pt-10 pb-16 px-6 flex flex-col items-center shadow-sm">
           <div className="text-center mb-6 mt-2"> 
-            {/* Text color changed to Navy Blue */}
             <h1 className="text-[28px] font-black text-[#00004d] leading-[1.1]">
               Hire easy
             </h1>
@@ -64,9 +39,7 @@ export default function HomePage() {
               Get hired easy
             </h1>
           </div>      
-          
-          {/* Search Bar */}
-          <div className="relative w-full max-w-[310px]">
+                    <div className="relative w-full max-w-[310px]">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-[#00004d]" strokeWidth={2.5} />
             </div>
@@ -78,8 +51,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Quick Action Tabs (Centered & Oval) */}
       <section className="max-w-md mx-auto px-10 -mt-8">
         <div className="flex flex-col gap-3 items-center">
           {quickActions.map((action, i) => (
@@ -92,8 +63,6 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
-      {/* Featured Jobs Section */}
       <section className="max-w-6xl mx-auto px-6 mt-14">
         <div className="flex justify-between items-center mb-8 border-b pb-4 border-gray-100">
           <h3 className="text-xl font-black text-[#00004d] flex items-center gap-2 uppercase tracking-tighter">
@@ -109,7 +78,6 @@ export default function HomePage() {
           {featuredJobs.map((job, idx) => (
             <div key={idx} className="bg-white rounded-[2.5rem] border border-gray-50 p-7 flex flex-col gap-5 hover:shadow-2xl transition-all group relative overflow-hidden">
               <div className="flex justify-between items-start">
-                {/* Logo Image Centered */}
                 <div className="w-16 h-16 rounded-2xl overflow-hidden relative border border-gray-100 shadow-sm bg-white flex items-center justify-center p-2">
                   <Image 
                     src={job.img}
@@ -141,19 +109,6 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
-      {/* Floating Add Shortcut Button */}
-      {showInstallBtn && (
-        <div className="fixed bottom-6 right-6 z-50">
-          <button
-            onClick={handleInstallClick}
-            className="bg-[#00004d] text-white p-4 rounded-full shadow-2xl flex items-center gap-2 font-black active:scale-95 transition-all animate-bounce"
-          >
-            <PlusCircle size={24} />
-            <span className="text-xs uppercase tracking-widest">Shortcut</span>
-          </button>
-        </div>
-      )}
     </main>
   );
 }

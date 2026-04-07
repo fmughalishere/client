@@ -1,10 +1,12 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, PlusCircle } from 'lucide-react';
+import { AiFillHome } from "react-icons/ai";
+import { FaUserGear } from "react-icons/fa6";
 
 const navLinks = [
   { name: 'Home', href: '/' },
@@ -18,10 +20,30 @@ const navLinks = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    window.addEventListener("beforeinstallprompt", (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    });
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) {
+      alert("App is already installed or not supported on this browser.");
+      return;
+    }
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === "accepted") {
+      setDeferredPrompt(null);
+    }
+  };
 
   return (
-    <header className="z-50 w-full bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="relative z-50 w-full bg-white border-b border-gray-100 shadow-sm">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
@@ -40,6 +62,7 @@ const Navbar = () => {
               />
             </Link>
           </motion.div>
+
           <div className="hidden md:flex items-center space-x-2">
             {navLinks.map((link) => (
               <Link 
@@ -58,6 +81,7 @@ const Navbar = () => {
               </Link>
             ))}
           </div>
+
           <div className="md:hidden flex items-center">
             <button 
               onClick={() => setIsOpen(!isOpen)} 
@@ -68,6 +92,33 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
+
+      <div className="bg-[#00004d] text-white py-3 px-2 flex justify-around items-center w-full">
+        <Link href="/" className="flex items-center gap-0.5 hover:opacity-80 active:scale-95 transition-all">
+          <AiFillHome size={18} className="shrink-0 text-white" />
+          <span className="text-[10px] sm:text-[13px] font-bold whitespace-nowrap uppercase tracking-tight">
+            Home
+          </span>
+        </Link>
+
+        <Link href="/dashboard" className="flex items-center gap-1.5 hover:opacity-80 active:scale-95 transition-all">
+          <FaUserGear size={18} className="shrink-0 text-white" />
+          <span className="text-[10px] sm:text-[13px] font-bold whitespace-nowrap uppercase tracking-tight">
+            My Control Panel
+          </span>
+        </Link>
+
+        <button 
+          onClick={handleInstallClick}
+          className="flex items-center gap-1.5 hover:opacity-80 active:scale-95 transition-all outline-none"
+        >
+          <PlusCircle size={18} className="shrink-0 text-white" />
+          <span className="text-[10px] sm:text-[13px] font-bold whitespace-nowrap uppercase tracking-tight">
+            Add to home screen
+          </span>
+        </button>
+      </div>
+
       <AnimatePresence>
         {isOpen && (
           <motion.div 
@@ -82,7 +133,11 @@ const Navbar = () => {
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className={`block px-4 py-3 rounded-xl text-lg font-bold ${pathname === link.href ? 'bg-blue-50 text-[#1e3a8a]' : 'text-gray-600'}`}
+                  className={`block px-4 py-3 rounded-xl text-lg font-bold ${
+                    pathname === link.href
+                      ? 'bg-blue-50 text-[#1e3a8a]'
+                      : 'text-gray-600'
+                  }`}
                 >
                   {link.name}
                 </Link>
