@@ -193,7 +193,7 @@ export default function JobApplicationPage() {
       <section className="bg-[#e2f2f5] pt-12 pb-24 px-6 rounded-b-[60px] text-center shadow-lg">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-5xl font-black text-[#00004d] tracking-tighter">
-            Applying for <span className="text-[#00d26a]"> A Job</span>
+            Applying for a Job
           </h1>
           <p className="text-[#00004d] font-bold text-xs tracking-widest mt-4">
             Fill the single form below to apply
@@ -216,10 +216,10 @@ export default function JobApplicationPage() {
             <div className="space-y-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Select City</label>
               <div className="relative">
-                <MapPin className="absolute left-5 top-4 text-[#00d26a]" size={18} />
+                <MapPin className="absolute left-5 top-4 text-[#0000ff]" size={18} />
                 <select
                   required
-                  className="w-full bg-slate-50 p-4 pl-12 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#00d26a] appearance-none"
+                  className="w-full bg-slate-50 p-4 pl-12 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#0000ff] appearance-none"
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                 >
                   <option value="">Choose City</option>
@@ -229,41 +229,33 @@ export default function JobApplicationPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Full Name</label>
-              <input
-                type="text"
-                required
-                placeholder="Enter your name"
-                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#00d26a]"
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Applying For (Positions)</label>
               <input
                 type="text"
                 required
                 placeholder="e.g. Sales Manager"
-                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#00d26a]"
+                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#0000ff]"
                 onChange={(e) => setFormData({ ...formData, applyingFor: e.target.value })}
               />
             </div>
+
             <div className="md:col-span-2 flex flex-col gap-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Jump to Category (by first letter)</label>
               <input
                 type="text"
                 maxLength={1}
                 placeholder="Enter first letter..."
-                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#00d26a]"
+                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#0000ff]"
                 onChange={(e) => handleJumpByLetter(e.target.value)}
               />
             </div>
+
             <div className="md:col-span-2 space-y-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Job Category</label>
               <select
                 required
                 ref={categoryRef}
-                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#00d26a]"
+                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#0000ff]"
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
               >
                 <option value="">Select a Category</option>
@@ -276,42 +268,57 @@ export default function JobApplicationPage() {
                 ))}
               </select>
             </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Full Name</label>
+              <input
+                type="text"
+                required
+                placeholder="Enter your name"
+                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#0000ff]"
+                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+              />
+            </div>
+
             <div className="space-y-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Email Address</label>
               <input
                 type="email"
                 required
                 placeholder="your@email.com"
-                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#00d26a]"
+                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#0000ff]"
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
             </div>
+
             <div className="space-y-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Phone Number</label>
               <input
                 type="tel"
                 required
                 placeholder="03xx xxxxxxx"
-                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#00d26a]"
+                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#0000ff]"
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               />
             </div>
+
             <div className="md:col-span-2 space-y-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Education Degrees & Qualification</label>
               <select
                 required
-                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#00d26a]"
+                className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#0000ff]"
                 onChange={(e) => setFormData({ ...formData, education: e.target.value })}
               >
                 <option value="">Select Education</option>
                 {educationLevels.map(level => <option key={level}>{level}</option>)}
               </select>
             </div>
+
             <div className="md:col-span-2 space-y-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Professional Experience</label>
               <textarea
                 required
-                className="w-full h-32 bg-slate-50 p-6 rounded-[30px] font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#00d26a]"
+                className="w-full h-32 bg-slate-50 p-6 rounded-[30px] font-bold text-[#00004d] border border-gray-100 outline-none focus:ring-2 focus:ring-[#0000ff]"
                 onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
               />
             </div>
@@ -322,7 +329,7 @@ export default function JobApplicationPage() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              className="w-full bg-[#00004d] text-white py-6 rounded-full font-black text-lg uppercase tracking-widest shadow-2xl flex items-center justify-center gap-3 hover:bg-[#00d26a] hover:text-[#00004d] transition-all"
+              className="w-full bg-[#00004d] text-white py-6 rounded-full font-black text-lg uppercase tracking-widest shadow-2xl flex items-center justify-center gap-3 hover:bg-[#0000ff] hover:text-white transition-all"
             >
               {isLoggedIn ? <Send size={24} /> : <Lock size={24} />}
               {isLoggedIn ? "Submit Application" : "Login to Submit"}
@@ -347,7 +354,7 @@ export default function JobApplicationPage() {
               onClick={(e) => e.stopPropagation()}
               className="bg-white p-8 rounded-[30px] w-[90%] max-w-sm text-center shadow-2xl"
             >
-              <Lock size={36} className="mx-auto text-[#00d26a] mb-4" />
+              <Lock size={36} className="mx-auto text-[#0000ff] mb-4" />
               <h2 className="text-lg font-black text-[#00004d] uppercase">Login Required</h2>
               <p className="text-gray-400 text-sm mt-2">Please login first to submit your application.</p>
 
