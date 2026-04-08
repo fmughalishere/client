@@ -35,12 +35,12 @@ const Footer = () => {
             </Link>
             <Link href="https://tiktok.com" target="_blank">
                <div className="bg-black text-white p-[4px] rounded-full flex items-center justify-center">
-                  <FaTiktok size={15} fill="white" />
+                  <FaTiktok size={13} fill="white" />
                </div>
             </Link>
             <Link href="https://instagram.com" target="_blank">
               <div className="rounded-md p-[2px] bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white flex items-center justify-center">
-                 <FaInstagram size={19} />
+                 <FaInstagram size={17} />
               </div>
             </Link>        
           </div>

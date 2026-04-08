@@ -51,26 +51,27 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section className="max-w-md mx-auto px-6 -mt-10">
-        <div className="flex flex-col gap-3 items-center justify-center w-full">
-          {quickActions.map((action, i) => (
-            <Link 
-              key={i} 
-              href={action.href} 
-              className="w-full max-w-[280px] transition-transform active:scale-95"
-            >
-              <div className="flex items-center justify-start gap-5 py-4 pl-12 bg-white rounded-full shadow-lg border border-gray-50 text-[#00004d] hover:bg-[#00004d] hover:text-white transition-all duration-300 group">
-                <span className="shrink-0 transition-colors">
-                  {action.icon}
-                </span>
-                <span className="font-bold text-[18px] tracking-tight whitespace-nowrap">
-                  {action.label}
-                </span>
-              </div>
-            </Link>
-          ))}
+    <section className="max-w-md mx-auto px-6 -mt-10">
+  <div className="flex flex-col gap-3 items-center justify-center w-full">
+    {quickActions.map((action, i) => (
+      <Link 
+        key={i} 
+        href={action.href} 
+        className="w-full max-w-[280px] transition-transform active:scale-95"
+      >
+        <div className="flex items-center justify-center gap-3 h-[56px] bg-[#e2f2f5] rounded-full shadow-lg border border-gray-50 text-[#00004d] hover:bg-[#00004d] hover:text-white transition-all duration-300 group">
+                    <span className="flex items-center justify-center">
+            {action.icon}
+          </span>
+          <span className="font-bold text-18px leading-none whitespace-nowrap">
+            {action.label}
+          </span>
+
         </div>
-      </section>
+      </Link>
+    ))}
+  </div>
+</section>
       <section className="max-w-6xl mx-auto px-6 mt-14">
         <div className="flex justify-between items-center mb-8 border-b pb-4 border-gray-100">
           <h3 className="text-xl font-black text-[#00004d] flex items-center gap-2 uppercase tracking-tighter">
