@@ -24,7 +24,6 @@ experience: ""
 const cities = ["Karachi", "Lahore", "RWP/ISB", "Peshawar", "Quetta", "Multan", "Faisalabad"];
 
 const categories = [{
-group: "Domestic & Household Jobs",
 options: [
 "House Maid",
 "Full Time Maid",
@@ -72,135 +71,102 @@ options: [
 },
 
 {
-group: "Administration & Management",
 options: ["Administrator", "Office Manager", "Executive Assistant", "Operations Manager"]
 },
 {
-group: "Agriculture & Farming",
 options: ["Farmer", "Livestock Farmer", "Agricultural Engineer", "Agronomist"]
 },
 {
-group: "Arts & Design",
 options: ["Graphic Designer", "Painter", "Illustrator", "Fashion Designer", "Animator"]
 },
 {
-group: "Automotive & Mechanical",
 options: ["Mechanical Engineer", "Auto Mechanic", "Technician", "Vehicle Inspector"]
 },
 {
-group: "Banking & Finance",
 options: ["Accountant", "Banker", "Auditor", "Financial Analyst"]
 },
 {
-group: "Business Development",
 options: ["Business Analyst", "Business Development Manager", "Consultant"]
 },
 {
-group: "Business Operations & Strategy",
 options: ["Operations Manager", "Strategy Consultant", "Project Manager"]
 },
 {
-group: "Customer Service",
 options: ["Customer Support Executive", "Call Center Agent", "Client Relationship Manager"]
 },
 {
-group: "Civil Engineering & Infrastructure",
 options: ["Civil Engineer", "Structural Engineer", "Site Supervisor"]
 },
 {
-group: "Data Science & Analytics",
 options: ["Data Analyst", "Data Scientist", "Machine Learning Engineer", "AI Researcher"]
 },
 {
-group: "Digital Marketing & Social Media",
 options: ["SEO Specialist", "Content Creator", "Social Media Manager", "Digital Marketer"]
 },
 {
-group: "Education & Training",
 options: ["Teacher", "Lecturer", "Tutor", "Researcher", "Trainer"]
 },
 {
-group: "E-commerce & Online Business",
 options: ["E-commerce Manager", "Online Store Owner", "Marketplace Seller"]
 },
 {
-group: "Electrical Engineering & Electronics",
 options: ["Electrical Engineer", "Electronics Technician", "Automation Engineer"]
 },
 {
-group: "Healthcare & Medical",
 options: ["Doctor", "Nurse", "Pharmacist", "Lab Technician", "Surgeon"]
 },
 {
-group: "Human Resources & Recruitment",
 options: ["HR Manager", "Recruiter", "HR Assistant", "Talent Acquisition Specialist"]
 },
 {
-group: "Information Technology (IT) & Software",
 options: ["Software Developer", "IT Support", "System Administrator", "Network Engineer"]
 },
 {
-group: "Internet & Web Development",
 options: ["Web Developer", "Frontend Developer", "Backend Developer", "Fullstack Developer"]
 },
 {
-group: "Legal & Law Enforcement",
 options: ["Lawyer", "Judge", "Police Officer", "Paralegal"]
 },
 {
-group: "Logistics & Supply Chain",
 options: ["Logistics Manager", "Warehouse Manager", "Supply Chain Analyst", "Driver"]
 },
 {
-group: "Marketing & Sales",
 options: ["Sales Executive", "Marketing Manager", "Brand Manager", "Business Development Executive"]
 },
 {
-group: "Media & Entertainment",
 options: ["Actor", "Musician", "Photographer", "Director", "Content Creator"]
 },
 {
-group: "Pharmaceutical & Biotech",
 options: ["Pharmacist", "Lab Scientist", "Biotech Researcher", "Clinical Researcher"]
 },
 {
-group: "Project Management",
 options: ["Project Manager", "Program Manager", "Project Coordinator"]
 },
 {
-group: "Research & Development",
 options: ["Researcher", "Lab Scientist", "R&D Engineer"]
 },
 {
-group: "Science & Laboratory",
 options: ["Biologist", "Chemist", "Physicist", "Lab Technician"]
 },
 {
-group: "Security Services",
 options: ["Security Guard", "Security Supervisor", "Investigator"]
 },
 {
-group: "Social Work & NGO",
 options: ["Social Worker", "NGO Coordinator", "Field Officer"]
 },
 {
-group: "Telecommunications",
 options: ["Telecom Engineer", "Network Technician", "Technical Support"]
 },
 {
-group: "Tourism & Travel",
 options: ["Travel Agent", "Tour Guide", "Visa Officer", "Ticketing Officer"]
 },
 {
-group: "Veterinary & Animal Care",
 options: ["Veterinarian", "Animal Caretaker", "Pet Groomer"]
 },
 {
-group: "Freelance & Online Work",
 options: ["Freelancer", "Content Writer", "Designer", "Online Consultant"]
 },
 {
-group: "Other",
 options: ["Other"]
 }
 
@@ -298,13 +264,11 @@ Fill the single form below to apply </p> </div> </section>
         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
       >
         <option value="">Select Category</option>
-        {categories.map(cat => (
-          <optgroup key={cat.group} label={cat.group}>
-            {cat.options.map(opt => (
-              <option key={opt}>{opt}</option>
-            ))}
-          </optgroup>
-        ))}
+        {[...new Set(categories.flatMap(cat => cat.options))]
+  .sort((a, b) => a.localeCompare(b))
+  .map(opt => (
+    <option key={opt} value={opt}>{opt}</option>
+))}
       </select>
     </div>
 

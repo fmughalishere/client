@@ -46,7 +46,7 @@ export default function HomePage() {
             <input
               type="text"
               placeholder="Search jobs..."
-              className="block w-full pl-12 pr-4 py-4 bg-white border-none rounded-full shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-200 text-[#00004d] font-bold"
+              className="block w-full pl-12 pr-4 py-4 bg-white border border-[#00004d] rounded-full shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-200 text-[#00004d] font-bold"
             />
           </div>
         </div>
@@ -59,7 +59,7 @@ export default function HomePage() {
         href={action.href} 
         className="w-full max-w-[280px] transition-transform active:scale-95"
       >
-        <div className="flex items-center justify-center gap-3 h-[56px] bg-[#e2f2f5] rounded-full shadow-lg border border-gray-50 text-[#00004d] hover:bg-[#00004d] hover:text-white transition-all duration-300 group">
+        <div className="flex items-center justify-center gap-3 h-[56px] bg-[#e2f2f5] rounded-full shadow-lg border border-[#00004d] text-[#00004d] hover:bg-[#00004d] hover:text-white transition-all duration-300 group">
                     <span className="flex items-center justify-center">
             {action.icon}
           </span>
