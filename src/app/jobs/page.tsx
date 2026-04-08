@@ -5,8 +5,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { MapPin, Globe, ChevronDown } from "lucide-react";
 import { FaMale, FaFemale } from "react-icons/fa";
-
-
+import { FaUser } from "react-icons/fa";
 export default function JobApplicationPage() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -358,14 +357,16 @@ options: ["Other"]
         {selectedIcon === "male" ? <FaMale /> : <FaFemale />}
       </div>
     ) : (
-      <div className="w-20 h-20 rounded-full border flex items-center justify-center text-gray-400">No Image</div>
+      <div className="w-24 h-24 rounded-full border flex items-center justify-center text-gray-400 text-4xl">
+  <FaUser />
+</div>
     )}
 
     <button type="button" className="bg-blue-500 text-white py-2 px-4 rounded" onClick={() => fileInputRef.current?.click()}>Upload Image</button>
     <input type="file" accept="image/*" ref={fileInputRef} className="hidden" onChange={handleImageChange} />
   </div>
 
-  <div className="flex gap-4">
+  Or Select Icon<div className="flex gap-4">
     <label className="flex flex-col items-center cursor-pointer">
       <input type="radio" name="icon" className="hidden" checked={selectedIcon === "male"} onChange={() => handleIconSelect("male")} />
       <div className={`w-16 h-16 rounded-full border flex items-center justify-center text-2xl ${selectedIcon === "male" ? "bg-blue-200" : "bg-gray-100"}`}>

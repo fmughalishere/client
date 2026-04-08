@@ -11,21 +11,40 @@ import {
   Briefcase,
   Users,
   ClipboardList,
+  ChevronDown,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function HomePage() {
-  const featuredJobs = [
-    { title: "Junior Accounts Assistant", loc: "Urdu Bazar, Lahore", img: "/images/app_logo.png" },
-    { title: "Europe Jobs / Greece Visa", loc: "Allama Iqbal Town, Lahore", img: "/images/app_logo.png" },
-    { title: "Factory Hiring Helper", loc: "S.I.E, Gujranwala", img: "/images/app_logo.png" },
+  const jobSeekers = [
+    { 
+      name: "Qamar Ahmad", 
+      category: "Driver", 
+      age: "56 years", 
+      city: "Lahore", 
+      img: "/images/app_logo.png" 
+    },
+    { 
+      name: "Sajid Khan", 
+      category: "Cook", 
+      age: "32 years", 
+      city: "Karachi", 
+      img: "/images/app_logo.png" 
+    },
+    { 
+      name: "M. Ali", 
+      category: "Electrician", 
+      age: "28 years", 
+      city: "Islamabad", 
+      img: "/images/app_logo.png" 
+    },
   ];
 
   const quickActions = [
-    { label: "Apply for a Job", icon: <Briefcase size={24} />, href: "/jobs" },
-    { label: "Post a Job", icon: <PlusCircle size={24} />, href: "/dashboard/employer" },
-    { label: "Job Seekers", icon: <Users size={24} />, href: "/dashboard/employer" },
-    { label: "Job Offers", icon: <ClipboardList size={24} />, href: "/jobs" },
+    { label: "Apply for a Job", icon: <Briefcase size={18} />, href: "/jobs" },
+    { label: "Post a Job", icon: <PlusCircle size={18} />, href: "/dashboard/employer" },
+    { label: "Job Seekers", icon: <Users size={18} />, href: "/dashboard/employer" },
+    { label: "Job Offers", icon: <ClipboardList size={18} />, href: "/jobs" },
   ];
 
   const [visitorCount, setVisitorCount] = useState<number>(3000);
@@ -39,110 +58,83 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#fcfcfc] pb-16">
-      <section className="px-0 pt-0">
-        <div className="bg-[#e2f2f5] rounded-b-[45px] pt-10 pb-16 px-6 flex flex-col items-center shadow-sm">
-          <div className="relative w-full flex justify-center">
-            <div className="bg-[#00004d] text-white px-5 py-2 rounded-full font-black tracking-wide text-sm">
-              Real-Time Visitors: +{visitorCount}
-            </div>
+    <main className="min-h-screen bg-[#fcfcfc] pb-8 font-sans">
+      <section className="px-0 pt-0 relative">
+        <div className="bg-[#e2f2f5] rounded-b-[35px] pt-10 pb-12 px-6 flex flex-col items-center shadow-sm relative">
+          <div className="bg-[#00004d] text-white px-3 py-1 rounded-full font-black text-[8px] absolute top-2 z-30 shadow-md">
+            Real-Time Visitors: {visitorCount}
           </div>
-          <div className="text-center mb-4 mt-2">
-            <h1 className="text-[28px] font-black text-[#00004d] leading-[1.1]">
-              Hire easy
-            </h1>
-            <h1 className="text-[28px] font-black text-[#00004d] leading-[1.1]">
-              Get hired easy
-            </h1>
+          <div className="text-center mb-1 mt-4">
+            <h1 className="text-[20px] font-black text-[#00004d] leading-none">Hire easy</h1>
+            <h1 className="text-[20px] font-black text-[#00004d] leading-tight">Get hired easy</h1>
           </div>
-          <div className="relative w-full max-w-[310px]">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-[#00004d]" strokeWidth={2.5} />
+          <div className="relative w-full max-w-[250px] mt-3">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+              <Search className="h-3.5 w-3.5 text-[#00004d]" strokeWidth={3} />
             </div>
             <input
               type="text"
               placeholder="Search jobs..."
-              className="block w-full pl-12 pr-4 py-4 bg-white border border-[#00004d] rounded-full shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-200 text-[#00004d] font-bold"
+              className="block w-full pl-9 pr-4 py-2 bg-white border border-[#00004d] rounded-full shadow-md text-xs text-[#00004d] font-bold outline-none"
             />
           </div>
         </div>
       </section>
-
-      <section className="max-w-md mx-auto px-6 -mt-10">
-        <div className="flex flex-col gap-3 items-center justify-center w-full">
+      <section className="max-w-md mx-auto px-6 -mt-6 relative z-20">
+        <div className="flex flex-col gap-2 items-center justify-center w-full">
           {quickActions.map((action, i) => (
-            <Link
-              key={i}
-              href={action.href}
-              className="w-full max-w-[280px] transition-transform active:scale-95"
-            >
-              <div className="flex items-center justify-center gap-3 h-[56px] bg-[#e2f2f5] rounded-full shadow-lg border border-[#00004d] text-[#00004d] hover:bg-[#00004d] hover:text-white transition-all duration-300 group">
+            <Link key={i} href={action.href} className="w-full max-w-[210px] transition-transform active:scale-95">
+              <div className="flex items-center justify-center gap-2 h-[40px] bg-[#e2f2f5] rounded-full shadow border border-[#00004d] text-[#00004d] hover:bg-[#00004d] hover:text-white transition-all duration-300 group">
                 <span className="flex items-center justify-center">{action.icon}</span>
-                <span className="font-bold text-18px leading-none whitespace-nowrap">
-                  {action.label}
-                </span>
+                <span className="font-bold text-[13px] whitespace-nowrap">{action.label}</span>
               </div>
             </Link>
           ))}
         </div>
       </section>
-      <section className="max-w-6xl mx-auto px-6 mt-10 flex justify-center">
-  <div className="w-full max-w-4xl rounded-xl overflow-hidden shadow-lg">
-    <Image
-      src="/images/IMG (6).jpeg"
-      alt="Promotional Banner"
-      width={1280}
-      height={473}
-      className="object-cover rounded-xl"
-      priority
-      unoptimized={true}
-    />
-  </div>
-</section>
-      <section className="max-w-6xl mx-auto px-6 mt-14">
-        <div className="flex justify-between items-center mb-8 border-b pb-4 border-gray-100">
-          <h3 className="text-xl font-black text-[#00004d] flex items-center gap-2 uppercase tracking-tighter">
-            <TrendingUp size={22} className="text-[#00004d]" />
-            Featured Jobs
-          </h3>
-          <Link
-            href="/jobs"
-            className="text-[10px] font-black text-white bg-[#00004d] px-5 py-2.5 rounded-full uppercase tracking-widest shadow-md"
-          >
-            View All
-          </Link>
+      <section className="max-w-6xl mx-auto px-6 mt-6 flex justify-center">
+        <div className="w-full max-w-xs rounded-lg overflow-hidden shadow-sm border border-gray-100">
+          <Image src="/images/IMG (6).jpeg" alt="Promotional Banner" width={1280} height={473} className="object-cover" priority unoptimized={true} />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {featuredJobs.map((job, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-[2.5rem] border border-gray-50 p-7 flex flex-col gap-5 hover:shadow-2xl transition-all group relative overflow-hidden"
+      </section>
+      <section className="flex justify-center mt-4 mb-4 relative z-30">
+        <div className="bg-[#00004d] text-white px-4 py-1.5 rounded-full flex flex-col items-center shadow-sm border border-white">
+            <span className="text-[9px] font-black uppercase tracking-wider leading-none">Seeking for a job</span>
+            <div className="flex flex-col items-center -space-y-2 animate-bounce mt-0.5">
+                <ChevronDown size={12} strokeWidth={4} />
+                <ChevronDown size={12} strokeWidth={4} />
+            </div>
+        </div>
+      </section>
+      <section className="max-w-[340px] mx-auto px-4 mt-2 mb-10">
+        <div className="flex flex-col gap-3">
+          {jobSeekers.map((seeker, idx) => (
+            <div 
+              key={idx} 
+              className="bg-[#eef8fa] border border-blue-50 rounded-2xl p-2.5 flex items-center gap-3 relative shadow-sm h-24"
             >
-              <div className="flex justify-between items-start">
-                <div className="w-16 h-16 rounded-2xl overflow-hidden relative border border-gray-100 shadow-sm bg-white flex items-center justify-center p-2">
-                  <Image
-                    src={job.img}
-                    alt="job logo"
-                    fill
-                    unoptimized={true}
-                    className="object-contain p-2"
-                  />
-                </div>
-                <button className="text-gray-200 hover:text-red-500 transition-colors bg-gray-50 p-2.5 rounded-full">
-                  <Heart size={20} />
-                </button>
+              <div className="w-16 h-16 rounded-full border-2 border-[#00004d] overflow-hidden shrink-0 relative">
+                <Image src={seeker.img} alt={seeker.name} fill className="object-cover" unoptimized={true} />
               </div>
-              <div className="mt-2">
-                <h4 className="font-black text-[#00004d] text-lg leading-tight group-hover:text-blue-800 transition-colors">
-                  {job.title}
-                </h4>
-                <div className="flex items-center gap-2 mt-3 text-xs font-bold text-gray-400 uppercase tracking-wide">
-                  <MapPin size={14} className="text-[#000a31]" />
-                  {job.loc}
-                </div>
+              <div className="flex flex-col justify-center overflow-hidden pr-10">
+                <h2 className="text-base font-black text-[#00004d] truncate">
+                    {seeker.name}
+                </h2>
+                <p className="text-[11px] font-bold text-gray-700">
+                    {seeker.category}
+                </p>
+                <p className="text-[10px] font-bold text-gray-400">
+                    {seeker.age}
+                </p>
               </div>
-              <button className="w-full py-4 bg-[#f1f5f9] text-[#00004d] text-xs font-black rounded-2xl group-hover:bg-[#00004d] group-hover:text-white transition-all shadow-sm uppercase tracking-widest">
-                Apply Now
+              <div className="absolute top-2 right-3 flex flex-col items-center">
+                <MapPin size={12} className="text-[#00004d]" strokeWidth={4} />
+                <span className="font-bold text-[#00004d] text-[8px] uppercase">
+                    {seeker.city}
+                </span>
+              </div>
+              <button className="absolute bottom-2 right-3 bg-[#00004d] text-white px-2.5 py-1 rounded-full text-[8px] font-black shadow-sm active:scale-95 uppercase tracking-tighter">
+                Visit my profile
               </button>
             </div>
           ))}
