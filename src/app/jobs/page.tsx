@@ -14,6 +14,10 @@ const [formData, setFormData] = useState({
 fullName: "",
 email: "",
 phone: "",
+age:"",
+jobtype:"",
+maritalStatus:"",
+gender:"",
 applyingFor: "",
 category: "",
 city: "",
@@ -29,7 +33,6 @@ options: [
 "Full Time Maid",
 "Part Time Maid",
 "Live-in Maid",
-"Babysitter",
 "Nanny",
 "Child Caretaker",
 "Elderly Caretaker",
@@ -66,7 +69,34 @@ options: [
 "Helper",
 "General Helper",
 "Delivery Rider",
-"Courier Boy"
+"Courier Boy",
+"Receptionist",
+"Customer Care Taker",
+"Tractor Driver",
+"Beautition",
+"Barber",
+"Salesman",
+"Mid-Wife",
+"LHV",
+"Lab Technicain",
+"OTA",
+"Physiotherapist",
+"Nutritionist",
+"Coach",
+"Waiter",
+"Trainer",
+"Pilot",
+"Mobile Technician",
+"TV Technician",
+"Laptop Technician",
+"Motorcycle Mechanic",
+"Car Mechanic",
+"Car Painter",
+"Plumber",
+"Carpentar",
+"Phone Operator",
+"Air-Hostess",
+"Steward",
 ]
 },
 
@@ -180,6 +210,22 @@ const educationLevels = [
 "M.Phil / PhD",
 "Other"
 ];
+const maritalLevels = [
+  "Married",
+  "Single",
+  "Divorced",
+  "Widowed",
+]
+const genderLevels = [
+  "Male",
+  "Female",
+  "Other",
+]
+const jobType = [
+  "Full-Time",
+  "Part-Time",
+  "One-Day Task",
+]
 
 const categoryRef = useRef<HTMLSelectElement>(null);
 
@@ -271,7 +317,13 @@ Fill the single form below to apply </p> </div> </section>
 ))}
       </select>
     </div>
-
+<select
+      className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d]"
+      onChange={(e) => setFormData({ ...formData, jobtype: e.target.value })}
+    >
+      <option>Job Type</option>
+      {jobType.map(e => <option key={e}>{e}</option>)}
+    </select>
     <input
       type="text"
       placeholder="Full Name"
@@ -292,16 +344,46 @@ Fill the single form below to apply </p> </div> </section>
       className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d] placeholder:text-[#00004d]"
       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
     />
-
+    <input
+      type="age"
+      placeholder="Age"
+      className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d] placeholder:text-[#00004d]"
+      onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+    />
     <select
       className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d]"
-      onChange={(e) => setFormData({ ...formData, education: e.target.value })}
+      onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+    >
+      <option>Select Gender</option>
+      {genderLevels.map(e => <option key={e}>{e}</option>)}
+    </select>
+    <select
+      className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d]"
+      onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+    >
+      <option>Select Marital Status</option>
+      {maritalLevels.map(e => <option key={e}>{e}</option>)}
+    </select>
+    <select
+      className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d]"
+      onChange={(e) => setFormData({ ...formData, maritalStatus: e.target.value })}
     >
       <option>Select Education</option>
       {educationLevels.map(e => <option key={e}>{e}</option>)}
     </select>
 
     <textarea
+    placeholder="Add Experience 1"
+      className="md:col-span-2 p-4 rounded-3xl text-sm bg-slate-50 text-[#00004d] placeholder:text-[#00004d]"
+      onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
+    />
+    <textarea
+    placeholder="Add Experience 2"
+      className="md:col-span-2 p-4 rounded-3xl text-sm bg-slate-50 text-[#00004d] placeholder:text-[#00004d]"
+      onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
+    />
+    <textarea
+    placeholder="Add Experience 3"
       className="md:col-span-2 p-4 rounded-3xl text-sm bg-slate-50 text-[#00004d] placeholder:text-[#00004d]"
       onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
     />
