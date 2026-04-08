@@ -60,17 +60,19 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-8 font-sans">
       <section className="px-0 pt-0 relative">
-        <div className="bg-[#e2f2f5] rounded-b-[35px] pt-10 pb-12 px-6 flex flex-col items-center shadow-sm relative">
-          <div className="bg-[#00004d] text-white px-3 py-1 rounded-full font-black text-[8px] absolute top-2 z-30 shadow-md">
+        <div className="bg-[#e2f2f5] rounded-b-[35px] pt-12 pb-12 px-6 flex flex-col items-center shadow-sm relative">
+                    <div className="bg-[#00004d] text-white px-5 py-2 rounded-full font-black tracking-wide text-[11px] absolute top-2 z-30 shadow-lg border border-white/20">
             Real-Time Visitors: {visitorCount}
           </div>
-          <div className="text-center mb-1 mt-4">
-            <h1 className="text-[20px] font-black text-[#00004d] leading-none">Hire easy</h1>
-            <h1 className="text-[20px] font-black text-[#00004d] leading-tight">Get hired easy</h1>
+
+          <div className="text-center mb-1 mt-6">
+            <h1 className="text-[22px] font-black text-[#00004d] leading-none">Hire easy</h1>
+            <h1 className="text-[22px] font-black text-[#00004d] leading-tight">Get hired easy</h1>
           </div>
-          <div className="relative w-full max-w-[250px] mt-3">
+          
+          <div className="relative w-full max-w-[250px] mt-4">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-              <Search className="h-3.5 w-3.5 text-[#00004d]" strokeWidth={3} />
+              <Search className="h-4 w-4 text-[#00004d]" strokeWidth={3} />
             </div>
             <input
               type="text"
@@ -97,12 +99,14 @@ export default function HomePage() {
           <Image src="/images/IMG (6).jpeg" alt="Promotional Banner" width={1280} height={473} className="object-cover" priority unoptimized={true} />
         </div>
       </section>
-      <section className="flex justify-center mt-4 mb-4 relative z-30">
-        <div className="bg-[#00004d] text-white px-4 py-1.5 rounded-full flex flex-col items-center shadow-sm border border-white">
-            <span className="text-[9px] font-black uppercase tracking-wider leading-none">Seeking for a job</span>
-            <div className="flex flex-col items-center -space-y-2 animate-bounce mt-0.5">
-                <ChevronDown size={12} strokeWidth={4} />
-                <ChevronDown size={12} strokeWidth={4} />
+      <section className="max-w-[340px] mx-auto px-4 mt-6 mb-4 relative z-30">
+        <div className="bg-[#00004d] text-white rounded-2xl flex flex-col items-center justify-center h-24 shadow-sm border border-white">
+            <span className="text-[14px] font-black uppercase tracking-[0.2em] leading-none mb-2">
+                We are Seeking for a job
+            </span>
+            <div className="flex flex-col items-center -space-y-3 animate-bounce">
+                <ChevronDown size={20} strokeWidth={4} className="text-white" />
+                <ChevronDown size={20} strokeWidth={4} className="text-white opacity-40" />
             </div>
         </div>
       </section>
@@ -123,7 +127,7 @@ export default function HomePage() {
                 <p className="text-[11px] font-bold text-gray-700">
                     {seeker.category}
                 </p>
-                <p className="text-[10px] font-bold text-gray-400">
+                <p className="text-[10px] font-bold text-gray-500">
                     {seeker.age}
                 </p>
               </div>
@@ -133,8 +137,8 @@ export default function HomePage() {
                     {seeker.city}
                 </span>
               </div>
-              <button className="absolute bottom-2 right-3 bg-[#00004d] text-white px-2.5 py-1 rounded-full text-[8px] font-black shadow-sm active:scale-95 uppercase tracking-tighter">
-                Visit my profile
+              <button className="absolute bottom-2 right-3 bg-[#00004d] text-white px-2.5 py-1 rounded-full text-[8px] font-black shadow-sm active:scale-95 tracking-tighter uppercase">
+                Visit Profile
               </button>
             </div>
           ))}
