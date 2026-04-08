@@ -1,9 +1,7 @@
 "use client";
-
-import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MdFacebook } from "react-icons/md";
+import { IoLogoFacebook } from "react-icons/io";
 import { GrLinkedin } from "react-icons/gr";
 import { FaTiktok } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa";
@@ -11,7 +9,7 @@ import { FaInstagram } from "react-icons/fa";
 const Footer = () => {
   return (
     <footer className="w-full bg-[#f3ead8]">
-      <div className="relative w-full h-[180px] md:h-[280px]">
+      <div className="relative w-full h-[180px] md:h-[220px]">
         <Image 
           src="/images/IMG (1).jpeg" 
           alt="Illustration" 
@@ -20,38 +18,38 @@ const Footer = () => {
           priority
         />
                 <div className="absolute inset-0 flex flex-col items-center justify-start pt-4 px-4 z-10">
-                    <div className="flex items-center justify-between w-full max-w-sm mb-5">
-            <Link href="https://facebook.com" target="_blank" className="text-[#1877F2]">
-              <MdFacebook size={26} fill="currentColor" />
+              <div className="flex items-center justify-between w-full max-w-[290px] mb-10">
+               <Link href="https://facebook.com" target="_blank" className="text-[#1877F2]">
+              <IoLogoFacebook size={25} />
             </Link>
-            <Link href="https://linkedin.com" target="_blank" className="flex items-center gap-1">
-              <div className="bg-[#0a66c2] text-white p-0.5 rounded-[2px]">
-                <GrLinkedin size={14} fill="currentColor" strokeWidth={0} />
+            <Link href="https://linkedin.com" target="_blank" className="flex items-center">
+              <div className="bg-[#0a66c2] text-white p-[2px] rounded-[2px]">
+                <GrLinkedin size={16} fill="currentColor" />
               </div>
             </Link>
             <Link 
               href="/help" 
-              className="bg-[#1e3a8a] text-white px-6 py-1.5 rounded-full text-[12px] font-bold shadow-md hover:bg-blue-900 transition-colors"
+              className="bg-[#1e3a8a] text-white px-3 py-1 rounded-full text-[10px] font-extrabold shadow-md hover:bg-blue-900 transition-colors"
             >
-              GET{" "}HELP
+              GET HELP
             </Link>
-            <Link href="https://tiktok.com" target="_blank" className="text-black">
-               <div className="bg-black text-white p-1 rounded-full flex items-center justify-center">
-                  <FaTiktok size={16} fill="white" />
+            <Link href="https://tiktok.com" target="_blank">
+               <div className="bg-black text-white p-[4px] rounded-full flex items-center justify-center">
+                  <FaTiktok size={15} fill="white" />
                </div>
             </Link>
             <Link href="https://instagram.com" target="_blank">
-              <div className="rounded-lg p-0.5 bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white">
-                 <FaInstagram size={22} />
+              <div className="rounded-md p-[2px] bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white flex items-center justify-center">
+                 <FaInstagram size={19} />
               </div>
             </Link>        
           </div>
-          <div className="text-center mt-2">
-            <p className="text-[#1e3a8a] text-[13px] font-medium">
-              Copyright © 2026 <span className="font-bold underline decoration-green-400">easyjobs.pk</span>
+          <div className="text-center">
+            <p className="text-[#1e3a8a] text-[12px] font-bold leading-tight">
+              Copyright © 2026 <span className="underline decoration-green-400">easyjobs.pk</span>
             </p>
-            <p className="text-[#1e3a8a] text-[11px] mt-1">
-              A project of <span className="font-bold">Success Signatures SMC Pvt Ltd.</span> All rights reserved.
+            <p className="text-[#1e3a8a] text-[10px] mt-0.5 opacity-90">
+              A project of <span className="font-bold">Success Signatures SMC Pvt Ltd.</span>
             </p>
           </div>
 

@@ -21,10 +21,10 @@ export default function HomePage() {
   ];
 
   const quickActions = [
-    { label: "Apply For A Job", icon: <Briefcase size={20} />, href: "/jobs" },
-    { label: "Post A Job", icon: <PlusCircle size={20} />, href: "/dashboard/employer" },
-    { label: "Job Seekers", icon: <Users size={20} />, href: "/dashboard/employer" },
-    { label: "Job Offers", icon: <ClipboardList size={20} />, href: "/jobs" },
+    { label: "Apply for a Job", icon: <Briefcase size={24} />, href: "/jobs" },
+    { label: "Post a Job", icon: <PlusCircle size={24} />, href: "/dashboard/employer" },
+    { label: "Job Seekers", icon: <Users size={24} />, href: "/dashboard/employer" },
+    { label: "Job Offers", icon: <ClipboardList size={24} />, href: "/jobs" },
   ];
 
   return (
@@ -39,7 +39,7 @@ export default function HomePage() {
               Get hired easy
             </h1>
           </div>      
-                    <div className="relative w-full max-w-[310px]">
+          <div className="relative w-full max-w-[310px]">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-[#00004d]" strokeWidth={2.5} />
             </div>
@@ -51,13 +51,21 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section className="max-w-md mx-auto px-10 -mt-8">
-        <div className="flex flex-col gap-3 items-center">
+      <section className="max-w-md mx-auto px-6 -mt-10">
+        <div className="flex flex-col gap-3 items-center justify-center w-full">
           {quickActions.map((action, i) => (
-            <Link key={i} href={action.href} className="w-full max-w-[240px] transition-transform active:scale-95">
-              <div className="flex items-center justify-start gap-4 py-3.5 px-6 bg-white rounded-full shadow-md border border-gray-100 text-[#00004d] hover:shadow-lg transition-all">
-                <span className="text-[#00004d]">{action.icon}</span>
-                <span className="font-bold text-[13px] tracking-tight">{action.label}</span>
+            <Link 
+              key={i} 
+              href={action.href} 
+              className="w-full max-w-[280px] transition-transform active:scale-95"
+            >
+              <div className="flex items-center justify-start gap-5 py-4 pl-12 bg-white rounded-full shadow-lg border border-gray-50 text-[#00004d] hover:bg-[#00004d] hover:text-white transition-all duration-300 group">
+                <span className="shrink-0 transition-colors">
+                  {action.icon}
+                </span>
+                <span className="font-bold text-[18px] tracking-tight whitespace-nowrap">
+                  {action.label}
+                </span>
               </div>
             </Link>
           ))}
@@ -73,7 +81,6 @@ export default function HomePage() {
             View All
           </Link>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {featuredJobs.map((job, idx) => (
             <div key={idx} className="bg-white rounded-[2.5rem] border border-gray-50 p-7 flex flex-col gap-5 hover:shadow-2xl transition-all group relative overflow-hidden">
@@ -91,7 +98,6 @@ export default function HomePage() {
                   <Heart size={20} />
                 </button>
               </div>
-              
               <div className="mt-2">
                 <h4 className="font-black text-[#00004d] text-lg leading-tight group-hover:text-blue-800 transition-colors">
                   {job.title}
@@ -101,7 +107,6 @@ export default function HomePage() {
                   {job.loc}
                 </div>
               </div>
-
               <button className="w-full py-4 bg-[#f1f5f9] text-[#00004d] text-xs font-black rounded-2xl group-hover:bg-[#00004d] group-hover:text-white transition-all shadow-sm uppercase tracking-widest">
                 Apply Now
               </button>
