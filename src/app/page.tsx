@@ -137,8 +137,8 @@ export default function HomePage() {
                     {seeker.city}
                 </span>
               </div>
-              <button className="absolute bottom-2 right-3 bg-[#00004d] text-white px-2.5 py-1 rounded-full text-[8px] font-black shadow-sm active:scale-95 tracking-tighter uppercase">
-                Visit Profile
+              <button className="absolute bottom-2 right-3 bg-[#00004d] text-white px-2.5 py-1 rounded-full text-[8px] font-black shadow-sm active:scale-95 tracking-tighter">
+                Visit my profile
               </button>
             </div>
           ))}
