@@ -86,7 +86,19 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
+      <section className="max-w-6xl mx-auto px-6 mt-10 flex justify-center">
+  <div className="w-full max-w-4xl rounded-xl overflow-hidden shadow-lg">
+    <Image
+      src="/images/IMG (6).jpeg"
+      alt="Promotional Banner"
+      width={1280}
+      height={473}
+      className="object-cover rounded-xl"
+      priority
+      unoptimized={true}
+    />
+  </div>
+</section>
       <section className="max-w-6xl mx-auto px-6 mt-14">
         <div className="flex justify-between items-center mb-8 border-b pb-4 border-gray-100">
           <h3 className="text-xl font-black text-[#00004d] flex items-center gap-2 uppercase tracking-tighter">
