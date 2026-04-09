@@ -32,7 +32,7 @@ export default function HomePage() {
 
   const [visitorCount, setVisitorCount] = useState<number>(0);
   useEffect(() => {
-    const socket = io("http://localhost:5000");
+    const socket = io("https://easyjobspk.onrender.com/");
 
     socket.on("visitorCount", (count: number) => {
       setVisitorCount(count);
