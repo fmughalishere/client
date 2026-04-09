@@ -47,10 +47,9 @@ export default function HomePage() {
     <main className="min-h-screen bg-[#fcfcfc] pb-8 font-sans">
       <section className="px-0 pt-0 relative">
         <div className="bg-[#e2f2f5] rounded-b-[35px] pt-12 pb-12 px-6 flex flex-col items-center shadow-sm relative">
-            <div className="bg-[#00004d] text-white px-5 py-2 rounded-full font-black tracking-wide text-[11px] absolute top-2 z-30 shadow-lg border border-white/20">
-            Real-Time Visitors: 300{visitorCount}
-          </div>
-
+        <div className="bg-[#00004d] text-gray-200 font-normal px-5 py-2 rounded-full tracking-wide text-[11px] absolute top-2 z-30 shadow-lg border border-white/20">
+        Real-Time Visitors: 300{visitorCount}
+         </div>            
           <div className="text-center mb-1 mt-6">
             <h1 className="text-[22px] font-black text-[#00004d] leading-none">Hire easy</h1>
             <h1 className="text-[22px] font-black text-[#00004d] leading-tight">Get hired easy</h1>
@@ -90,7 +89,7 @@ export default function HomePage() {
 
       <section className="max-w-[340px] mx-auto px-4 mt-6 mb-4 relative z-30">
         <div className="bg-[#00004d] text-white rounded-2xl flex flex-col items-center justify-center h-24 shadow-sm border border-white">
-          <span className="text-[14px] font-black uppercase tracking-[0.2em] leading-none mb-2">
+          <span className="text-[14px] font-normal uppercase tracking-[0.2em] leading-none mb-2">
             We are Seeking for a job
           </span>
           <div className="flex flex-col items-center -space-y-3 animate-bounce">
@@ -119,9 +118,9 @@ export default function HomePage() {
                 <span className="font-bold text-[#00004d] text-[8px] uppercase">{seeker.city}</span>
               </div>
 
-              <button className="absolute bottom-2 right-3 bg-[#00004d] text-white px-2.5 py-1 rounded-full text-[8px] font-black shadow-sm active:scale-95">
-                Visit my profile
-              </button>
+              <button className="absolute bottom-2 right-3 bg-[#00004d] text-white px-3 py-1.5 rounded-full text-[10px] font-normal shadow-sm active:scale-95">
+             Visit my profile
+             </button>
             </div>
           ))}
         </div>

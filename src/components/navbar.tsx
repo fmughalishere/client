@@ -96,14 +96,14 @@ const Navbar = () => {
       <div className="bg-[#00004d] text-white py-3 px-2 flex justify-around items-center w-full">
         <Link href="/" className="flex items-center gap-1 hover:opacity-80 active:scale-95 transition-all">
           <AiFillHome size={18} className="shrink-0 text-white" />
-          <span className="text-[10px] sm:text-[13px] font-bold whitespace-nowrap tracking-tight">
+          <span className="text-[10px] sm:text-[13px] whitespace-nowrap tracking-tight">
             Home
           </span>
         </Link>
 
         <Link href="/dashboard" className="flex items-center gap-1 hover:opacity-80 active:scale-95 transition-all">
           <FaUserGear size={18} className="shrink-0 text-white" />
-          <span className="text-[10px] sm:text-[13px] font-bold whitespace-nowrap tracking-tight">
+          <span className="text-[10px] sm:text-[13px] whitespace-nowrap tracking-tight">
             My Control Panel
           </span>
         </Link>
@@ -113,7 +113,7 @@ const Navbar = () => {
           className="flex items-center gap-1 hover:opacity-80 active:scale-95 transition-all outline-none"
         >
           <PlusCircle size={18} className="shrink-0 text-white" />
-          <span className="text-[10px] sm:text-[13px] font-bold whitespace-nowrap tracking-tight">
+          <span className="text-[10px] sm:text-[13px] whitespace-nowrap tracking-tight">
             Add to Home Screen
           </span>
         </button>
