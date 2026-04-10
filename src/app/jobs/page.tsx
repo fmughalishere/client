@@ -1,30 +1,18 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { MapPin, Globe, ChevronDown } from "lucide-react";
-import { FaMale, FaFemale } from "react-icons/fa";
-import { FaUser } from "react-icons/fa";
+import { MapPin, Globe, ChevronDown, Loader2 } from "lucide-react";
+import { FaMale, FaFemale, FaUser } from "react-icons/fa";
+import SuccessModal from "../../components/SuccessModal"; 
+
 export default function JobApplicationPage() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showLoginPopup, setShowLoginPopup] = useState(false);
-  const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
+  const [submitting, setSubmitting] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
-  if (!isLoggedIn) {
-    setShowLoginPopup(true);
-    return;
-  }
-
-  if (!formData.agreeTerms) {
-    alert("Please agree to Privacy Policy and Terms & Conditions before submitting.");
-    return;
-  }
-
-  console.log("Form Data Submitted:", formData);
-};
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -43,190 +31,76 @@ export default function JobApplicationPage() {
 
   const [selectedIcon, setSelectedIcon] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const categoryRef = useRef<HTMLSelectElement>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    if (!formData.agreeTerms) {
+      alert("Please agree to Privacy Policy and Terms & Conditions.");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      const response = await fetch("http://localhost:5000/api/applications/apply", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        router.push("/login");
+        return;
+      }
+
+      if (response.status === 403) {
+        alert("Access Denied: Only Job Seekers can apply.");
+        return;
+      }
+
+      if (response.ok) {
+        setShowModal(true); 
+      } else {
+        const result = await response.json();
+        alert(result.message || "Error submitting form");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Server error, please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const cities = ["Karachi", "Lahore", "RWP/ISB", "Peshawar", "Quetta", "Multan", "Faisalabad"];
-  const educationLevels = ["Matric","Intermediate","Bachelor's","Master's","M.Phil / PhD","Other"];
-  const maritalLevels = ["Married","Single","Divorced","Widowed"];
-  const genderLevels = ["Male","Female","Other"];
-  const jobType = ["Full-Time","Part-Time","One-Day Task"];
-  const categories = [{
-options: [
-"House Maid",
-"Full Time Maid",
-"Part Time Maid",
-"Live-in Maid",
-"Nanny",
-"Child Caretaker",
-"Elderly Caretaker",
-"Patient Care Attendant",
-"Home Nurse",
-"Cook",
-"Home Chef",
-"Assistant Cook",
-"Car Driver",
-"Truck Driver",
-"Bus Driver",
-"Personal Driver",
-"House Driver",
-"Office Driver",
-"Gardener",
-"Mali",
-"Security Guard",
-"Home Security Guard",
-"Gate Keeper",
-"Watchman",
-"Cleaner",
-"House Cleaner",
-"Office Cleaner",
-"Janitor",
-"Laundry Worker",
-"Ironing Man (Press Wala)",
-"Dish Washer",
-"Kitchen Helper",
-"Peon",
-"Office Boy",
-"House Boy",
-"Care Taker (General)",
-"Building Caretaker",
-"Helper",
-"General Helper",
-"Delivery Rider",
-"Courier Boy",
-"Receptionist",
-"Customer Care Taker",
-"Tractor Driver",
-"Beautition",
-"Barber",
-"Salesman",
-"Mid-Wife",
-"LHV",
-"Lab Technicain",
-"OTA",
-"Physiotherapist",
-"Nutritionist",
-"Coach",
-"Waiter",
-"Trainer",
-"Pilot",
-"Mobile Technician",
-"TV Technician",
-"Laptop Technician",
-"Motorcycle Mechanic",
-"Car Mechanic",
-"Car Painter",
-"Plumber",
-"Carpentar",
-"Phone Operator",
-"Air-Hostess",
-"Steward",
-"Translator",
-"Typist",
-]
-},
-
-{
-options: ["Administrator", "Office Manager", "Executive Assistant", "Operations Manager"]
-},
-{
-options: ["Farmer", "Livestock Farmer", "Agricultural Engineer", "Agronomist"]
-},
-{
-options: ["Graphic Designer", "Painter", "Illustrator", "Fashion Designer", "Animator"]
-},
-{
-options: ["Mechanical Engineer", "Auto Mechanic", "Technician", "Vehicle Inspector"]
-},
-{
-options: ["Accountant", "Banker", "Auditor", "Financial Analyst"]
-},
-{
-options: ["Business Analyst", "Business Development Manager", "Consultant"]
-},
-{
-options: ["Operations Manager", "Strategy Consultant", "Project Manager"]
-},
-{
-options: ["Customer Support Executive", "Call Center Agent", "Client Relationship Manager"]
-},
-{
-options: ["Civil Engineer", "Structural Engineer", "Site Supervisor"]
-},
-{
-options: ["Data Analyst", "Data Scientist", "Machine Learning Engineer", "AI Researcher"]
-},
-{
-options: ["SEO Specialist", "Content Creator", "Social Media Manager", "Digital Marketer"]
-},
-{
-options: ["Teacher", "Lecturer", "Tutor", "Researcher", "Trainer"]
-},
-{
-options: ["E-commerce Manager", "Online Store Owner", "Marketplace Seller"]
-},
-{
-options: ["Electrical Engineer", "Electronics Technician", "Automation Engineer"]
-},
-{
-options: ["Doctor", "Nurse", "Pharmacist", "Lab Technician", "Surgeon"]
-},
-{
-options: ["HR Manager", "Recruiter", "HR Assistant", "Talent Acquisition Specialist"]
-},
-{
-options: ["Software Developer", "IT Support", "System Administrator", "Network Engineer"]
-},
-{
-options: ["Web Developer", "Frontend Developer", "Backend Developer", "Fullstack Developer"]
-},
-{
-options: ["Lawyer", "Judge", "Police Officer", "Paralegal"]
-},
-{
-options: ["Logistics Manager", "Warehouse Manager", "Supply Chain Analyst", "Driver"]
-},
-{
-options: ["Sales Executive", "Marketing Manager", "Brand Manager", "Business Development Executive"]
-},
-{
-options: ["Actor", "Musician", "Photographer", "Director", "Content Creator"]
-},
-{
-options: ["Pharmacist", "Lab Scientist", "Biotech Researcher", "Clinical Researcher"]
-},
-{
-options: ["Project Manager", "Program Manager", "Project Coordinator"]
-},
-{
-options: ["Researcher", "Lab Scientist", "R&D Engineer"]
-},
-{
-options: ["Biologist", "Chemist", "Physicist", "Lab Technician"]
-},
-{
-options: ["Security Guard", "Security Supervisor", "Investigator"]
-},
-{
-options: ["Social Worker", "NGO Coordinator", "Field Officer"]
-},
-{
-options: ["Telecom Engineer", "Network Technician", "Technical Support"]
-},
-{
-options: ["Travel Agent", "Tour Guide", "Visa Officer", "Ticketing Officer"]
-},
-{
-options: ["Veterinarian", "Animal Caretaker", "Pet Groomer"]
-},
-{
-options: ["Freelancer", "Content Writer", "Designer", "Online Consultant"]
-},
-{
-options: ["Other"]
-},
-];
-
-
-  const categoryRef = useRef<HTMLSelectElement>(null);
+  const educationLevels = ["Matric", "Intermediate", "Bachelor's", "Master's", "M.Phil / PhD", "Other"];
+  const maritalLevels = ["Married", "Single", "Divorced", "Widowed"];
+  const genderLevels = ["Male", "Female", "Other"];
+  const jobType = ["Full-Time", "Part-Time", "One-Day Task"];
+  
+  const categories = [
+    { options: ["House Maid", "Full Time Maid", "Part Time Maid", "Live-in Maid", "Nanny", "Child Caretaker", "Elderly Caretaker", "Patient Care Attendant", "Home Nurse", "Cook", "Home Chef", "Assistant Cook", "Car Driver", "Truck Driver", "Bus Driver", "Personal Driver", "House Driver", "Office Driver", "Gardener", "Mali", "Security Guard", "Home Security Guard", "Gate Keeper", "Watchman", "Cleaner", "House Cleaner", "Office Cleaner", "Janitor", "Laundry Worker", "Ironing Man (Press Wala)", "Dish Washer", "Kitchen Helper", "Peon", "Office Boy", "House Boy", "Care Taker (General)", "Building Caretaker", "Helper", "General Helper", "Delivery Rider", "Courier Boy", "Receptionist", "Customer Care Taker", "Tractor Driver", "Beautition", "Barber", "Salesman", "Mid-Wife", "LHV", "Lab Technicain", "OTA", "Physiotherapist", "Nutritionist", "Coach", "Waiter", "Trainer", "Pilot", "Mobile Technician", "TV Technician", "Laptop Technician", "Motorcycle Mechanic", "Car Mechanic", "Car Painter", "Plumber", "Carpentar", "Phone Operator", "Air-Hostess", "Steward", "Translator", "Typist"] },
+    { options: ["Administrator", "Office Manager", "Executive Assistant", "Operations Manager", "Farmer", "Livestock Farmer", "Agricultural Engineer", "Agronomist", "Graphic Designer", "Painter", "Illustrator", "Fashion Designer", "Animator", "Mechanical Engineer", "Auto Mechanic", "Technician", "Vehicle Inspector", "Accountant", "Banker", "Auditor", "Financial Analyst", "Business Analyst", "Business Development Manager", "Consultant", "Operations Manager", "Strategy Consultant", "Project Manager", "Customer Support Executive", "Call Center Agent", "Client Relationship Manager", "Civil Engineer", "Structural Engineer", "Site Supervisor", "Data Analyst", "Data Scientist", "Machine Learning Engineer", "AI Researcher", "SEO Specialist", "Content Creator", "Social Media Manager", "Digital Marketer", "Teacher", "Lecturer", "Tutor", "Researcher", "Trainer", "E-commerce Manager", "Online Store Owner", "Marketplace Seller", "Electrical Engineer", "Electronics Technician", "Automation Engineer", "Doctor", "Nurse", "Pharmacist", "Lab Technician", "Surgeon", "HR Manager", "Recruiter", "HR Assistant", "Talent Acquisition Specialist", "Software Developer", "IT Support", "System Administrator", "Network Engineer", "Web Developer", "Frontend Developer", "Backend Developer", "Fullstack Developer", "Lawyer", "Judge", "Police Officer", "Paralegal", "Logistics Manager", "Warehouse Manager", "Supply Chain Analyst", "Driver", "Sales Executive", "Marketing Manager", "Brand Manager", "Business Development Executive", "Actor", "Musician", "Photographer", "Director", "Content Creator", "Pharmacist", "Lab Scientist", "Biotech Researcher", "Clinical Researcher", "Project Manager", "Program Manager", "Project Coordinator", "Researcher", "Lab Scientist", "R&D Engineer", "Biologist", "Chemist", "Physicist", "Lab Technician", "Security Guard", "Security Supervisor", "Investigator", "Social Worker", "NGO Coordinator", "Field Officer", "Telecom Engineer", "Network Technician", "Technical Support", "Travel Agent", "Tour Guide", "Visa Officer", "Ticketing Officer", "Veterinarian", "Animal Caretaker", "Pet Groomer", "Freelancer", "Content Writer", "Designer", "Online Consultant", "Other"] }
+  ];
 
   const handleJumpByLetter = (letter: string) => {
     if (!categoryRef.current) return;
@@ -252,7 +126,7 @@ options: ["Other"]
 
   const handleIconSelect = (icon: "male" | "female") => {
     setSelectedIcon(icon);
-    setFormData({ ...formData, image: "" });
+    setFormData({ ...formData, image: icon });
   };
 
   return (
@@ -280,6 +154,7 @@ options: ["Other"]
                 <Globe size={18} /> Pakistan (Fixed)
               </div>
             </div>
+
             <div className="space-y-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Select City</label>
               <div className="relative">
@@ -290,11 +165,12 @@ options: ["Other"]
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                 >
                   <option value="">Choose City</option>
-                  {cities.map(c => <option key={c}>{c}</option>)}
+                  {cities.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
                 <ChevronDown className="absolute right-5 top-4 text-gray-300" size={18} />
               </div>
             </div>
+
             <div className="md:col-span-2 flex flex-col gap-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Jump to Category (by first letter)</label>
               <input
@@ -305,10 +181,12 @@ options: ["Other"]
                 onChange={(e) => handleJumpByLetter(e.target.value)}
               />
             </div>
+
             <div className="md:col-span-2 space-y-2">
               <label className="text-[10px] font-black text-gray-400 uppercase ml-4">Job Category</label>
               <select
                 ref={categoryRef}
+                required
                 className="w-full bg-slate-50 p-4 rounded-full font-bold text-[#00004d] text-sm border border-gray-100 outline-none focus:ring-2 focus:ring-[#0000ff]"
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
               >
@@ -317,107 +195,116 @@ options: ["Other"]
                   .map(opt => (<option key={opt} value={opt}>{opt}</option>))}
               </select>
             </div>
+
             <select
+              required
               className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d] md:col-span-2"
               onChange={(e) => setFormData({ ...formData, jobtype: e.target.value })}
             >
-              <option>Job Type</option>
-              {jobType.map(e => <option key={e}>{e}</option>)}
+              <option value="">Job Type</option>
+              {jobType.map(e => <option key={e} value={e}>{e}</option>)}
             </select>
-            <input type="text" placeholder="Full Name" className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d]" onChange={(e) => setFormData({ ...formData, fullName: e.target.value })} />
-            <input type="email" placeholder="Email" className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d]" onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
-            <input type="tel" placeholder="Phone" className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d]" onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
+
+            <input type="text" required placeholder="Full Name" className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d]" onChange={(e) => setFormData({ ...formData, fullName: e.target.value })} />
+            <input type="email" required placeholder="Email" className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d]" onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+            <input type="tel" required placeholder="Phone" className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d]" onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
             <input type="text" placeholder="Age" className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d]" onChange={(e) => setFormData({ ...formData, age: e.target.value })} />
-            <select className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d]" onChange={(e) => setFormData({ ...formData, gender: e.target.value })}>
-              <option>Select Gender</option>
-              {genderLevels.map(e => <option key={e}>{e}</option>)}
+            
+            <select required className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d]" onChange={(e) => setFormData({ ...formData, gender: e.target.value })}>
+              <option value="">Select Gender</option>
+              {genderLevels.map(e => <option key={e} value={e}>{e}</option>)}
             </select>
 
             <select className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d]" onChange={(e) => setFormData({ ...formData, maritalStatus: e.target.value })}>
-              <option>Select Marital Status</option>
-              {maritalLevels.map(e => <option key={e}>{e}</option>)}
+              <option value="">Select Marital Status</option>
+              {maritalLevels.map(e => <option key={e} value={e}>{e}</option>)}
             </select>
 
             <select className="p-4 rounded-full text-sm bg-slate-50 text-[#00004d]" onChange={(e) => setFormData({ ...formData, education: e.target.value })}>
-              <option>Select Education</option>
-              {educationLevels.map(e => <option key={e}>{e}</option>)}
+              <option value="">Select Education</option>
+              {educationLevels.map(e => <option key={e} value={e}>{e}</option>)}
             </select>
-            <textarea placeholder="Add Experience 1" className="md:col-span-2 p-4 rounded-3xl text-sm bg-slate-50 text-[#00004d] placeholder:text-[#00004d]" onChange={(e) => setFormData({ ...formData, experience: e.target.value })} />
-            <textarea placeholder="Add Experience 2" className="md:col-span-2 p-4 rounded-3xl text-sm bg-slate-50 text-[#00004d] placeholder:text-[#00004d]" onChange={(e) => setFormData({ ...formData, experience: e.target.value })} />
-            <textarea placeholder="Add Experience 3" className="md:col-span-2 p-4 rounded-3xl text-sm bg-slate-50 text-[#00004d] placeholder:text-[#00004d]" onChange={(e) => setFormData({ ...formData, experience: e.target.value })} />
+
+            <textarea placeholder="Tell us about your experience..." className="md:col-span-2 p-6 rounded-3xl text-sm bg-slate-50 text-[#00004d]" onChange={(e) => setFormData({ ...formData, experience: e.target.value })} />
+          </div>
+
+          <div className="md:col-span-2 flex flex-col gap-4 mt-8 bg-slate-50 p-6 rounded-[30px]">
+            <label className="font-bold text-gray-600 text-sm ml-2">Profile Picture</label>
+            <div className="flex items-center gap-6">
+              <div className="relative">
+                {formData.image && formData.image.startsWith("data:") ? (
+                  <img src={formData.image} className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md" />
+                ) : selectedIcon ? (
+                  <div className={`w-24 h-24 rounded-full border-4 border-white shadow-md flex items-center justify-center text-4xl ${selectedIcon === "male" ? "bg-blue-100 text-blue-500" : "bg-pink-100 text-pink-500"}`}>
+                    {selectedIcon === "male" ? <FaMale /> : <FaFemale />}
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 rounded-full border-4 border-white bg-gray-200 shadow-md flex items-center justify-center text-gray-400 text-4xl">
+                    <FaUser />
+                  </div>
+                )}
               </div>
-       <div className="md:col-span-2 flex flex-col gap-4 mt-4">
-     <label className="font-bold text-gray-600 text-sm">Profile Picture</label>
-  
-  <div className="flex items-center gap-4">
-    {formData.image ? (
-      <img src={formData.image} className="w-20 h-20 rounded-full object-cover border" />
-    ) : selectedIcon ? (
-      <div className="w-20 h-20 rounded-full border flex items-center justify-center text-2xl font-bold bg-gray-200">
-        {selectedIcon === "male" ? <FaMale /> : <FaFemale />}
-      </div>
-    ) : (
-      <div className="w-24 h-24 rounded-full border flex items-center justify-center text-gray-400 text-4xl">
-  <FaUser />
-</div>
-    )}
 
-    <button type="button" className="bg-blue-500 text-white py-2 px-4 rounded" onClick={() => fileInputRef.current?.click()}>Upload Image</button>
-    <input type="file" accept="image/*" ref={fileInputRef} className="hidden" onChange={handleImageChange} />
-  </div>
+              <div className="flex flex-col gap-2">
+                <button type="button" className="bg-[#0000ff] text-white py-2 px-6 rounded-full text-xs font-black uppercase tracking-wider" onClick={() => fileInputRef.current?.click()}>
+                  Upload Photo
+                </button>
+                <input type="file" accept="image/*" ref={fileInputRef} className="hidden" onChange={handleImageChange} />
+              </div>
+            </div>
 
-  Or Select Icon<div className="flex gap-4">
-    <label className="flex flex-col items-center cursor-pointer">
-      <input type="radio" name="icon" className="hidden" checked={selectedIcon === "male"} onChange={() => handleIconSelect("male")} />
-      <div className={`w-16 h-16 rounded-full border flex items-center justify-center text-2xl ${selectedIcon === "male" ? "bg-blue-200" : "bg-gray-100"}`}>
-        <FaMale />
-      </div>
-      <span className="text-sm mt-1">Male</span>
-    </label>
+            <div className="mt-4">
+              <span className="text-[10px] font-black text-gray-400 uppercase ml-2">Or Use Default Icon</span>
+              <div className="flex gap-4 mt-2">
+                <button type="button" onClick={() => handleIconSelect("male")} className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all ${selectedIcon === "male" ? "bg-blue-500 text-white border-blue-500" : "bg-white text-gray-400 border-gray-100"}`}>
+                  <FaMale /> <span className="text-xs font-bold">Male</span>
+                </button>
+                <button type="button" onClick={() => handleIconSelect("female")} className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all ${selectedIcon === "female" ? "bg-pink-500 text-white border-pink-500" : "bg-white text-gray-400 border-gray-100"}`}>
+                  <FaFemale /> <span className="text-xs font-bold">Female</span>
+                </button>
+              </div>
+            </div>
+          </div>
 
-    <label className="flex flex-col items-center cursor-pointer">
-      <input type="radio" name="icon" className="hidden" checked={selectedIcon === "female"} onChange={() => handleIconSelect("female")} />
-      <div className={`w-16 h-16 rounded-full border flex items-center justify-center text-2xl ${selectedIcon === "female" ? "bg-pink-200" : "bg-gray-100"}`}>
-        <FaFemale />
-      </div>
-      <span className="text-sm mt-1">Female</span>
-    </label>
-  </div>
-</div>
-<div className="md:col-span-2 mt-4 flex items-start gap-2">
-  <input
-    type="checkbox"
-    id="privacy"
-    className="mt-1"
-    checked={formData.agreeTerms || false}
-    onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })}
-  />
-  <label htmlFor="privacy" className="text-sm text-gray-600">
-    I have read and agree to the{" "}
-    <a
-      href="/privacy-policy"
-      target="_blank"
-      className="text-blue-500 underline"
-    >
-      Privacy Policy
-    </a>{" "}
-    and{" "}
-    <a
-      href="/terms-and-conditions"
-      target="_blank"
-      className="text-blue-500 underline"
-    >
-      Terms & Conditions
-    </a>.
-  </label>
-</div>
+          <div className="md:col-span-2 mt-8 flex items-start gap-3 px-2">
+            <input
+              type="checkbox"
+              id="privacy"
+              className="mt-1 w-4 h-4 accent-[#0000ff]"
+              checked={formData.agreeTerms}
+              onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })}
+            />
+            <label htmlFor="privacy" className="text-xs font-bold text-gray-500 leading-relaxed">
+              I have read and agree to the Privacy Policy and Terms.
+            </label>
+          </div>
+
           <div className="mt-12 text-center">
-            <motion.button type="submit" className="w-full bg-[#00004d] text-white py-6 rounded-full font-black text-lg">
-              Submit Application
+            <motion.button 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              disabled={submitting}
+              type="submit" 
+              className="w-full bg-[#00004d] text-white py-6 rounded-full font-black text-lg shadow-2xl shadow-blue-900/20 flex items-center justify-center gap-3 disabled:opacity-70"
+            >
+              {submitting ? (
+                <>
+                  <Loader2 className="animate-spin" /> Submitting...
+                </>
+              ) : "Submit Application"}
             </motion.button>
           </div>
         </form>
       </div>
+      <SuccessModal 
+        isOpen={showModal} 
+        onClose={() => {
+            setShowModal(false);
+            router.push("/dashboard/jobseeker");
+        }}
+        title="Application Submitted!"
+        message="Your application has been received. Your dashboard stats have been updated."
+      />
     </main>
   );
 }
