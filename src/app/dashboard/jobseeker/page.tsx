@@ -21,7 +21,7 @@ export default function JobSeekerDashboard() {
       if (!token) return router.push("/login");
 
       try {
-        const res = await fetch("http://localhost:5000/api/applications/jobseeker-stats", {
+        const res = await fetch("https://easyjobspk.onrender.com/api/applications/jobseeker-stats", {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         

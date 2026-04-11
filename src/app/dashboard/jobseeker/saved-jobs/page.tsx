@@ -11,7 +11,7 @@ export default function SavedJobs() {
     const fetchSavedJobs = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:5000/api/users/saved-jobs", {
+        const res = await fetch("https://easyjobspk.onrender.com/api/saved-jobs", {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();

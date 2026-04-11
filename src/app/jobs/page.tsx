@@ -57,7 +57,7 @@ export default function JobApplicationPage() {
 
     try {
       setSubmitting(true);
-      const response = await fetch("http://localhost:5000/api/applications/apply", {
+      const response = await fetch("https://easyjobspk.onrender.com/api/applications/apply", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

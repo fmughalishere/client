@@ -10,7 +10,7 @@ export default function JobSeekerSettings() {
   useEffect(() => {
     const fetchCurrentData = async () => {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:5000/api/users/profile", {
+        const res = await fetch("https://easyjobspk.onrender.com/api/users/profile", {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -29,7 +29,7 @@ export default function JobSeekerSettings() {
     setLoading(true);
     try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:5000/api/users/update-profile", {
+        const res = await fetch("https://easyjobspk.onrender.com/api/users/update-profile", {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify(formData)

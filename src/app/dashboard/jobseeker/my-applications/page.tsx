@@ -11,7 +11,7 @@ export default function MyApplications() {
     const fetchApps = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:5000/api/applications/my-applications", {
+        const res = await fetch("https://easyjobspk.onrender.com/api/applications/my-applications", {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();

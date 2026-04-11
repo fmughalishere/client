@@ -18,7 +18,7 @@ export default function CitiesPage() {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/cities");
+        const response = await fetch("https://easyjobspk.onrender.com/api/cities");
         const data = await response.json();
         setCities(data);
       } catch (error) {
