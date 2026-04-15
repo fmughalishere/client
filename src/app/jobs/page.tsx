@@ -83,7 +83,7 @@ export default function MobileResponsiveJobForm() {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch("https://easyjobspk.render.com/api/applications", {
+      const res = await fetch("https://easyjobspk.onrender.com/api/applications", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
