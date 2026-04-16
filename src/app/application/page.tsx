@@ -22,12 +22,6 @@ export default function MobileResponsiveJobForm() {
     dob: "",
     gender: "Male",
     city: "",
-    email: "",
-    emailPrivacy: "Private",
-    phone: "+92 ",
-    phonePrivacy: "Private",
-    whatsapp: "+92 ",
-    whatsappPrivacy: "Private",
     image: "",
     jobtype: "Full-Time",
     category: "",
@@ -131,7 +125,6 @@ export default function MobileResponsiveJobForm() {
 
       <div className="max-w-4xl mx-auto -mt-12 md:-mt-16 px-4">
         <div className="bg-white rounded-[35px] md:rounded-[45px] shadow-xl overflow-hidden border border-white">
-          {/* onSubmit function add ki */}
           <form onSubmit={handleSubmit} className="p-6 md:p-14 space-y-12 md:space-y-20">
               <section className="flex flex-col items-center gap-6">
               <div className="relative">
@@ -201,37 +194,6 @@ export default function MobileResponsiveJobForm() {
                     {cities.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
-              </div>
-            </section>
-            <section className="space-y-6">
-              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3">
-                <h2 className="text-[#00004d] font-black text-lg uppercase tracking-wider">Contact Info</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[
-                  { label: "Phone Number", field: "phone", privacy: "phonePrivacy", name: "mob_p" },
-                  { label: "Email Address", field: "email", privacy: "emailPrivacy", name: "mob_e" },
-                  { label: "WhatsApp No", field: "whatsapp", privacy: "whatsappPrivacy", name: "mob_w" }
-                ].map((item) => (
-                  <div key={item.label} className="bg-white border border-gray-100 p-5 rounded-3xl shadow-sm flex flex-col items-center">
-                    <label className="text-[9px] font-black text-gray-400 uppercase mb-3">{item.label}</label>
-                    <input 
-                      required={item.field !== 'whatsapp'}
-                      value={(formData as any)[item.field]}
-                      placeholder={item.field === 'email' ? 'abc@example.com' : '+92 300 00000000'}
-                      onChange={(e) => item.field === 'email' ? handleChange(e) : handlePhoneChange(e, item.field)}
-                      name={item.field}
-                      className="w-full bg-[#f8fafc] rounded-xl p-3 text-sm mb-4 outline-none text-center font-bold text-[#00004d]" 
-                    />
-                    <div className="flex gap-5 border-t border-gray-50 pt-3 w-full justify-center">
-                       {["Public", "Private"].map(p => (
-                         <label key={p} className="flex items-center gap-1.5 text-[9px] font-black text-gray-400 uppercase cursor-pointer">
-                           <input type="radio" name={item.name} checked={(formData as any)[item.privacy] === p} onChange={() => setFormData({...formData, [item.privacy]: p})} className="accent-[#00004d]" /> {p}
-                         </label>
-                       ))}
-                    </div>
-                  </div>
-                ))}
               </div>
             </section>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
