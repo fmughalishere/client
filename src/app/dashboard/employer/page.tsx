@@ -158,11 +158,11 @@ export default function EmployerDashboard() {
                         >
                             <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-50 rounded-xl flex items-center justify-center text-[#1e3a8a] font-bold text-lg">
-                                    {app.user?.name?.substring(0,1)}
+                                    {app.applicant?.name?.substring(0,1)}
                                 </div>
                                 <div>
                                     <h4 className="font-black text-[#1e3a8a] text-sm md:text-base leading-tight">
-                                        {app.user?.name}
+                                        {app.applicant?.name}
                                     </h4>
                                     <p className="text-[10px] md:text-xs font-bold text-gray-400 mt-1 uppercase tracking-tighter">
                                         Applied for: <span className="text-[#1e3a8a]">{app.job?.title}</span> • {new Date(app.createdAt).toLocaleDateString()}

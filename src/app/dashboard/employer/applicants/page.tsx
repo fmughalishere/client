@@ -1,10 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Loader2, Mail, Briefcase, CheckCircle, XCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function ApplicantsPage() {
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   const fetchApplicants = async () => {
     const token = localStorage.getItem("token");
@@ -44,8 +46,10 @@ export default function ApplicantsPage() {
       
       <div className="grid gap-4">
         {applicants.length > 0 ? applicants.map((app: any) => (
-          <div key={app._id} className="bg-white p-6 rounded-3xl border border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-4">
+        <div 
+        key={app._id} 
+        onClick={() => router.push(`/dashboard/employer/applicants/${app._id}`)}
+        className="bg-white p-6 rounded-3xl border border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 cursor-pointer hover:shadow-md transition-all">            <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-blue-50 text-[#1e3a8a] rounded-2xl flex items-center justify-center font-bold text-xl">
                 {app.user?.name?.charAt(0)}
               </div>

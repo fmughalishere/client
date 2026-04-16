@@ -24,7 +24,7 @@ export default function HomePage() {
   ];
 
   const quickActions = [
-    { label: "Apply for a Job", icon: <Briefcase size={18} />, href: "/jobs" },
+    { label: "Apply for a Job", icon: <Briefcase size={18} />, href: "/application" },
     { label: "Post a Job", icon: <PlusCircle size={18} />, href: "/dashboard/employer" },
     { label: "Job Seekers", icon: <Users size={18} />, href: "/dashboard/jobseeker" },
     { label: "Job Offers", icon: <ClipboardList size={18} />, href: "/jobs" },
