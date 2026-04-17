@@ -22,6 +22,7 @@ export default function ApplicantDetail() {
   const [applicant, setApplicant] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [offering, setOffering] = useState(false);
+
   useEffect(() => {
     const fetchApplicant = async () => {
       const token = localStorage.getItem("token");
@@ -50,7 +51,7 @@ export default function ApplicantDetail() {
 
     try {
       const res = await fetch(
-        `https://easyjobspk.onrender.com/api/applications/${id}`,
+        `https://easyjobspk.onrender.com/api/applications/status/${id}`,
         {
           method: "PUT",
           headers: {
@@ -60,12 +61,12 @@ export default function ApplicantDetail() {
           body: JSON.stringify({ status: "Offered" }), 
         }
       );
-
+      const data = await res.json();
       if (res.ok) {
         alert("Offer sent successfully!");
         setApplicant({ ...applicant, status: "Offered" });
       } else {
-        alert("Failed to send offer. Please try again.");
+        alert(data.message || "Failed to send offer. Please try again.");
       }
     } catch (error) {
       console.error("Error sending offer:", error);
@@ -97,7 +98,7 @@ export default function ApplicantDetail() {
           <div>
             <h1 className="text-2xl font-bold">{applicant.fullName}</h1>
             <p className="text-sm opacity-80">{applicant.email}</p>
-            <span className="text-xs bg-white/20 px-3 py-1 rounded-full">
+            <span className="text-xs bg-white/20 px-3 py-1 rounded-full uppercase">
               Status: {applicant.status}
             </span>
           </div>
@@ -139,14 +140,6 @@ export default function ApplicantDetail() {
             ))}
           </div>
         )}
-        {applicant.achievements && (
-          <div className="bg-white p-6 rounded-2xl shadow">
-            <h2 className="text-lg font-bold text-[#00004d] mb-2">
-              <Award size={16} className="inline mr-2"/> Achievements
-            </h2>
-            <p className="text-sm text-gray-700">{applicant.achievements}</p>
-          </div>
-        )}
 
         {applicant.resume && (
           <div className="bg-white p-6 rounded-2xl shadow text-center">
@@ -173,16 +166,11 @@ export default function ApplicantDetail() {
               disabled={offering}
               className="bg-[#00004d] hover:bg-blue-900 text-white px-10 py-4 rounded-full font-bold shadow-lg flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
             >
-              {offering ? (
-                <Loader2 className="animate-spin w-5 h-5" />
-              ) : (
-                <Send size={20} />
-              )}
+              {offering ? <Loader2 className="animate-spin w-5 h-5" /> : <Send size={20} />}
               {offering ? "Offering..." : "Make an Offer"}
             </button>
           )}
         </div>
-
       </div>
     </div>
   );

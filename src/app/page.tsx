@@ -5,23 +5,22 @@ import Image from "next/image";
 import {
   Search,
   MapPin,
-  Heart,
-  TrendingUp,
   PlusCircle,
   Briefcase,
   Users,
   ClipboardList,
   ChevronDown,
+  User,
+  Loader2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
-  const jobSeekers = [
-    { name: "Qamar Ahmad", category: "Driver", age: "56 years", city: "Lahore", img: "/images/app_logo.png" },
-    { name: "Sajid Khan", category: "Cook", age: "32 years", city: "Karachi", img: "/images/app_logo.png" },
-    { name: "M. Ali", category: "Electrician", age: "28 years", city: "Islamabad", img: "/images/app_logo.png" },
-  ];
+  const [applicants, setApplicants] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   const quickActions = [
     { label: "Apply for a Job", icon: <Briefcase size={18} />, href: "/application" },
@@ -31,12 +30,29 @@ export default function HomePage() {
   ];
 
   const [visitorCount, setVisitorCount] = useState<number>(0);
+
+  const fetchApplicants = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("https://easyjobspk.onrender.com/api/applications/employer/all-applicants", {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setApplicants(data);
+    } catch (error) {
+      console.error("Error fetching data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const socket = io("https://easyjobspk.onrender.com/");
-
     socket.on("visitorCount", (count: number) => {
       setVisitorCount(count);
     });
+
+    fetchApplicants();
 
     return () => {
       socket.disconnect();
@@ -47,29 +63,21 @@ export default function HomePage() {
     <main className="min-h-screen bg-[#fcfcfc] pb-8 font-sans">
       <section className="px-0 pt-0 relative">
         <div className="bg-[#e2f2f5] rounded-b-[35px] pt-12 pb-12 px-6 flex flex-col items-center shadow-sm relative">
-          
           <div className="bg-white text-[#00004d] font-black px-3 py-1 rounded-full tracking-tighter text-[10px] absolute top-2 z-30 shadow-md border border-[#00004d] whitespace-nowrap">
              Real-time Visitors: 300{visitorCount}
           </div>            
-
           <div className="text-center mb-1 mt-6">
             <h1 className="text-[22px] font-black text-[#00004d] leading-none">Hire easy</h1>
             <h1 className="text-[22px] font-black text-[#00004d] leading-tight">Get hired easy</h1>
           </div>
-
           <div className="relative w-full max-w-[250px] mt-4">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
               <Search className="h-4 w-4 text-[#00004d]" strokeWidth={3} />
             </div>
-            <input
-              type="text"
-              placeholder="Search jobs..."
-              className="block w-full pl-9 pr-4 py-2 bg-white border border-[#00004d] rounded-full shadow-md text-xs text-[#00004d] font-bold outline-none"
-            />
+            <input type="text" placeholder="Search jobs..." className="block w-full pl-9 pr-4 py-2 bg-white border border-[#00004d] rounded-full shadow-md text-xs text-[#00004d] font-bold outline-none" />
           </div>
         </div>
       </section>
-
       <section className="max-w-md mx-auto px-6 -mt-6 relative z-20">
         <div className="flex flex-col gap-2 items-center justify-center w-full">
           {quickActions.map((action, i) => (
@@ -91,7 +99,7 @@ export default function HomePage() {
 
       <section className="max-w-[340px] mx-auto px-4 mt-6 mb-4 relative z-30">
         <div className="bg-[#00004d] text-white rounded-2xl flex flex-col items-center justify-center h-24 shadow-sm border border-white">
-          <span className="text-[14px] font-normal uppercase tracking-[0.2em] leading-none mb-2 text-center px-4">
+          <span className="text-[14px] font-black uppercase tracking-[0.2em] leading-none mb-2 text-center px-4">
             We are Seeking for a job
           </span>
           <div className="flex flex-col items-center -space-y-3 animate-bounce">
@@ -103,28 +111,48 @@ export default function HomePage() {
 
       <section className="max-w-[340px] mx-auto px-4 mt-2 mb-10">
         <div className="flex flex-col gap-3">
-          {jobSeekers.map((seeker, idx) => (
-            <div key={idx} className="bg-[#eef8fa] border border-blue-50 rounded-2xl p-2.5 flex items-center gap-3 relative shadow-sm h-24">
-              <div className="w-16 h-16 rounded-full border-2 border-[#00004d] overflow-hidden relative">
-                <Image src={seeker.img} alt={seeker.name} fill className="object-cover" unoptimized />
-              </div>
+          {loading ? (
+             <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#00004d]" /></div>
+          ) : applicants.length > 0 ? (
+            applicants.map((app: any, idx) => (
+              <div key={idx} className="bg-white border border-gray-100 rounded-3xl p-3 flex items-center gap-4 relative shadow-sm h-28">
+                
+                <div className="w-16 h-16 rounded-full border-2 border-[#00004d] overflow-hidden relative bg-gray-50 flex items-center justify-center">
+                  {app.image ? (
+                    <Image 
+                      src={app.image.startsWith('http') ? app.image : `https://easyjobspk.onrender.com/uploads/${app.image}`} 
+                      alt={app.fullName || "User"} 
+                      fill 
+                      className="object-cover" 
+                      unoptimized 
+                    />
+                  ) : (
+                    <User size={30} className="text-gray-300" />
+                  )}
+                </div>
 
-              <div className="flex flex-col overflow-hidden pr-10">
-                <h2 className="text-base font-black text-[#00004d] truncate">{seeker.name}</h2>
-                <p className="text-[11px] font-bold text-gray-700">{seeker.category}</p>
-                <p className="text-[10px] font-bold text-gray-500">{seeker.age}</p>
-              </div>
+                <div className="flex flex-col overflow-hidden flex-1">
+                  <h2 className="text-base font-black text-[#00004d] truncate">{app.fullName || "Anonymous"}</h2>
+                  <p className="text-[12px] font-bold text-gray-700 truncate">{app.job?.title || "Applicant"}</p>
+                  <span className="text-[10px] font-bold text-gray-400 mt-1 uppercase">OFFERED</span>
+                </div>
 
-              <div className="absolute top-2 right-3 flex flex-col items-center">
-                <MapPin size={12} className="text-[#00004d]" strokeWidth={4} />
-                <span className="font-bold text-[#00004d] text-[8px] uppercase">{seeker.city}</span>
-              </div>
+                <div className="absolute top-3 right-4 flex flex-col items-center">
+                  <MapPin size={14} className="text-[#00004d]" strokeWidth={4} />
+                  <span className="font-bold text-[#00004d] text-[9px] uppercase">{app.city || "PK"}</span>
+                </div>
 
-              <button className="absolute bottom-2 right-3 bg-[#00004d] text-white px-3 py-1.5 rounded-full text-[11px] font-normal shadow-sm active:scale-95">
-                Visit my profile
-              </button>
-            </div>
-          ))}
+                <button 
+                  onClick={() => router.push(`/dashboard/employer/applicants/${app._id}`)}
+                  className="absolute bottom-3 right-4 bg-[#00004d] text-white px-4 py-1.5 rounded-full text-[11px] font-bold shadow-sm active:scale-95 transition-transform"
+                >
+                  Visit my profile
+                </button>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-400 font-bold py-10">No applicants found yet.</p>
+          )}
         </div>
       </section>
     </main>
