@@ -90,13 +90,6 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
-      <section className="max-w-6xl mx-auto px-6 mt-6 flex justify-center">
-        <div className="w-full max-w-xs rounded-lg overflow-hidden shadow-sm border border-gray-100">
-          <Image src="/images/IMG (6).jpeg" alt="Promotional Banner" width={1280} height={473} className="object-cover" priority unoptimized />
-        </div>
-      </section>
-
       <section className="max-w-[340px] mx-auto px-4 mt-6 mb-4 relative z-30">
         <div className="bg-[#00004d] text-white rounded-2xl flex flex-col items-center justify-center h-24 shadow-sm border border-white">
           <span className="text-[14px] font-black uppercase tracking-[0.2em] leading-none mb-2 text-center px-4">
