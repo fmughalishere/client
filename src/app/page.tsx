@@ -115,7 +115,7 @@ export default function HomePage() {
              <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#00004d]" /></div>
           ) : applicants.length > 0 ? (
             applicants.map((app: any, idx) => (
-              <div key={idx} className="bg-white border border-gray-100 rounded-3xl p-3 flex items-center gap-4 relative shadow-sm h-28">
+              <div key={idx} className="bg-[#e2f2f5] border border-gray-100 rounded-3xl p-3 flex items-center gap-4 relative shadow-sm h-28">
                 
                 <div className="w-16 h-16 rounded-full border-2 border-[#00004d] overflow-hidden relative bg-gray-50 flex items-center justify-center">
                   {app.image ? (
