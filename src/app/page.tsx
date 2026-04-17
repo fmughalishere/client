@@ -91,8 +91,7 @@ export default function HomePage() {
         </div>
       </section>
       <section className="max-w-[340px] mx-auto px-4 mt-6 mb-4 relative z-30">
-        <div className="bg-[#00004d] text-white rounded-2xl flex flex-col items-center justify-center h-24 shadow-sm border border-white">
-          <span className="text-[14px] font-black uppercase tracking-[0.2em] leading-none mb-2 text-center px-4">
+      <div className="bg-[#00004d] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm border border-white">          <span className="text-[14px] font-black tracking-[0.2em] leading-none mb-2 text-center px-4">
             We are Seeking for a job
           </span>
           <div className="flex flex-col items-center -space-y-3 animate-bounce">
