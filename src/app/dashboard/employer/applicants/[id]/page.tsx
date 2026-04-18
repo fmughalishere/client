@@ -167,7 +167,7 @@ export default function ApplicantDetail() {
               className="bg-[#00004d] hover:bg-blue-900 text-white px-10 py-4 rounded-full font-bold shadow-lg flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
             >
               {offering ? <Loader2 className="animate-spin w-5 h-5" /> : <Send size={20} />}
-              {offering ? "Offering..." : "Make an Offer"}
+              {offering ? "Hiring..." : "Easy Hire"}
             </button>
           )}
         </div>
