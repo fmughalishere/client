@@ -21,6 +21,7 @@ export default function HomePage() {
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const [visitorCount, setVisitorCount] = useState<number>(0);
 
   const quickActions = [
     { label: "Apply for a Job", icon: <Briefcase size={18} />, href: "/application" },
@@ -28,8 +29,6 @@ export default function HomePage() {
     { label: "Job Seekers", icon: <Users size={18} />, href: "/dashboard/jobseeker" },
     { label: "Job Offers", icon: <ClipboardList size={18} />, href: "/jobs" },
   ];
-
-  const [visitorCount, setVisitorCount] = useState<number>(0);
 
   const fetchApplicants = async () => {
     try {
@@ -59,6 +58,34 @@ export default function HomePage() {
     };
   }, []);
 
+  const getExperienceLabel = (app: any) => {
+    if (app.isFresher || !app.experience || app.experience.length === 0) {
+      return "Fresher";
+    }
+
+    let totalMonths = 0;
+    app.experience.forEach((exp: any) => {
+      const start = new Date(exp.startDate);
+      const end = exp.isCurrentJob ? new Date() : new Date(exp.endDate);
+
+      if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+        const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+        totalMonths += Math.max(0, months);
+      }
+    });
+
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
+
+    if (years > 0) {
+      return `${years} Year${years > 1 ? 's' : ''} ${months > 0 ? `${months} Mo` : ''} `;
+    } else if (months > 0) {
+      return `${months} Month${months > 1 ? 's' : ''} `;
+    } else {
+      return "Fresher";
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-8 font-sans">
       <section className="px-0 pt-0 relative">
@@ -78,6 +105,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
       <section className="max-w-md mx-auto px-6 -mt-6 relative z-20">
         <div className="flex flex-col gap-2 items-center justify-center w-full">
           {quickActions.map((action, i) => (
@@ -90,9 +118,11 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-      <section className="max-w-[340px] mx-auto px-4 mt-6 mb-4 relative z-30">
-      <div className="bg-[#00004d] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm border border-white">          <span className="text-[14px] font-black tracking-[0.2em] leading-none mb-2 text-center px-4">
-            We are Seeking for a job
+
+      <section className="max-w-[280px] mx-auto px-4 mt-6 mb-4 relative z-30">
+        <div className="bg-[#00004d] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm border border-white"> 
+          <span className="text-[14px] font-black tracking-[0.2em] leading-none mb-1 text-center px-4">
+            I am seeking for a job
           </span>
           <div className="flex flex-col items-center -space-y-3 animate-bounce">
             <ChevronDown size={20} strokeWidth={4} />
@@ -101,7 +131,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="max-w-[340px] mx-auto px-4 mt-2 mb-10">
+      <section className="max-w-[360px] mx-auto px-4 mt-2 mb-10">
         <div className="flex flex-col gap-3">
           {loading ? (
              <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#00004d]" /></div>
@@ -125,8 +155,11 @@ export default function HomePage() {
 
                 <div className="flex flex-col overflow-hidden flex-1">
                   <h2 className="text-base font-black text-[#00004d] truncate">{app.fullName || "Anonymous"}</h2>
-                  <p className="text-[12px] font-bold text-gray-700 truncate">{app.job?.title || "Applicant"}</p>
-                  <span className="text-[10px] font-bold text-gray-400 mt-1 uppercase">OFFERED</span>
+                  <p className="text-[12px] font-bold text-gray-700 truncate">{app.category || "Applicant"}</p>
+                  
+                  <span className="text-[10px] font-bold text-gray-400 mt-1">
+                    {getExperienceLabel(app)}
+                  </span>
                 </div>
 
                 <div className="absolute top-3 right-4 flex flex-col items-center">
@@ -136,7 +169,7 @@ export default function HomePage() {
 
                 <button 
                   onClick={() => router.push(`/dashboard/employer/applicants/${app._id}`)}
-                  className="absolute bottom-3 right-4 bg-[#00004d] text-white px-4 py-1.5 rounded-full text-[11px] font-bold shadow-sm active:scale-95 transition-transform"
+                  className="absolute bottom-3 right-4 bg-[#00004d] text-white px-2 py-1 rounded-full text-[11px] font-bold shadow-sm active:scale-95 transition-transform"
                 >
                   Visit my profile
                 </button>
