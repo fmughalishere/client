@@ -136,12 +136,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="max-w-[280px] mx-auto px-4 mt-6 mb-4 relative z-30">
-        <div className="bg-[#00004d] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm border border-white"> 
-          <span className="text-[14px] font-black tracking-[0.2em] leading-none mb-1 text-center px-4">
+      <section className="max-w-[360px] mx-auto px-4 mt-6 mb-4 relative z-30">
+        <div className="bg-[#e2f2f5] text-[#00004d] rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm border border-[#00004d]"> 
+          <span className="text-[16px] font-black tracking-[0.2em] leading-none mb-1 text-center px-4">
             I am seeking for a job
           </span>
-          <div className="flex flex-col items-center -space-y-3 animate-bounce">
+          <div className="flex flex-col items-center -space-y-3">
             <ChevronDown size={20} strokeWidth={4} />
             <ChevronDown size={20} strokeWidth={4} className="opacity-40" />
           </div>

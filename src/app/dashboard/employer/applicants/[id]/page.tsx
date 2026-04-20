@@ -99,10 +99,10 @@ export default function ApplicantDetail() {
             />
           </div>
           <div className="min-w-0">
-            <h1 className="text-2xl md:text-4xl font-black uppercase tracking-tight leading-tight truncate">
+            <h1 className="text-2xl md:text-4xl font-black uppercase tracking-[0.1em] leading-tight truncate">
               {applicant.fullName}
             </h1>
-            <p className="text-sm md:text-lg font-bold opacity-80 mt-1 uppercase tracking-wider truncate">
+            <p className="text-sm md:text-lg font-bold opacity-80 mt-1 tracking-[0.1em] truncate">
               {applicant.category}
             </p>
           </div>
@@ -153,10 +153,10 @@ export default function ApplicantDetail() {
         <div className="mt-12 flex justify-center pb-10">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="min-w-[280px] h-20 rounded-full bg-[#00004d] text-white font-black text-xl shadow-2xl flex items-center justify-center gap-4 active:scale-95 transition-all"
+            className="min-w-[280px] h-20 rounded-full bg-[#00004d] text-white font-black text-xl shadow-2xl flex items-center justify-center gap-4 active:scale-95 transition-all tracking-[0.2em]"
           >
             <Send size={24} strokeWidth={3} />
-            <span>EASY HIRE</span>
+            <span>Easy Hire</span>
           </button>
         </div>
       </div>
@@ -165,7 +165,7 @@ export default function ApplicantDetail() {
           <div className="bg-white w-full max-w-lg rounded-[45px] overflow-hidden shadow-2xl relative">
 
             <div className="bg-[#00004d] p-8 text-white flex justify-between items-center">
-              <div><h3 className="text-2xl font-black uppercase tracking-tighter">Submit Offer</h3></div>
+              <div><h3 className="text-2xl font-black tracking-[0.1em]">Submit Offer</h3></div>
               <button onClick={() => setIsModalOpen(false)} className="bg-white/10 p-2 rounded-full hover:bg-white/20"><X size={24} /></button>
             </div>
             <form onSubmit={handleFormSubmit} className="p-8 space-y-6 max-h-[75vh] overflow-y-auto">
@@ -219,7 +219,7 @@ export default function ApplicantDetail() {
                 </div>
               </div>
               <div className="pt-6">
-                <button type="submit" disabled={isSubmitting || isSubmitted} className={`w-full py-5 rounded-[20px] font-black uppercase text-sm flex items-center justify-center gap-3 shadow-xl transition-all ${isSubmitted ? 'bg-green-600 text-white' : 'bg-[#00004d] text-white active:scale-95 hover:bg-[#001a66]'}`}>
+                <button type="submit" disabled={isSubmitting || isSubmitted} className={`w-full py-5 rounded-[20px] font-black tracking-[0.1em] text-sm flex items-center justify-center gap-3 shadow-xl transition-all ${isSubmitted ? 'bg-green-600 text-white' : 'bg-[#00004d] text-white active:scale-95 hover:bg-[#001a66]'}`}>
                   {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : isSubmitted ? <CheckCircle size={20} /> : <Send size={18} />}
                   {isSubmitting ? "Submitting..." : isSubmitted ? "Offer Submitted!" : "Submit Hiring Offer"}
                 </button>
