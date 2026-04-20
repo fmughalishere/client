@@ -91,30 +91,34 @@ export default function ApplicantDetail() {
   return (
     <div className="min-h-screen bg-[#e2f2f5] p-4 md:p-10 pb-24 font-sans">
       <div className="max-w-5xl mx-auto space-y-6">
-      <div className="bg-[#00004d] text-white p-6 md:p-10 rounded-[40px] shadow-lg flex items-center gap-6 overflow-hidden">
-      <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white/20 overflow-hidden bg-gray-200 shadow-xl flex-shrink-0">
-      <img
-      src={applicant.image || "https://via.placeholder.com/150"}
-      className="w-full h-full object-cover"
-      alt="Profile"
-    />
-  </div>
-  <div className="min-w-0">
-    <h1 className="text-2xl md:text-4xl font-black uppercase tracking-tight leading-tight truncate">
-      {applicant.fullName}
-    </h1>
-    <p className="text-sm md:text-lg font-bold opacity-80 mt-1 uppercase tracking-wider truncate">
-      {applicant.category}
-    </p>
-      </div>
+        
+        {/* Profile Header: Image Left, Info Right */}
+        <div className="bg-[#00004d] text-white p-6 md:p-10 rounded-[40px] shadow-lg flex items-center gap-6 overflow-hidden">
+          <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white/20 overflow-hidden bg-gray-200 shadow-xl flex-shrink-0">
+            <img
+              src={applicant.image || "https://via.placeholder.com/150"}
+              className="w-full h-full object-cover"
+              alt="Profile"
+            />
+          </div>
+          <div className="min-w-0">
+            <h1 className="text-2xl md:text-4xl font-black uppercase tracking-tight leading-tight truncate">
+              {applicant.fullName}
+            </h1>
+            <p className="text-sm md:text-lg font-bold opacity-80 mt-1 uppercase tracking-wider truncate">
+              {applicant.category}
+            </p>
+          </div>
         </div>
+
+        {/* Info Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-8 rounded-3xl shadow-sm space-y-5">
                 <h2 className="text-lg font-black text-[#00004d] uppercase tracking-wider flex items-center gap-2 border-b pb-3">
                    <MapPin size={18}/> Basic Info
                 </h2>
                 <div className="grid grid-cols-1 gap-4 text-sm font-bold text-gray-600">
-                  <p className="flex items-center gap-2"><User size={16} className="text-gray-400"/> Gender: {applicant.gender}</p>
+                    <p className="flex items-center gap-2"><User size={16} className="text-gray-400"/> Gender: {applicant.gender}</p>
                     <p className="flex items-center gap-2"><Calendar size={16} className="text-gray-400"/> DOB: {applicant.dob ? new Date(applicant.dob).toLocaleDateString() : "N/A"}</p>
                     <p className="flex items-center gap-2"><MapPin size={16} className="text-gray-400"/> City: {applicant.city}</p>
                     <p className="flex items-center gap-2"><Globe size={16} className="text-gray-400"/> Country: {applicant.country}</p>
@@ -130,6 +134,8 @@ export default function ApplicantDetail() {
                 </div>
             </div>
         </div>
+
+        {/* Experience Section */}
         <div className="bg-white p-8 rounded-3xl shadow-sm space-y-6">
             <h2 className="text-lg font-black text-[#00004d] uppercase tracking-wider flex items-center gap-3 border-b pb-4">
                <Briefcase size={20}/> Work Experiences
@@ -149,6 +155,8 @@ export default function ApplicantDetail() {
                 )}
             </div>
         </div>
+
+        {/* Hire Button */}
         <div className="mt-12 flex justify-center pb-10">
             <button 
               onClick={() => setIsModalOpen(true)}
@@ -159,36 +167,68 @@ export default function ApplicantDetail() {
             </button>
         </div>
       </div>
+
+      {/* --- HIRING MODAL FORM --- */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-          <div className="bg-white w-full max-w-xl rounded-[45px] overflow-hidden shadow-2xl relative">
+          <div className="bg-white w-full max-w-lg rounded-[45px] overflow-hidden shadow-2xl relative">
+            
             <div className="bg-[#00004d] p-8 text-white flex justify-between items-center">
               <div><h2 className="text-2xl font-black uppercase tracking-tighter">Submit Offer</h2></div>
               <button onClick={() => setIsModalOpen(false)} className="bg-white/10 p-2 rounded-full hover:bg-white/20"><X size={24} /></button>
             </div>
-            <form onSubmit={handleFormSubmit} className="p-8 space-y-5 max-h-[75vh] overflow-y-auto">
+
+            <form onSubmit={handleFormSubmit} className="p-8 space-y-6 max-h-[75vh] overflow-y-auto">
+                
+                {/* Logo Upload */}
                 <div className="flex flex-col items-center gap-3 border-b pb-6 mb-2">
                     <div className="w-20 h-20 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden relative">
                         {offerData.companyLogo ? ( <img src={offerData.companyLogo} className="w-full h-full object-cover" /> ) : ( <Building className="text-gray-200" size={30} /> )}
                         <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute inset-0 bg-black/40 text-white flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"><Camera size={18}/></button>
                     </div>
-                    <button type="button" onClick={() => fileInputRef.current?.click()} className="text-[10px] font-black text-[#00004d] uppercase underline">Upload Company Logo</button>
+                    <button type="button" onClick={() => fileInputRef.current?.click()} className="text-[10px] font-black text-[#00004d] uppercase underline tracking-widest">Upload Company Logo</button>
                     <input type="file" ref={fileInputRef} className="hidden" onChange={handleLogoChange} accept="image/*" />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <input required name="employerName" value={offerData.employerName} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-100 text-sm font-bold outline-none" placeholder="Manager Name" />
-                    <input required name="designation" value={offerData.designation} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-100 text-sm font-bold outline-none" placeholder="Designation" />
+                {/* All fields in separate rows (1 column) */}
+                <div className="space-y-4">
+
+                  <div className="space-y-1">
+                        <label className="text-[13px] font-black text-[#00004d] ml-1">Company Name</label>
+                        <input required name="companyName" value={offerData.companyName} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-[#00004d] text-sm font-bold outline-none" placeholder="Organization Name" />
+                    </div>
+
+                    <div className="space-y-1">
+                        <label className="text-[13px] font-black text-[#00004d] ml-1">Contact Person</label>
+                        <input required name="employerName" value={offerData.employerName} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-[#00004d] text-sm font-bold outline-none" placeholder="Enter Full Name" />
+                    </div>
+
+                    <div className="space-y-1">
+                        <label className="text-[13px] font-black text-[#00004d] ml-1">Designation</label>
+                        <input required name="designation" value={offerData.designation} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-[#00004d] text-sm font-bold outline-none" placeholder="e.g. CEO, HR Manager" />
+                    </div>
+
+                    <div className="space-y-1">
+                        <label className="text-[13px] font-black text-[#00004d] ml-1">Official Email</label>
+                        <input type="email" required name="email" value={offerData.email} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-[#00004d] text-sm font-bold outline-none" placeholder="office@company.com" />
+                    </div>
+
+                    <div className="space-y-1">
+                        <label className="text-[13px] font-black text-[#00004d] ml-1">Contact Number</label>
+                        <div className="relative">
+                            <FaWhatsapp className="absolute left-3 top-3.5 text-green-500" size={16}/>
+                            <input required name="whatsapp" value={offerData.whatsapp} onChange={handleInputChange} className="w-full pl-10 pr-4 py-3 bg-gray-50 rounded-xl border border-[#00004d] text-sm font-bold outline-none" placeholder="+92 3xx xxxxxxx" />
+                        </div>
+                    </div>
+
+                    <div className="space-y-1">
+                        <label className="text-[13px] font-black text-[#00004d] ml-1">Interview Date & Time</label>
+                        <input type="datetime-local" required name="interviewDate" value={offerData.interviewDate} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-[#00004d] text-sm font-bold outline-none font-sans" />
+                    </div>
                 </div>
-                <input required name="companyName" value={offerData.companyName} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-100 text-sm font-bold outline-none" placeholder="Company Name" />
-                <div className="grid grid-cols-2 gap-4">
-                    <input type="email" required name="email" value={offerData.email} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-100 text-sm font-bold outline-none" placeholder="Official Email" />
-                    <input required name="whatsapp" value={offerData.whatsapp} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-100 text-sm font-bold outline-none" placeholder="WhatsApp Num" />
-                </div>
-                <input type="datetime-local" required name="interviewDate" value={offerData.interviewDate} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-100 text-sm font-bold outline-none font-sans" />
                 
                 <div className="pt-6">
-                    <button type="submit" disabled={isSubmitting || isSubmitted} className={`w-full py-5 rounded-[20px] font-black uppercase text-sm flex items-center justify-center gap-3 shadow-xl ${isSubmitted ? 'bg-green-600 text-white' : 'bg-[#00004d] text-white active:scale-95'}`}>
+                    <button type="submit" disabled={isSubmitting || isSubmitted} className={`w-full py-5 rounded-[20px] font-black uppercase text-sm flex items-center justify-center gap-3 shadow-xl transition-all ${isSubmitted ? 'bg-green-600 text-white' : 'bg-[#00004d] text-white active:scale-95 hover:bg-[#001a66]'}`}>
                         {isSubmitting ? <Loader2 className="animate-spin" size={20}/> : isSubmitted ? <CheckCircle size={20}/> : <Send size={18}/>}
                         {isSubmitting ? "Submitting..." : isSubmitted ? "Offer Submitted!" : "Submit Hiring Offer"}
                     </button>
