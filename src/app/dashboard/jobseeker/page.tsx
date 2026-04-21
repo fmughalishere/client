@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   User, Briefcase, Bookmark, Settings, 
   CheckCircle2, FileText, ChevronRight,
-  Search, Loader2, LayoutDashboard, LogOut, Bell, Sparkles,
+  Search, Loader2, LayoutDashboard, LogOut, Bell,
   PartyPopper, Phone, Mail, Building2
 } from "lucide-react";
 import Link from "next/link";
@@ -43,144 +43,173 @@ export default function JobSeekerDashboard() {
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
-      <div className="flex flex-col items-center gap-4">
-        <Loader2 className="animate-spin text-[#1e3a8a]" size={45} />
-        <p className="text-[#1e3a8a] font-bold text-sm animate-pulse">Syncing your portal...</p>
-      </div>
+      <Loader2 className="animate-spin text-[#1e3a8a]" size={40} />
     </div>
   );
-
-  const jobOffers = data?.recentApplications?.filter((app: any) => app.status === "Offered") || [];
 
   const navItems = [
     { name: 'Overview', path: '/dashboard/jobseeker', icon: LayoutDashboard },
     { name: 'My Applications', path: '/dashboard/jobseeker/my-applications', icon: Briefcase },
-    { name: 'Saved Opportunities', path: '/dashboard/jobseeker/saved-jobs', icon: Bookmark },
+    { name: 'Saved Jobs', path: '/dashboard/jobseeker/saved-jobs', icon: Bookmark },
     { name: 'Profile Editor', path: '/dashboard/jobseeker/profile', icon: User },
-    { name: 'Account Settings', path: '/dashboard/jobseeker/settings', icon: Settings },
+    { name: 'Settings', path: '/dashboard/jobseeker/settings', icon: Settings },
   ];
 
   const stats = [
     { label: "Total Applied", val: data?.totalApplications || 0, icon: FileText, color: "text-blue-600", bg: "bg-blue-50" },
-    { label: "Shortlisted", val: data?.shortlisted || 0, icon: CheckCircle2, color: "text-indigo-600", bg: "bg-indigo-50" },
-    { label: "Saved Jobs", val: data?.savedJobs || 0, icon: Bookmark, color: "text-cyan-600", bg: "bg-cyan-50" },
+    { label: "Shortlisted", val: data?.shortlisted || 0, icon: CheckCircle2, color: "text-purple-600", bg: "bg-purple-50" },
+    { label: "Saved Jobs", val: data?.savedJobs || 0, icon: Bookmark, color: "text-green-600", bg: "bg-green-50" },
   ];
+
+  const jobOffers = data?.recentApplications?.filter((app: any) => app.status === "Offered") || [];
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col md:flex-row">
-      <aside className="w-full md:w-80 bg-white border-r border-slate-100 p-6 md:p-10 flex flex-col gap-10 md:min-h-screen z-20">
-        <div className="flex items-center gap-4 px-2">
-            <div className="w-12 h-12 bg-[#1e3a8a] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-100">
-                <span className="font-black text-lg">{data?.user?.name?.substring(0,1) || "C"}</span>
+      <aside className="w-full md:w-72 bg-white border-r border-slate-100 p-6 md:p-8 flex flex-col gap-8 md:min-h-screen">
+        <div className="flex items-center gap-3 px-2">
+            <div className="w-10 h-10 bg-[#1e3a8a] rounded-xl flex items-center justify-center text-white font-black uppercase text-sm shadow-md">
+                {data?.user?.name?.substring(0,2) || "JS"}
             </div>
             <div>
-                <div className="font-black text-[#1e3a8a] leading-none text-base">{data?.user?.name || "Candidate"}</div>
-                <div className="flex items-center gap-1 mt-1.5">
-                   <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
-                   <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Active Talent</span>
+                <div className="font-black text-[#1e3a8a] leading-none text-sm md:text-base">
+                  {data?.user?.name || "Candidate"}
                 </div>
+                <div className="text-[10px] font-bold text-[#00d26a] uppercase mt-1 tracking-wider">Active Talent</div>
             </div>
         </div>
-
+        
         <nav className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0 no-scrollbar">
           {navItems.map((item) => (
-            <Link key={item.name} href={item.path} className={`flex items-center gap-4 px-5 py-4 rounded-2xl font-black transition-all whitespace-nowrap text-[13px] uppercase tracking-tight ${pathname === item.path ? 'bg-[#1e3a8a] text-white shadow-xl shadow-blue-100' : 'text-slate-400 hover:bg-slate-50 hover:text-[#1e3a8a]'}`}>
-              <item.icon size={18} strokeWidth={2.5} />
+            <Link 
+              key={item.name} 
+              href={item.path}
+              className={`flex items-center gap-3 px-4 md:px-6 py-3 md:py-4 rounded-2xl font-bold transition-all whitespace-nowrap text-sm ${
+                pathname === item.path 
+                ? 'bg-[#1e3a8a] text-white shadow-lg' 
+                : 'text-gray-400 hover:bg-slate-50 hover:text-[#1e3a8a]'
+              }`}
+            >
+              <item.icon size={18} />
               {item.name}
             </Link>
           ))}
         </nav>
 
         <div className="mt-auto hidden md:flex flex-col gap-6">
-            <button onClick={handleLogout} className="flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-red-500 hover:bg-red-50 transition-all text-sm uppercase tracking-widest">
-                <LogOut size={18} strokeWidth={3} /> Sign Out
+            <div className="bg-blue-50 p-5 rounded-3xl border border-blue-100">
+                <p className="text-[10px] font-black text-[#1e3a8a] mb-2 uppercase tracking-widest">Profile Strength</p>
+                <div className="w-full h-1.5 bg-white rounded-full mb-2">
+                    <div className="w-[85%] h-full bg-[#1e3a8a] rounded-full"></div>
+                </div>
+                <p className="text-[9px] font-bold text-gray-400">Add more details to stand out!</p>
+            </div>
+            <button onClick={handleLogout} className="flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-red-500 hover:bg-red-50 transition-all">
+                <LogOut size={18} /> Logout
             </button>
         </div>
       </aside>
-
-      <main className="flex-1 p-6 md:p-16 overflow-y-auto">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-12">
+      <main className="flex-1 p-5 md:p-12 overflow-y-auto">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8 md:mb-12">
           <div>
-            <h1 className="text-3xl md:text-4xl font-black text-[#1e3a8a] tracking-tighter uppercase italic">
-              Talent <span className="text-blue-400">Hub</span>
-            </h1>
-            <p className="text-slate-400 font-bold text-sm mt-1">Hello, {data?.user?.name?.split(' ')[0]}! Ready for your next career move?</p>
+            <h1 className="text-2xl md:text-3xl font-black text-[#1e3a8a]">Talent Dashboard</h1>
+            <p className="text-gray-400 font-bold text-sm">Welcome back, {data?.user?.name?.split(' ')[0]}! 👋</p>
+          </div>
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <Link href="/jobs" className="flex-1 sm:flex-none bg-[#00d26a] hover:bg-green-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-2xl font-black flex items-center justify-center gap-2 shadow-xl shadow-green-100 transition-all active:scale-95 text-sm">
+                <Search size={18} /> Search New Jobs
+            </Link>
+            <button className="p-3 md:p-4 bg-white border border-slate-100 rounded-2xl text-gray-400 hover:text-[#1e3a8a] transition-all relative">
+                <Bell size={20} />
+                <span className="absolute top-3 right-3 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+            </button>
           </div>
         </div>
         <AnimatePresence>
           {jobOffers.length > 0 && (
-            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 space-y-4">
-              <h2 className="text-xl font-black text-green-600 flex items-center gap-2 uppercase tracking-tighter">
-                <PartyPopper className="animate-bounce" /> Congratulations! You have Job Offers
-              </h2>
-              
-              {jobOffers.map((offer: any) => (
-                <div key={offer._id} className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 p-6 md:p-8 rounded-[2.5rem] shadow-lg shadow-green-100 relative overflow-hidden">
-                  <div className="relative z-10 flex flex-col md:flex-row justify-between gap-6">
-                    <div className="space-y-3">
-                      <div className="bg-green-600 text-white text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-widest w-max">New Job Offer</div>
-                      <h3 className="text-2xl font-black text-[#1e3a8a]">{offer.job?.title || "Job Position"}</h3>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <div className="flex items-center gap-3 text-slate-600">
-                          <Building2 size={18} className="text-green-600" />
-                          <span className="font-bold text-sm">Employer: {offer.employer?.name || offer.job?.companyName || "Company"}</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-slate-600">
-                          <Phone size={18} className="text-green-600" />
-                          <span className="font-bold text-sm">Call: {offer.employer?.phone || "Contact via Email"}</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-slate-600">
-                          <Mail size={18} className="text-green-600" />
-                          <span className="font-bold text-sm">{offer.employer?.email}</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-col justify-center">
-                      <a href={`mailto:${offer.employer?.email}`} className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-2xl font-black shadow-xl transition-all text-center text-xs uppercase tracking-widest">
-                        Accept & Contact
-                      </a>
-                    </div>
+            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
+               <div className="bg-gradient-to-r from-green-500 to-green-600 p-6 md:p-10 rounded-[2.5rem] text-white shadow-xl relative overflow-hidden">
+                  <div className="absolute right-[-20px] top-[-20px] opacity-10">
+                     <PartyPopper size={200} />
                   </div>
-                </div>
-              ))}
+                  <div className="relative z-10">
+                    <h2 className="text-2xl font-black mb-2 flex items-center gap-3 tracking-tighter">
+                       YOU HAVE JOB OFFERS! 🎉
+                    </h2>
+                    <p className="font-bold opacity-90 mb-8 text-sm">Check your details and contact the recruiters immediately.</p>
+                    <Link href="/dashboard/jobseeker/my-applications" className="bg-white text-green-600 px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg">
+                       View My Offers
+                    </Link>
+                  </div>
+               </div>
             </motion.div>
           )}
         </AnimatePresence>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8 mb-8 md:mb-12">
             {stats.map((stat, i) => (
-                <motion.div key={i} className="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-50 group">
-                    <div className={`w-14 h-14 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center mb-8`}>
-                        <stat.icon size={26} strokeWidth={2.5} />
+                <motion.div 
+                    key={i} 
+                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
+                    className="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-sm border border-slate-100"
+                >
+                    <div className={`w-10 h-10 md:w-12 md:h-12 ${stat.bg} ${stat.color} rounded-xl flex items-center justify-center mb-4 md:mb-6`}>
+                        <stat.icon size={22} />
                     </div>
-                    <div className="text-4xl font-black text-[#1e3a8a] mb-2">{stat.val}</div>
-                    <div className="text-[11px] font-black text-slate-400 uppercase tracking-[0.15em]">{stat.label}</div>
+                    <div className="text-3xl md:text-4xl font-black text-[#1e3a8a] mb-1">{stat.val}</div>
+                    <div className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest">{stat.label}</div>
                 </motion.div>
             ))}
         </div>
+        <section className="space-y-6">
+            <div className="flex justify-between items-center">
+                <h2 className="text-xl md:text-2xl font-black text-[#1e3a8a]">Recent Applications</h2>
+                <Link href="/dashboard/jobseeker/my-applications" className="text-[#00d26a] font-black text-[10px] md:text-xs uppercase hover:underline">View All</Link>
+            </div>
 
-        <section className="space-y-8">
-            <h2 className="text-2xl font-black text-[#1e3a8a] uppercase tracking-tighter px-4">Recent History</h2>
-            <div className="grid gap-5">
-                {data?.recentApplications?.map((app: any) => (
-                    <div key={app._id} className={`bg-white p-6 md:p-8 rounded-[2.5rem] border ${app.status === 'Offered' ? 'border-green-400 bg-green-50/30' : 'border-slate-50'} shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6`}>
-                        <div className="flex items-center gap-6 w-full">
-                            <div className={`w-14 h-14 ${app.status === 'Offered' ? 'bg-green-100 text-green-600' : 'bg-slate-50 text-[#1e3a8a]'} rounded-2xl flex items-center justify-center shrink-0`}>
-                                <Briefcase size={24} />
+            <div className="grid gap-4">
+                {data?.recentApplications?.length > 0 ? (
+                    data.recentApplications.map((app: any) => (
+                        <div 
+                            key={app._id} 
+                            className="bg-white p-5 md:p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center justify-between group hover:border-[#1e3a8a]/20 transition-all"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center font-bold text-lg ${app.status === 'Offered' ? 'bg-green-50 text-green-600' : 'bg-slate-50 text-[#1e3a8a]'}`}>
+                                    <Briefcase size={20} />
+                                </div>
+                                <div>
+                                    <h4 className="font-black text-[#1e3a8a] text-sm md:text-base leading-tight">
+                                        {app.job?.title || "Position"}
+                                    </h4>
+                                    <p className="text-[10px] md:text-xs font-bold text-gray-400 mt-1 uppercase tracking-tighter">
+                                        {app.job?.companyName || "Employer"} • Applied: {new Date(app.createdAt).toLocaleDateString()}
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <h4 className="font-black text-[#1e3a8a] text-lg leading-tight">{app.job?.title || app.category}</h4>
-                                <p className="text-[11px] font-bold text-slate-400 mt-2 uppercase tracking-wide">{app.city} • Applied on {new Date(app.createdAt).toLocaleDateString()}</p>
+                            
+                            <div className="flex items-center gap-4">
+                                <span className={`hidden sm:inline-block text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-wider ${
+                                    app.status === 'Offered' ? 'bg-green-600 text-white shadow-md' : 'bg-blue-50 text-blue-600'
+                                }`}>
+                                    {app.status}
+                                </span>
+                                <ChevronRight className="text-gray-300 group-hover:text-[#1e3a8a] transition-colors" size={20} />
                             </div>
                         </div>
-                        <span className={`text-[10px] font-black uppercase px-6 py-2.5 rounded-full tracking-[0.1em] ${app.status === 'Offered' ? 'bg-green-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
-                            {app.status}
-                        </span>
+                    ))
+                ) : (
+                    <div className="text-center py-16 bg-white rounded-[2.5rem] border border-dashed border-slate-200">
+                        <Briefcase size={40} className="mx-auto text-gray-200 mb-3" />
+                        <p className="text-gray-400 font-bold text-sm">You haven't applied for any jobs yet.</p>
+                        <Link href="/jobs" className="text-[#1e3a8a] text-xs font-black underline mt-2 block uppercase">Start exploring jobs</Link>
                     </div>
-                ))}
+                )}
             </div>
         </section>
+        <div className="mt-10 md:hidden pb-10">
+            <button onClick={handleLogout} className="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3">
+                <LogOut size={18} /> Sign out from Portal
+            </button>
+        </div>
       </main>
     </div>
   );
