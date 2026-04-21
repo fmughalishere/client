@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Search, MapPin, PlusCircle, Briefcase, Users, ClipboardList, ChevronDown, Loader2 } from "lucide-react";
+import { Search, MapPin, PlusCircle, Briefcase, Users, ClipboardList, ChevronDown, Loader2, AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useRouter } from "next/navigation";
@@ -22,9 +22,7 @@ export const MOCK_APPLICANTS = [
     education: "Bachelors in CS",
     isFresher: false,
     status: "Pending",
-    experience: [
-      { _id: "1", designation: "Frontend Developer", companyName: "Tech Solutions", startDate: "2022-01-01", isCurrentJob: true }
-    ]
+    experience: [{ _id: "1", designation: "Frontend Developer", companyName: "Tech Solutions", startDate: "2022-01-01", isCurrentJob: true }]
   },
   {
     _id: "78f1d298c828035b34d830gf",
@@ -40,9 +38,7 @@ export const MOCK_APPLICANTS = [
     education: "Masters in Arts",
     isFresher: false,
     status: "Offered",
-    experience: [
-      { _id: "2", designation: "Senior Designer", companyName: "Creative Agency", startDate: "2020-05-10", endDate: "2023-12-01", isCurrentJob: false }
-    ]
+    experience: [{ _id: "2", designation: "Senior Designer", companyName: "Creative Agency", startDate: "2020-05-10", endDate: "2023-12-01", isCurrentJob: false }]
   },
   {
     _id: "89g2e309d939146c45e941hi",
@@ -70,7 +66,7 @@ export default function HomePage() {
 
   const quickActions = [
     { label: "Apply for a Job", icon: <Briefcase size={18} />, href: "/application" },
-    { label: "Post a Job", icon: <PlusCircle size={18} />, href: "/dashboard/employer" },
+    { label: "Post a Job", icon: <PlusCircle size={18} />, href: "/dashboard/employer/post-job" },
     { label: "Job Seekers", icon: <Users size={18} />, href: "/dashboard/jobseeker" },
     { label: "Job Offers", icon: <ClipboardList size={18} />, href: "/jobs" },
   ];
@@ -79,9 +75,7 @@ export default function HomePage() {
     try {
       const res = await fetch("https://easyjobspk.onrender.com/api/applications/employer/all-applicants");
       const data = await res.json();
-      if(data && data.length > 0) {
-        setApplicants(data);
-      }
+      if(data && data.length > 0) setApplicants(data);
     } catch (error) {
       console.error("Error fetching data");
     } finally {
@@ -93,10 +87,31 @@ export default function HomePage() {
     const socket = io("https://easyjobspk.onrender.com/");
     socket.on("visitorCount", (count: number) => setVisitorCount(count));
     fetchApplicants();
-    return () => {
-        socket.disconnect();
-    };
+    return () => { socket.disconnect(); };
   }, []);
+
+  const handleActionClick = (e: React.MouseEvent, action: any) => {
+    e.preventDefault();
+    
+    if (action.label === "Post a Job") {
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      if (!token) {
+        router.push("/login");
+        return;
+      }
+
+      if (user.role === "jobseeker") {
+        router.push("/dashboard/employer/post-job");
+        return;
+      }
+
+      router.push(action.href);
+    } else {
+      router.push(action.href);
+    }
+  };
 
   const getExperienceLabel = (app: any) => {
     if (app.isFresher || !app.experience || app.experience.length === 0) return "Fresher";
@@ -126,12 +141,16 @@ export default function HomePage() {
       <section className="max-w-md mx-auto px-6 -mt-6 relative z-20">
         <div className="flex flex-col gap-2 items-center justify-center w-full">
           {quickActions.map((action, i) => (
-            <Link key={i} href={action.href} className="w-full max-w-[210px] transition-transform active:scale-95">
+            <button 
+              key={i} 
+              onClick={(e) => handleActionClick(e, action)}
+              className="w-full max-w-[210px] transition-transform active:scale-95"
+            >
               <div className="flex items-center justify-center gap-2 h-[40px] bg-[#e2f2f5] rounded-full shadow border border-[#00004d] text-[#00004d] hover:bg-[#00004d] hover:text-white transition-all duration-300 group">
                 <span>{action.icon}</span>
                 <span className="font-bold text-[13px] whitespace-nowrap">{action.label}</span>
               </div>
-            </Link>
+            </button>
           ))}
         </div>
       </section>
@@ -156,13 +175,7 @@ export default function HomePage() {
             applicants.map((app: any, idx: number) => (
               <div key={idx} className="bg-[#e2f2f5] border border-gray-100 rounded-3xl p-3 flex items-center gap-4 relative shadow-sm h-28">
                 <div className="w-16 h-16 rounded-full border-2 border-[#00004d] overflow-hidden relative bg-gray-50 flex items-center justify-center">
-                  <Image 
-                    src={app.image || "https://via.placeholder.com/150"} 
-                    alt={app.fullName || "User"} 
-                    fill 
-                    className="object-cover" 
-                    unoptimized 
-                  />
+                  <Image src={app.image || "https://via.placeholder.com/150"} alt={app.fullName || "User"} fill className="object-cover" unoptimized />
                 </div>
                 <div className="flex flex-col overflow-hidden flex-1">
                   <h2 className="text-base font-black text-[#00004d] truncate">{app.fullName}</h2>
@@ -177,7 +190,7 @@ export default function HomePage() {
                   onClick={() => router.push(`/dashboard/employer/applicants/${app._id}`)}
                   className="absolute bottom-3 right-4 bg-[#00004d] text-white px-2 py-1 rounded-full text-[11px] font-bold shadow-sm active:scale-95 transition-transform"
                 >
-                  Visit my profile
+                  Visit profile
                 </button>
               </div>
             ))
