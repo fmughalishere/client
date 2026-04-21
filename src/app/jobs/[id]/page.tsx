@@ -17,7 +17,7 @@ export default function JobDetailPage() {
   useEffect(() => {
     const fetchJobDetail = async () => {
       try {
-        const res = await fetch(`https://easyjobspk.onrender.com/api/jobs/${id}`);
+        const res = await fetch(`http://localhost:5000/api/jobs/${id}`);
         const data = await res.json();
         setJob(data);
       } catch (error) {
@@ -50,7 +50,7 @@ export default function JobDetailPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#fcfcfc]">
         <Loader2 className="animate-spin text-[#00004d] mb-4" size={40} />
-        <p className="text-[#00004d] font-black tracking-widest text-sm uppercase">Fetching Details...</p>
+        <p className="text-[#00004d] font-black tracking-widest text-sm ">Fetching Details...</p>
       </div>
     );
   }
@@ -73,7 +73,7 @@ export default function JobDetailPage() {
         >
           <ChevronLeft size={24} strokeWidth={3} />
         </button>
-        <h1 className="font-black text-[#00004d] uppercase tracking-tighter">Job Details</h1>
+        <h1 className="font-black text-[#00004d]  tracking-tighter">Job Details</h1>
         <button 
           onClick={handleShare}
           className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-[#00004d] active:scale-90 transition-all border border-[#00004d]/5"
@@ -88,14 +88,14 @@ export default function JobDetailPage() {
         <h2 className="text-2xl font-black text-[#00004d] leading-tight px-4">{job.title}</h2>
         <div className="flex items-center justify-center gap-2 mt-2 opacity-70">
           <Building2 size={16} className="text-[#00004d]" />
-          <span className="text-sm font-bold text-[#00004d] uppercase tracking-wider">Hiring Company</span>
+          <span className="text-sm font-bold text-[#00004d]  tracking-wider">Hiring Company</span>
         </div>
         
         <div className="flex flex-wrap justify-center gap-2 mt-6">
-          <span className="bg-[#00004d] text-white text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-md">
+          <span className="bg-[#00004d] text-white text-[10px] font-black px-4 py-2 rounded-full  tracking-widest shadow-md">
             {job.type}
           </span>
-          <span className="bg-white text-[#00004d] text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest border border-[#00004d]/10 shadow-sm">
+          <span className="bg-white text-[#00004d] text-[10px] font-black px-4 py-2 rounded-full  tracking-widest border border-[#00004d]/10 shadow-sm">
             {job.category}
           </span>
         </div>
@@ -104,14 +104,14 @@ export default function JobDetailPage() {
         <div className="bg-white p-4 rounded-3xl shadow-sm border border-[#e2f2f5] flex items-center gap-3">
           <div className="p-2 bg-[#e2f2f5] rounded-xl text-[#00004d]"><MapPin size={18} /></div>
           <div>
-            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Location</p>
+            <p className="text-[9px] font-black text-gray-400  tracking-widest">Location</p>
             <p className="text-xs font-black text-[#00004d]">{job.city}</p>
           </div>
         </div>
         <div className="bg-white p-4 rounded-3xl shadow-sm border border-[#e2f2f5] flex items-center gap-3">
           <div className="p-2 bg-[#e2f2f5] rounded-xl text-[#00004d]"><DollarSign size={18} /></div>
           <div>
-            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Monthly Salary</p>
+            <p className="text-[9px] font-black text-gray-400  tracking-widest">Monthly Salary</p>
             <p className="text-xs font-black text-[#00004d]">{job.salary || "Negotiable"}</p>
           </div>
         </div>
@@ -120,7 +120,7 @@ export default function JobDetailPage() {
                 <div>
           <div className="flex items-center gap-2 mb-4">
             <Layers size={18} className="text-[#00004d]" />
-            <h3 className="text-sm font-black text-[#00004d] uppercase tracking-widest">Required Skills</h3>
+            <h3 className="text-sm font-black text-[#00004d]  tracking-widest">Required Skills</h3>
           </div>
           <div className="flex flex-wrap gap-2">
             {job.skills && job.skills.map((skill: string, i: number) => (
@@ -133,7 +133,7 @@ export default function JobDetailPage() {
         <div>
           <div className="flex items-center gap-2 mb-4">
             <AlignLeft size={18} className="text-[#00004d]" />
-            <h3 className="text-sm font-black text-[#00004d] uppercase tracking-widest">Description</h3>
+            <h3 className="text-sm font-black text-[#00004d]  tracking-widest">Description</h3>
           </div>
           <div className="bg-[#e2f2f5]/30 p-6 rounded-[2.5rem] border border-[#e2f2f5] shadow-inner">
             <p className="text-sm text-gray-700 font-bold leading-relaxed whitespace-pre-line">
@@ -144,7 +144,7 @@ export default function JobDetailPage() {
         <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100">
           <div className="flex items-center gap-2 mb-4">
             <ShieldCheck size={18} className="text-[#00004d]" />
-            <h3 className="text-sm font-black text-[#00004d] uppercase tracking-widest">Our Promise</h3>
+            <h3 className="text-sm font-black text-[#00004d]  tracking-widest">Our Promise</h3>
           </div>
           <ul className="space-y-3">
             {["Verified Employer", "Direct Communication", "Fast Response Guaranteed"].map((text, i) => (
@@ -163,7 +163,7 @@ export default function JobDetailPage() {
             <Send size={18} strokeWidth={3} /> 
             <span>APPLY FOR THIS JOB</span>
           </button>
-          <p className="text-center text-[10px] text-gray-400 font-bold mt-4 uppercase tracking-widest">
+          <p className="text-center text-[10px] text-gray-400 font-bold mt-4  tracking-widest">
             By applying, you agree to our Terms of Service
           </p>
         </div>

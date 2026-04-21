@@ -71,14 +71,14 @@ export default function EmployerDashboard() {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col md:flex-row">
       <aside className="w-full md:w-72 bg-white border-r border-slate-100 p-6 md:p-8 flex flex-col gap-8 md:min-h-screen">
         <div className="flex items-center gap-3 px-2">
-            <div className="w-10 h-10 bg-[#1e3a8a] rounded-xl flex items-center justify-center text-white font-black uppercase text-sm">
+            <div className="w-10 h-10 bg-[#1e3a8a] rounded-xl flex items-center justify-center text-white font-black  text-sm">
                 {data?.user?.companyName?.substring(0,2) || "CO"}
             </div>
             <div>
                 <div className="font-black text-[#1e3a8a] leading-none text-sm md:text-base">
                   {data?.user?.companyName || "Employer"}
                 </div>
-                <div className="text-[10px] font-bold text-[#00d26a] uppercase mt-1 tracking-wider">Hiring Manager</div>
+                <div className="text-[10px] font-bold text-[#00d26a]  mt-1 tracking-wider">Hiring Manager</div>
             </div>
         </div>
         
@@ -101,7 +101,7 @@ export default function EmployerDashboard() {
 
         <div className="mt-auto hidden md:flex flex-col gap-6">
             <div className="bg-green-50 p-5 rounded-3xl border border-green-100">
-                <p className="text-[10px] font-black text-[#00d26a] mb-2 uppercase tracking-widest">Profile Status</p>
+                <p className="text-[10px] font-black text-[#00d26a] mb-2  tracking-widest">Profile Status</p>
                 <div className="w-full h-1.5 bg-white rounded-full mb-2">
                     <div className="w-[90%] h-full bg-[#00d26a] rounded-full"></div>
                 </div>
@@ -139,14 +139,14 @@ export default function EmployerDashboard() {
                         <stat.icon size={22} />
                     </div>
                     <div className="text-3xl md:text-4xl font-black text-[#1e3a8a] mb-1">{stat.val}</div>
-                    <div className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest">{stat.label}</div>
+                    <div className="text-[10px] md:text-xs font-black text-gray-400  tracking-widest">{stat.label}</div>
                 </motion.div>
             ))}
         </div>
         <section className="space-y-6">
             <div className="flex justify-between items-center">
                 <h2 className="text-xl md:text-2xl font-black text-[#1e3a8a]">Recent Applicants</h2>
-                <Link href="/dashboard/employer/applicants" className="text-[#00d26a] font-black text-[10px] md:text-xs uppercase hover:underline">Manage All</Link>
+                <Link href="/dashboard/employer/applicants" className="text-[#00d26a] font-black text-[10px] md:text-xs  hover:underline">Manage All</Link>
             </div>
 
             <div className="grid gap-4">
@@ -164,14 +164,14 @@ export default function EmployerDashboard() {
                                     <h4 className="font-black text-[#1e3a8a] text-sm md:text-base leading-tight">
                                         {app.applicant?.name}
                                     </h4>
-                                    <p className="text-[10px] md:text-xs font-bold text-gray-400 mt-1 uppercase tracking-tighter">
+                                    <p className="text-[10px] md:text-xs font-bold text-gray-400 mt-1  tracking-tighter">
                                         Applied for: <span className="text-[#1e3a8a]">{app.job?.title}</span> • {new Date(app.createdAt).toLocaleDateString()}
                                     </p>
                                 </div>
                             </div>
                             
                             <div className="flex items-center gap-4">
-                                <span className={`hidden sm:inline-block text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-wider ${
+                                <span className={`hidden sm:inline-block text-[10px] font-black  px-4 py-1.5 rounded-full tracking-wider ${
                                     app.status === 'shortlisted' ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600'
                                 }`}>
                                     {app.status}
@@ -186,7 +186,7 @@ export default function EmployerDashboard() {
                     <div className="text-center py-16 bg-white rounded-[2.5rem] border border-dashed border-slate-200">
                         <Users size={40} className="mx-auto text-gray-200 mb-3" />
                         <p className="text-gray-400 font-bold text-sm">No new applicants found.</p>
-                        <Link href="/dashboard/employer/post-job" className="text-[#1e3a8a] text-xs font-black underline mt-2 block uppercase">Post a new job to get started</Link>
+                        <Link href="/dashboard/employer/post-job" className="text-[#1e3a8a] text-xs font-black underline mt-2 block ">Post a new job to get started</Link>
                     </div>
                 )}
             </div>

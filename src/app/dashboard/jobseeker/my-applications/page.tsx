@@ -44,10 +44,10 @@ export default function MyApplications() {
                     </div>
                 </div>
                 <div className="text-right">
-                    <div className={`px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest ${app.status === 'shortlisted' ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-600'}`}>
+                    <div className={`px-5 py-2 rounded-full text-xs font-black  tracking-widest ${app.status === 'shortlisted' ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-600'}`}>
                         {app.status}
                     </div>
-                    <p className="text-[10px] font-bold text-gray-300 mt-2 uppercase">Applied on {new Date(app.createdAt).toLocaleDateString()}</p>
+                    <p className="text-[10px] font-bold text-gray-300 mt-2 ">Applied on {new Date(app.createdAt).toLocaleDateString()}</p>
                 </div>
             </div>
           )) : (

@@ -34,7 +34,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ blog: str
   if (loading) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white">
         <Loader2 className="animate-spin text-[#000a31] mb-4" size={40} />
-        <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Loading Article...</p>
+        <p className="text-[10px] font-black  tracking-widest text-gray-400">Loading Article...</p>
     </div>
   );
 
@@ -58,19 +58,19 @@ export default function BlogDetailPage({ params }: { params: Promise<{ blog: str
 
       <section className="bg-slate-50 pt-10 md:pt-16 pb-24 md:pb-32 border-b border-gray-100 px-6">
         <div className="max-w-4xl mx-auto">
-          <Link href="/blogs" className="inline-flex items-center gap-2 text-gray-400 font-black mb-8 md:mb-12 hover:text-[#000a31] transition-all group text-[10px] md:text-xs uppercase tracking-widest">
+          <Link href="/blogs" className="inline-flex items-center gap-2 text-gray-400 font-black mb-8 md:mb-12 hover:text-[#000a31] transition-all group text-[10px] md:text-xs  tracking-widest">
             <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to Blogs
           </Link>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <span className="bg-[#00d26a] text-[#000a31] px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest mb-6 inline-block shadow-sm">
+            <span className="bg-[#00d26a] text-[#000a31] px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black  tracking-widest mb-6 inline-block shadow-sm">
               {post.category || "Insight"}
             </span>
             
             <h1 className="text-3xl md:text-6xl font-black text-[#000a31] mb-8 leading-[1.1] tracking-tight">
               {post.title}
             </h1>
-               <div className="flex flex-wrap gap-4 md:gap-8 text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-wide">
+               <div className="flex flex-wrap gap-4 md:gap-8 text-[10px] md:text-xs font-bold text-gray-400  tracking-wide">
               <span className="flex items-center gap-2">
                 <Calendar size={16} className="text-[#00d26a]" /> 
                 {new Date(post.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
@@ -107,7 +107,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ blog: str
             </article>
           </div>
              <div className="mt-16 pt-10 border-t border-gray-100 flex justify-center">
-            <Link href="/blogs" className="text-[#000a31] font-black uppercase text-xs tracking-widest hover:text-[#00d26a] flex items-center gap-2 transition-colors">
+            <Link href="/blogs" className="text-[#000a31] font-black  text-xs tracking-widest hover:text-[#00d26a] flex items-center gap-2 transition-colors">
               <ArrowLeft size={16} /> Read More Articles
             </Link>
           </div>

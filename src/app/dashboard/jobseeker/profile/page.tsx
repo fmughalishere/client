@@ -32,11 +32,11 @@ export default function MyProfile() {
 
       <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8">
         <div className="md:col-span-1 bg-white p-8 rounded-[3rem] shadow-xl shadow-slate-200/50 border border-gray-50 h-fit">
-            <div className="w-24 h-24 bg-[#1e3a8a] rounded-3xl mx-auto mb-6 flex items-center justify-center text-white text-3xl font-black uppercase">
+            <div className="w-24 h-24 bg-[#1e3a8a] rounded-3xl mx-auto mb-6 flex items-center justify-center text-white text-3xl font-black ">
                 {profile?.name?.substring(0,2)}
             </div>
             <h2 className="text-2xl font-black text-[#1e3a8a] text-center">{profile?.name}</h2>
-            <p className="text-[#00d26a] font-bold text-center text-xs uppercase tracking-widest mt-1">Job Seeker</p>
+            <p className="text-[#00d26a] font-bold text-center text-xs  tracking-widest mt-1">Job Seeker</p>
             
             <div className="mt-8 space-y-4">
                 <div className="flex items-center gap-3 text-gray-500 font-medium text-sm">
@@ -67,7 +67,7 @@ export default function MyProfile() {
                         <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-red-500 shadow-sm"><FileText/></div>
                         <div>
                             <p className="font-bold text-[#1e3a8a]">Professional_CV.pdf</p>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Added on {new Date(profile?.updatedAt).toLocaleDateString()}</p>
+                            <p className="text-[10px] font-bold text-gray-400  tracking-widest">Added on {new Date(profile?.updatedAt).toLocaleDateString()}</p>
                         </div>
                     </div>
                     <button className="text-[#1e3a8a] font-black text-sm hover:underline">View File</button>

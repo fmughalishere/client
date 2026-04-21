@@ -63,19 +63,17 @@ export default function PostJobPage() {
     }
   };
 
-  // --- Professional English Error UI for Job Seekers ---
   if (isEmployer === false) {
     return (
       <div className="min-h-screen bg-[#fcfcfc] flex flex-col items-center justify-center p-6 text-center font-sans">
         <div className="bg-[#e2f2f5] p-10 rounded-[3rem] border-2 border-[#00004d] shadow-2xl max-w-md w-full mx-auto relative overflow-hidden">
-          {/* Decorative element */}
           <div className="absolute -top-10 -right-10 w-32 h-32 bg-white opacity-20 rounded-full"></div>
           
           <div className="bg-white w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner border border-[#00004d]/10">
             <AlertCircle size={48} className="text-[#00004d] animate-pulse" />
           </div>
           
-          <h1 className="text-3xl font-black text-[#00004d] mb-4 uppercase tracking-tighter">Employer Access Only</h1>
+          <h1 className="text-3xl font-black text-[#00004d] mb-4 tracking-tighter">Employer Access Only</h1>
           
           <p className="text-[#00004d] font-bold text-sm opacity-70 mb-10 leading-relaxed px-4">
             This feature is exclusively reserved for businesses and recruiters. 
@@ -104,31 +102,27 @@ export default function PostJobPage() {
   if (isEmployer === null) return null;
 
   const inputStyle = "w-full p-4 bg-white border-2 border-[#e2f2f5] rounded-2xl focus:border-[#00004d] focus:bg-white outline-none transition-all font-bold text-[#00004d] placeholder:text-gray-300 text-sm shadow-sm";
-  const labelStyle = "flex items-center gap-2 text-[10px] font-black text-[#00004d] uppercase tracking-[0.2em] mb-2 ml-1";
+  const labelStyle = "flex items-center gap-2 text-[10px] font-black text-[#00004d] tracking-[0.2em] mb-2 ml-1";
 
   return (
     <div className="min-h-screen bg-[#fcfcfc] pb-12 font-sans">
-      {/* Header matching Home Theme */}
       <div className="bg-[#e2f2f5] rounded-b-[50px] pt-16 pb-24 px-6 text-center shadow-sm relative">
         <div className="absolute top-4 left-1/2 -translate-x-1/2 opacity-10">
             <Briefcase size={120} />
         </div>
-        <h1 className="text-4xl font-black text-[#00004d] tracking-tighter relative z-10">CREATE VACANCY</h1>
-        <p className="text-[#00004d] font-bold opacity-60 mt-2 text-sm uppercase tracking-widest relative z-10">Find your next star employee today</p>
+        <h1 className="text-4xl font-black text-[#00004d] tracking-tighter relative z-10">Create a Vacancy</h1>
+        <p className="text-[#00004d] font-bold opacity-60 mt-2 text-sm tracking-widest relative z-10">Find your next star employee today</p>
       </div>
 
       <div className="max-w-2xl mx-auto px-6 -mt-16 relative z-20">
         <form onSubmit={handleSubmit} className="bg-white p-6 md:p-12 rounded-[3.5rem] shadow-[0_20px_50px_rgba(0,0,77,0.1)] border border-gray-50 space-y-7">
           
           <div className="space-y-6">
-            {/* Job Title */}
             <div>
               <label className={labelStyle}><Briefcase size={14} strokeWidth={3}/> Job Title</label>
               <input required type="text" placeholder="e.g. Senior Software Engineer" className={inputStyle}
                 onChange={(e) => setFormData({...formData, title: e.target.value})} />
             </div>
-
-            {/* Category & City */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label className={labelStyle}><List size={14} strokeWidth={3}/> Category</label>
@@ -152,8 +146,6 @@ export default function PostJobPage() {
                   onChange={(e) => setFormData({...formData, city: e.target.value})} />
               </div>
             </div>
-
-            {/* Salary & Type */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label className={labelStyle}><DollarSign size={14} strokeWidth={3}/> Monthly Salary</label>
@@ -170,23 +162,22 @@ export default function PostJobPage() {
                 </select>
               </div>
             </div>
-
-            {/* Skills */}
             <div>
               <label className={labelStyle}><Award size={14} strokeWidth={3}/> Required Key Skills</label>
               <input type="text" placeholder="React, Node.js, Project Management..." className={inputStyle}
                 onChange={(e) => setFormData({...formData, skills: e.target.value})} />
             </div>
-
-            {/* Description */}
+            <div>
+              <label className={labelStyle}><Award size={14} strokeWidth={3}/> Required Experience</label>
+              <input type="text" placeholder="Experince" className={inputStyle}
+                onChange={(e) => setFormData({...formData, experience: e.target.value})} />
+            </div>
             <div>
               <label className={labelStyle}><FileText size={14} strokeWidth={3}/> Job Description</label>
               <textarea required rows={6} placeholder="Detailed role responsibilities and candidate requirements..." className={`${inputStyle} resize-none`}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}></textarea>
             </div>
           </div>
-
-          {/* Submit Button */}
           <button 
             disabled={loading}
             className="w-full bg-[#00004d] text-white py-5 rounded-[2.5rem] font-black text-base flex items-center justify-center gap-3 hover:shadow-[0_10px_30px_rgba(0,0,77,0.3)] hover:bg-black transition-all disabled:opacity-50 active:scale-95 mt-4"
@@ -194,7 +185,7 @@ export default function PostJobPage() {
             {loading ? (
               <Loader2 className="animate-spin" />
             ) : (
-              <><Send size={20} strokeWidth={3} /> PUBLISH VACANCY</>
+              <><Send size={20} strokeWidth={3} /> Publish Vacancy</>
             )}
           </button>
         </form>

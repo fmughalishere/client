@@ -33,7 +33,7 @@ export default function BlogsPage() {
         <div className="mb-8 md:mb-12">
           <Link 
             href="/" 
-            className="inline-flex items-center text-[#00d26a] font-black uppercase text-[10px] md:text-xs tracking-widest hover:underline"
+            className="inline-flex items-center text-[#00d26a] font-black  text-[10px] md:text-xs tracking-widest hover:underline"
           >
             ← Back to Home
           </Link>
@@ -42,7 +42,7 @@ export default function BlogsPage() {
           <motion.div 
             initial={{ opacity: 0, y: -10 }} 
             animate={{ opacity: 1, y: 0 }} 
-            className="inline-flex items-center gap-2 bg-[#000a31]/5 px-4 py-2 rounded-full text-[#000a31] text-[10px] md:text-xs font-black mb-6 border border-[#000a31]/10 uppercase tracking-widest"
+            className="inline-flex items-center gap-2 bg-[#000a31]/5 px-4 py-2 rounded-full text-[#000a31] text-[10px] md:text-xs font-black mb-6 border border-[#000a31]/10  tracking-widest"
           >
             <BookOpen size={14} className="text-[#00d26a]" />
             <span>Career Insights</span>
@@ -59,7 +59,7 @@ export default function BlogsPage() {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="animate-spin text-[#000a31] mb-4" size={40} />
-            <p className="text-gray-400 font-black uppercase tracking-widest text-[10px]">Fetching Articles...</p>
+            <p className="text-gray-400 font-black  tracking-widest text-[10px]">Fetching Articles...</p>
           </div>
         ) : blogs.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
@@ -79,14 +79,14 @@ export default function BlogsPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                   />
                   <div className="absolute top-4 left-4 md:top-6 md:left-6">
-                    <span className="bg-[#00d26a] text-[#000a31] px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest shadow-lg">
+                    <span className="bg-[#00d26a] text-[#000a31] px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black  tracking-widest shadow-lg">
                       {post.category || "General"}
                     </span>
                   </div>
                 </div>
 
                 <div className="p-6 md:p-10 flex flex-grow flex-col">
-                  <div className="flex items-center gap-3 text-[10px] md:text-xs font-bold text-gray-400 mb-4 uppercase tracking-wide">
+                  <div className="flex items-center gap-3 text-[10px] md:text-xs font-bold text-gray-400 mb-4  tracking-wide">
                     <Calendar size={14} className="text-[#00d26a]" /> 
                     {new Date(post.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </div>
@@ -101,7 +101,7 @@ export default function BlogsPage() {
 
                   <div className="mt-auto flex items-center justify-between pt-6 border-t border-gray-50">
                     <div className="flex flex-col">
-                      <span className="text-[9px] uppercase font-bold text-gray-400 tracking-widest">Posted by</span>
+                      <span className="text-[9px]  font-bold text-gray-400 tracking-widest">Posted by</span>
                       <span className="text-xs md:text-sm font-black text-[#000a31]">{post.author || "EasyJobs Team"}</span>
                     </div>
                     
@@ -119,7 +119,7 @@ export default function BlogsPage() {
         ) : (
           <div className="text-center py-20">
              <div className="bg-white p-12 rounded-[3rem] inline-block shadow-sm border border-gray-50">
-                <p className="font-bold text-gray-400 uppercase text-xs tracking-widest">No blogs found in database.</p>
+                <p className="font-bold text-gray-400  text-xs tracking-widest">No blogs found in database.</p>
              </div>
           </div>
         )}

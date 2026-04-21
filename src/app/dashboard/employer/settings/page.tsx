@@ -35,22 +35,22 @@ export default function EmployerSettings() {
           </div>
 
           <div>
-            <label className="block text-xs font-black text-[#1e3a8a] mb-2 uppercase tracking-widest">Company Name</label>
+            <label className="block text-xs font-black text-[#1e3a8a] mb-2  tracking-widest">Company Name</label>
             <input value={formData.companyName} onChange={(e)=>setFormData({...formData, companyName: e.target.value})} className="w-full p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-[#1e3a8a]" />
           </div>
 
           <div>
-            <label className="block text-xs font-black text-[#1e3a8a] mb-2 uppercase tracking-widest">Bio / Description</label>
+            <label className="block text-xs font-black text-[#1e3a8a] mb-2  tracking-widest">Bio / Description</label>
             <textarea rows={4} value={formData.bio} onChange={(e)=>setFormData({...formData, bio: e.target.value})} className="w-full p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-[#1e3a8a]" placeholder="Tell us about your company..."></textarea>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-black text-[#1e3a8a] mb-2 uppercase tracking-widest">Contact Email</label>
+              <label className="block text-xs font-black text-[#1e3a8a] mb-2  tracking-widest">Contact Email</label>
               <input readOnly value={formData.email} className="w-full p-4 bg-slate-100 text-gray-400 rounded-2xl border-none cursor-not-allowed" />
             </div>
             <div>
-              <label className="block text-xs font-black text-[#1e3a8a] mb-2 uppercase tracking-widest">Headquarters</label>
+              <label className="block text-xs font-black text-[#1e3a8a] mb-2  tracking-widest">Headquarters</label>
               <input value={formData.location} onChange={(e)=>setFormData({...formData, location: e.target.value})} className="w-full p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-[#1e3a8a]" />
             </div>
           </div>

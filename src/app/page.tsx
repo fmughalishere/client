@@ -121,11 +121,11 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-8 font-sans">
       <section className="px-0 pt-0 relative">
-        <div className="bg-[#e2f2f5] rounded-b-[35px] pt-12 pb-12 px-6 flex flex-col items-center shadow-sm relative">
+        <div className="bg-[#e2f2f5] rounded-b-[35px] pt-5 pb-10 px-6 flex flex-col items-center shadow-sm relative">
           <div className="bg-white text-[#00004d] font-black px-3 py-1 rounded-full tracking-tighter text-[10px] absolute top-2 z-30 shadow-md border border-[#00004d] whitespace-nowrap">
              Real-time Visitors: {3000 + visitorCount}
           </div>            
-          <div className="text-center mb-1 mt-6">
+          <div className="text-center mb-1 mt-5">
             <h1 className="text-[22px] font-black text-[#00004d] leading-none">Hire easy</h1>
             <h1 className="text-[22px] font-black text-[#00004d] leading-tight">Get hired easy</h1>
           </div>
@@ -155,7 +155,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="max-w-[360px] mx-auto px-4 mt-6 mb-4 relative z-30">
+      <section className="max-w-[360px] mx-auto px-4 mt-4 mb-4 relative z-30">
         <div className="bg-[#e2f2f5] text-[#00004d] rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm border border-[#00004d]"> 
           <span className="text-[16px] font-black tracking-[0.2em] leading-none mb-1 text-center px-4">
             I am seeking for a job
@@ -173,7 +173,7 @@ export default function HomePage() {
              <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#00004d]" /></div>
           ) : applicants.length > 0 ? (
             applicants.map((app: any, idx: number) => (
-              <div key={idx} className="bg-[#e2f2f5] border border-gray-100 rounded-3xl p-3 flex items-center gap-4 relative shadow-sm h-28">
+              <div key={idx} className="bg-[#e2f2f5] border border-gray-100 rounded-3xl p-3 flex items-center gap-4 relative shadow-sm h-21">
                 <div className="w-16 h-16 rounded-full border-2 border-[#00004d] overflow-hidden relative bg-gray-50 flex items-center justify-center">
                   <Image src={app.image || "https://via.placeholder.com/150"} alt={app.fullName || "User"} fill className="object-cover" unoptimized />
                 </div>
@@ -184,7 +184,7 @@ export default function HomePage() {
                 </div>
                 <div className="absolute top-3 right-4 flex flex-col items-center">
                   <MapPin size={14} className="text-[#00004d]" strokeWidth={4} />
-                  <span className="font-bold text-[#00004d] text-[9px] uppercase">{app.city}</span>
+                  <span className="font-bold text-[#00004d] text-[9px]">{app.city}</span>
                 </div>
                 <button 
                   onClick={() => router.push(`/dashboard/employer/applicants/${app._id}`)}

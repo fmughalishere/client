@@ -48,7 +48,7 @@ export default function CitiesPage() {
                 <div className="mb-8 md:mb-12">
           <Link 
             href="/" 
-            className="inline-flex items-center text-[#00d26a] font-black uppercase text-[10px] md:text-xs tracking-widest hover:underline"
+            className="inline-flex items-center text-[#00d26a] font-black  text-[10px] md:text-xs tracking-widest hover:underline"
           >
             ← Back to Home
           </Link>
@@ -56,7 +56,7 @@ export default function CitiesPage() {
         <div className="text-center mb-12 md:mb-20">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 bg-[#000a31]/5 px-4 py-2 rounded-full text-[#000a31] text-[10px] md:text-xs font-black mb-6 border border-[#000a31]/10 uppercase tracking-widest"
+            className="inline-flex items-center gap-2 bg-[#000a31]/5 px-4 py-2 rounded-full text-[#000a31] text-[10px] md:text-xs font-black mb-6 border border-[#000a31]/10  tracking-widest"
           >
             <MapPin size={14} className="text-[#00d26a]" />
             <span>Explore Opportunities Locally</span>
@@ -99,7 +99,7 @@ export default function CitiesPage() {
                 <div key={i} className="bg-white p-5 md:p-8 rounded-[2rem] border border-gray-50 flex flex-col items-center text-center shadow-sm">
                     <stat.icon className="text-[#00d26a] mb-2 w-5 h-5 md:w-6 md:h-6" />
                     <div className="text-xl md:text-3xl font-black text-[#000a31]">{stat.val}</div>
-                    <div className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">{stat.label}</div>
+                    <div className="text-[8px] md:text-[10px] font-black text-gray-400  tracking-widest">{stat.label}</div>
                 </div>
             ))}
         </div>
@@ -127,7 +127,7 @@ export default function CitiesPage() {
                       <div className="flex items-center justify-between pt-6 border-t border-gray-100">
                         <div className="flex flex-col">
                           <span className="text-[#00d26a] font-black text-2xl md:text-3xl">{city.jobCount || 0}</span>
-                          <span className="text-[9px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest">Live Vacancies</span>
+                          <span className="text-[9px] md:text-[11px] font-black text-gray-400  tracking-widest">Live Vacancies</span>
                         </div>
                         <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#000a31] text-white flex items-center justify-center group-hover:bg-[#00d26a] group-hover:text-[#000a31] transition-all active:scale-90 shadow-lg shadow-black/10">
                           <ArrowRight className="w-5 h-5 md:w-7 md:h-7" />

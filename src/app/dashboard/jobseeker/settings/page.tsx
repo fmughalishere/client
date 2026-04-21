@@ -50,22 +50,22 @@ export default function JobSeekerSettings() {
         
         <form onSubmit={handleSave} className="bg-white p-10 rounded-[3rem] shadow-xl shadow-slate-200/40 space-y-6">
           <div>
-            <label className="block text-xs font-black text-[#1e3a8a] mb-2 uppercase tracking-widest">Full Name</label>
+            <label className="block text-xs font-black text-[#1e3a8a] mb-2  tracking-widest">Full Name</label>
             <input required value={formData.name} onChange={(e)=>setFormData({...formData, name: e.target.value})} className="w-full p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-[#1e3a8a]" />
           </div>
 
           <div>
-            <label className="block text-xs font-black text-[#1e3a8a] mb-2 uppercase tracking-widest">Professional Bio</label>
+            <label className="block text-xs font-black text-[#1e3a8a] mb-2  tracking-widest">Professional Bio</label>
             <textarea rows={4} value={formData.bio} onChange={(e)=>setFormData({...formData, bio: e.target.value})} className="w-full p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-[#1e3a8a]" placeholder="I am a MERN Stack Developer with 2 years experience..."></textarea>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-black text-[#1e3a8a] mb-2 uppercase tracking-widest">City</label>
+              <label className="block text-xs font-black text-[#1e3a8a] mb-2  tracking-widest">City</label>
               <input value={formData.city} onChange={(e)=>setFormData({...formData, city: e.target.value})} className="w-full p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-[#1e3a8a]" placeholder="e.g. Karachi" />
             </div>
             <div>
-              <label className="block text-xs font-black text-[#1e3a8a] mb-2 uppercase tracking-widest">Resume URL (Optional)</label>
+              <label className="block text-xs font-black text-[#1e3a8a] mb-2  tracking-widest">Resume URL (Optional)</label>
               <input value={formData.resume} onChange={(e)=>setFormData({...formData, resume: e.target.value})} className="w-full p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-[#1e3a8a]" placeholder="Link to Drive/Dropbox" />
             </div>
           </div>

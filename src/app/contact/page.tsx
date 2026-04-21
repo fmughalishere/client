@@ -60,7 +60,7 @@ export default function ContactPage() {
           <div className="mb-8 flex justify-start md:justify-center">
             <Link 
               href="/" 
-              className="inline-flex items-center text-[#00d26a] font-black uppercase text-[10px] md:text-xs tracking-widest hover:underline"
+              className="inline-flex items-center text-[#00d26a] font-black  text-[10px] md:text-xs tracking-widest hover:underline"
             >
               <ArrowLeft size={16} className="mr-2" /> Back to Home
             </Link>
@@ -101,13 +101,13 @@ export default function ContactPage() {
                 <div>
                   <h3 className="text-lg md:text-xl font-black text-[#00004d] mb-1">{item.title}</h3>
                   <p className="text-[#00004d] text-sm md:text-base font-bold mb-0.5">{item.details}</p>
-                  <p className="text-gray-400 text-[9px] md:text-[10px] font-black uppercase tracking-widest">{item.sub}</p>
+                  <p className="text-gray-400 text-[9px] md:text-[10px] font-black  tracking-widest">{item.sub}</p>
                 </div>
               </motion.div>
             ))}
             <div className="bg-[#00004d] p-8 md:p-10 rounded-[2.5rem] md:rounded-[3rem] text-white relative overflow-hidden shadow-2xl">
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#00d26a]/10 rounded-bl-full blur-2xl"></div>
-              <h3 className="text-xl font-black mb-6 relative z-10 uppercase tracking-widest">
+              <h3 className="text-xl font-black mb-6 relative z-10  tracking-widest">
                 Follow Us
               </h3>
               <div className="flex gap-4 relative z-10">
@@ -134,11 +134,11 @@ export default function ContactPage() {
                   <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-8">
                     <CheckCircle2 size={48} className="text-[#00d26a]" />
                   </div>
-                  <h2 className="text-2xl md:text-4xl font-black text-[#00004d] mb-4 uppercase tracking-tight">Message Sent!</h2>
+                  <h2 className="text-2xl md:text-4xl font-black text-[#00004d] mb-4  tracking-tight">Message Sent!</h2>
                   <p className="text-gray-500 font-bold mb-10 text-sm md:text-base">We'll get back to you within 24 hours.</p>
                   <button 
                     onClick={() => setFormState("idle")} 
-                    className="bg-[#00004d] text-white px-10 py-4 rounded-full font-black text-xs md:text-sm uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-blue-900/20"
+                    className="bg-[#00004d] text-white px-10 py-4 rounded-full font-black text-xs md:text-sm  tracking-widest active:scale-95 transition-all shadow-lg shadow-blue-900/20"
                   >
                     Send Another
                   </button>
@@ -204,7 +204,7 @@ export default function ContactPage() {
         >
           <div className="absolute inset-0 bg-[#00004d]/5 flex flex-col items-center justify-center px-6 text-center">
             <MapPin size={48} className="text-[#00004d] mb-4 animate-bounce" />
-            <p className="text-[#00004d] font-black text-sm md:text-xl uppercase tracking-widest">
+            <p className="text-[#00004d] font-black text-sm md:text-xl  tracking-widest">
               Find our headquarters on Google Maps
             </p>
           </div>

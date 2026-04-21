@@ -67,14 +67,14 @@ export default function JobSeekerDashboard() {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col md:flex-row">
       <aside className="w-full md:w-72 bg-white border-r border-slate-100 p-6 md:p-8 flex flex-col gap-8 md:min-h-screen">
         <div className="flex items-center gap-3 px-2">
-            <div className="w-10 h-10 bg-[#1e3a8a] rounded-xl flex items-center justify-center text-white font-black uppercase text-sm shadow-md">
+            <div className="w-10 h-10 bg-[#1e3a8a] rounded-xl flex items-center justify-center text-white font-black  text-sm shadow-md">
                 {data?.user?.name?.substring(0,2) || "JS"}
             </div>
             <div>
                 <div className="font-black text-[#1e3a8a] leading-none text-sm md:text-base">
                   {data?.user?.name || "Candidate"}
                 </div>
-                <div className="text-[10px] font-bold text-[#00d26a] uppercase mt-1 tracking-wider">Active Talent</div>
+                <div className="text-[10px] font-bold text-[#00d26a] mt-1 tracking-wider">Active Talent</div>
             </div>
         </div>
         
@@ -97,7 +97,7 @@ export default function JobSeekerDashboard() {
 
         <div className="mt-auto hidden md:flex flex-col gap-6">
             <div className="bg-blue-50 p-5 rounded-3xl border border-blue-100">
-                <p className="text-[10px] font-black text-[#1e3a8a] mb-2 uppercase tracking-widest">Profile Strength</p>
+                <p className="text-[10px] font-black text-[#1e3a8a] mb-2  tracking-widest">Profile Strength</p>
                 <div className="w-full h-1.5 bg-white rounded-full mb-2">
                     <div className="w-[85%] h-full bg-[#1e3a8a] rounded-full"></div>
                 </div>
@@ -136,7 +136,7 @@ export default function JobSeekerDashboard() {
                        YOU HAVE JOB OFFERS! 🎉
                     </h2>
                     <p className="font-bold opacity-90 mb-8 text-sm">Check your details and contact the recruiters immediately.</p>
-                    <Link href="/dashboard/jobseeker/my-applications" className="bg-white text-green-600 px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg">
+                    <Link href="/dashboard/jobseeker/my-applications" className="bg-white text-green-600 px-8 py-3 rounded-xl font-black text-xs  tracking-widest shadow-lg">
                        View My Offers
                     </Link>
                   </div>
@@ -155,14 +155,14 @@ export default function JobSeekerDashboard() {
                         <stat.icon size={22} />
                     </div>
                     <div className="text-3xl md:text-4xl font-black text-[#1e3a8a] mb-1">{stat.val}</div>
-                    <div className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest">{stat.label}</div>
+                    <div className="text-[10px] md:text-xs font-black text-gray-400  tracking-widest">{stat.label}</div>
                 </motion.div>
             ))}
         </div>
         <section className="space-y-6">
             <div className="flex justify-between items-center">
                 <h2 className="text-xl md:text-2xl font-black text-[#1e3a8a]">Recent Applications</h2>
-                <Link href="/dashboard/jobseeker/my-applications" className="text-[#00d26a] font-black text-[10px] md:text-xs uppercase hover:underline">View All</Link>
+                <Link href="/dashboard/jobseeker/my-applications" className="text-[#00d26a] font-black text-[10px] md:text-xs  hover:underline">View All</Link>
             </div>
 
             <div className="grid gap-4">
@@ -180,14 +180,14 @@ export default function JobSeekerDashboard() {
                                     <h4 className="font-black text-[#1e3a8a] text-sm md:text-base leading-tight">
                                         {app.job?.title || "Position"}
                                     </h4>
-                                    <p className="text-[10px] md:text-xs font-bold text-gray-400 mt-1 uppercase tracking-tighter">
+                                    <p className="text-[10px] md:text-xs font-bold text-gray-400 mt-1  tracking-tighter">
                                         {app.job?.companyName || "Employer"} • Applied: {new Date(app.createdAt).toLocaleDateString()}
                                     </p>
                                 </div>
                             </div>
                             
                             <div className="flex items-center gap-4">
-                                <span className={`hidden sm:inline-block text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-wider ${
+                                <span className={`hidden sm:inline-block text-[10px] font-black  px-4 py-1.5 rounded-full tracking-wider ${
                                     app.status === 'Offered' ? 'bg-green-600 text-white shadow-md' : 'bg-blue-50 text-blue-600'
                                 }`}>
                                     {app.status}
@@ -200,7 +200,7 @@ export default function JobSeekerDashboard() {
                     <div className="text-center py-16 bg-white rounded-[2.5rem] border border-dashed border-slate-200">
                         <Briefcase size={40} className="mx-auto text-gray-200 mb-3" />
                         <p className="text-gray-400 font-bold text-sm">You haven't applied for any jobs yet.</p>
-                        <Link href="/jobs" className="text-[#1e3a8a] text-xs font-black underline mt-2 block uppercase">Start exploring jobs</Link>
+                        <Link href="/jobs" className="text-[#1e3a8a] text-xs font-black underline mt-2 block ">Start exploring jobs</Link>
                     </div>
                 )}
             </div>

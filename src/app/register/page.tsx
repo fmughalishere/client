@@ -71,7 +71,7 @@ export default function RegisterPage() {
         <div className="mb-8">
           <Link 
             href="/" 
-            className="inline-flex items-center text-gray-400 font-bold uppercase text-[10px] tracking-widest hover:text-[#00004d] transition-colors"
+            className="inline-flex items-center text-gray-400 font-bold  text-[10px] tracking-widest hover:text-[#00004d] transition-colors"
           >
             <ArrowLeft size={14} className="mr-1" /> Back to Home
           </Link>
@@ -80,13 +80,13 @@ export default function RegisterPage() {
           <h1 className="text-3xl md:text-4xl font-black text-[#00004d] mb-3 tracking-tighter">
           Join EasyJobs
           </h1>
-          <p className="text-gray-400 font-bold text-sm uppercase tracking-wide">Start your journey with us</p>
+          <p className="text-gray-400 font-bold text-sm  tracking-wide">Start your journey with us</p>
         </div>
         <div className="flex p-1.5 bg-gray-100 rounded-full mb-10 gap-1">
           <button 
             type="button"
             onClick={() => setRole("jobseeker")}
-            className={`flex-1 py-4 rounded-full flex items-center justify-center gap-3 transition-all duration-300 font-black uppercase text-[10px] tracking-widest
+            className={`flex-1 py-4 rounded-full flex items-center justify-center gap-3 transition-all duration-300 font-black  text-[10px] tracking-widest
               ${role === "jobseeker" ? 'bg-white text-[#00004d] shadow-md' : 'text-gray-400 hover:text-gray-600'}`}
           >
             <User size={18} /> Jobseeker
@@ -94,7 +94,7 @@ export default function RegisterPage() {
           <button 
             type="button"
             onClick={() => setRole("employer")}
-            className={`flex-1 py-4 rounded-full flex items-center justify-center gap-3 transition-all duration-300 font-black uppercase text-[10px] tracking-widest
+            className={`flex-1 py-4 rounded-full flex items-center justify-center gap-3 transition-all duration-300 font-black  text-[10px] tracking-widest
               ${role === "employer" ? 'bg-white text-[#00004d] shadow-md' : 'text-gray-400 hover:text-gray-600'}`}
           >
             <Briefcase size={18} /> Employer
@@ -172,14 +172,14 @@ export default function RegisterPage() {
             <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center shrink-0 transition-all ${agreed ? 'bg-[#00004d] border-[#00004d]' : 'border-gray-200 bg-white'}`}>
               {agreed && <Check size={14} className="text-white" strokeWidth={4} />}
             </div>
-            <p className="text-[11px] font-bold text-gray-500 leading-snug uppercase">
+            <p className="text-[11px] font-bold text-gray-500 leading-snug ">
               I accept the <span className="text-[#00004d] underline font-black">terms</span> & <span className="text-[#00004d] underline font-black">privacy policy</span>
             </p>
           </div>
           <button 
             type="submit"
             disabled={!agreed || loading}
-            className={`w-full py-5 rounded-2xl font-black text-[12px] uppercase tracking-[0.2em] transition-all shadow-xl flex items-center justify-center gap-3 active:scale-[0.98]
+            className={`w-full py-5 rounded-2xl font-black text-[12px]  tracking-[0.2em] transition-all shadow-xl flex items-center justify-center gap-3 active:scale-[0.98]
               ${agreed && !loading
                 ? 'bg-[#00004d] text-white hover:shadow-green-200 shadow-lg' 
                 : 'bg-gray-100 text-gray-300 cursor-not-allowed shadow-none'}`}
@@ -190,7 +190,7 @@ export default function RegisterPage() {
         </form>
 
         <div className="mt-10 text-center">
-          <p className="text-gray-400 font-bold text-[10px] uppercase tracking-widest">
+          <p className="text-gray-400 font-bold text-[10px]  tracking-widest">
             Already have an account? 
             <Link href="/login" className="text-[#00004d] font-black hover:underline ml-2">Login Here</Link>
           </p>

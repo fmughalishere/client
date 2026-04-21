@@ -40,7 +40,7 @@ export default function SavedJobs() {
       <Toaster position="top-center" />
             <Link 
         href="/dashboard/jobseeker" 
-        className="inline-flex items-center gap-2 text-slate-400 font-black text-[11px] uppercase tracking-[0.15em] mb-10 hover:text-[#1e3a8a] transition-all group"
+        className="inline-flex items-center gap-2 text-slate-400 font-black text-[11px]  tracking-[0.15em] mb-10 hover:text-[#1e3a8a] transition-all group"
       >
         <div className="w-8 h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center group-hover:bg-blue-50 transition-all">
           <ArrowLeft size={16} />
@@ -50,21 +50,21 @@ export default function SavedJobs() {
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
         <div>
-          <h1 className="text-3xl md:text-5xl font-black text-[#1e3a8a] tracking-tighter uppercase italic">
+          <h1 className="text-3xl md:text-5xl font-black text-[#1e3a8a] tracking-tighter  italic">
             Saved <span className="text-blue-400">Opportunities</span>
           </h1>
           <p className="text-slate-400 font-bold text-sm mt-2">Manage all your shortlisted career paths in one place.</p>
         </div>
         <div className="bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm">
            <span className="text-[#1e3a8a] font-black text-xl">{savedJobs.length}</span>
-           <span className="text-slate-400 font-bold text-[10px] uppercase ml-2 tracking-widest">Jobs Found</span>
+           <span className="text-slate-400 font-bold text-[10px]  ml-2 tracking-widest">Jobs Found</span>
         </div>
       </div>
 
       {loading ? (
         <div className="flex flex-col items-center justify-center p-24 gap-4">
           <Loader2 className="animate-spin text-[#1e3a8a]" size={48} strokeWidth={3} />
-          <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest">Loading Records...</p>
+          <p className="text-slate-400 font-black text-[10px]  tracking-widest">Loading Records...</p>
         </div>
       ) : (
         <div className="grid gap-6 max-w-5xl">
@@ -82,7 +82,7 @@ export default function SavedJobs() {
                     </div>
                     <div>
                         <h4 className="text-xl md:text-2xl font-black text-[#1e3a8a] tracking-tight">{job.title}</h4>
-                        <div className="flex flex-wrap items-center gap-5 mt-3 text-slate-400 font-black text-[10px] uppercase tracking-[0.1em]">
+                        <div className="flex flex-wrap items-center gap-5 mt-3 text-slate-400 font-black text-[10px]  tracking-[0.1em]">
                             <span className="flex items-center gap-1.5"><MapPin size={14} className="text-blue-400"/> {job.location}</span>
                             <span className="w-1.5 h-1.5 bg-slate-200 rounded-full"></span>
                             <span className="text-blue-500 bg-blue-50 px-3 py-1 rounded-full">{job.salary || "Negotiable"}</span>
@@ -93,7 +93,7 @@ export default function SavedJobs() {
                 <div className="flex items-center gap-4 mt-8 md:mt-0 w-full md:w-auto">
                     <Link 
                       href={`/jobs/${job._id}`} 
-                      className="flex-1 md:flex-none px-8 py-4 bg-[#1e3a8a] text-white rounded-[1.2rem] font-black text-[11px] uppercase tracking-widest shadow-xl shadow-blue-100 hover:bg-[#152963] transition-all flex items-center justify-center gap-2"
+                      className="flex-1 md:flex-none px-8 py-4 bg-[#1e3a8a] text-white rounded-[1.2rem] font-black text-[11px]  tracking-widest shadow-xl shadow-blue-100 hover:bg-[#152963] transition-all flex items-center justify-center gap-2"
                     >
                       View Details <ExternalLink size={14} />
                     </Link>
@@ -112,9 +112,9 @@ export default function SavedJobs() {
                 <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
                    <Bookmark className="text-slate-200" size={40} />
                 </div>
-                <h3 className="text-[#1e3a8a] font-black text-xl mb-2 uppercase tracking-tight">Your List is Empty</h3>
+                <h3 className="text-[#1e3a8a] font-black text-xl mb-2  tracking-tight">Your List is Empty</h3>
                 <p className="font-bold text-slate-400 text-sm mb-8">You haven't saved any job opportunities yet.</p>
-                <Link href="/jobs" className="bg-[#1e3a8a] text-white px-10 py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-lg shadow-blue-50">
+                <Link href="/jobs" className="bg-[#1e3a8a] text-white px-10 py-4 rounded-2xl font-black text-[11px]  tracking-widest shadow-lg shadow-blue-50">
                    Discover Jobs
                 </Link>
             </div>

@@ -32,7 +32,7 @@ export default function AboutPage() {
           <div className="mb-6 md:mb-10">
             <Link 
               href="/" 
-              className="inline-flex items-center text-[#00d26a] font-black uppercase text-[10px] md:text-xs tracking-widest hover:underline"
+              className="inline-flex items-center text-[#00d26a] font-black  text-[10px] md:text-xs tracking-widest hover:underline"
             >
               <ArrowLeft size={16} className="mr-2" /> Back to Home
             </Link>
@@ -60,7 +60,7 @@ export default function AboutPage() {
       <section className="py-16 md:py-24 px-6 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <motion.div {...fadeInUp}>
-            <div className="inline-flex items-center gap-2 bg-[#00004d]/5 px-4 py-2 rounded-full text-[#00004d] text-[10px] md:text-xs font-black mb-6 border border-[#00004d]/10 uppercase tracking-widest">
+            <div className="inline-flex items-center gap-2 bg-[#00004d]/5 px-4 py-2 rounded-full text-[#00004d] text-[10px] md:text-xs font-black mb-6 border border-[#00004d]/10  tracking-widest">
               <Target size={16} className="text-[#00d26a]" />
               <span>Our Vision</span>
             </div>
@@ -93,7 +93,7 @@ export default function AboutPage() {
               <div key={i} className="bg-white p-5 md:p-8 rounded-[2rem] shadow-sm flex flex-col items-center text-center hover:shadow-md transition-all">
                 <stat.icon className={`${stat.color} mb-3`} size={24} />
                 <div className="text-2xl md:text-3xl font-black text-[#00004d]">{stat.val}</div>
-                <div className="text-[9px] md:text-xs font-black text-gray-400 uppercase tracking-widest mt-1">{stat.label}</div>
+                <div className="text-[9px] md:text-xs font-black text-gray-400  tracking-widest mt-1">{stat.label}</div>
               </div>
             ))}
           </motion.div>
@@ -103,8 +103,8 @@ export default function AboutPage() {
       <section className="bg-[#00004d] py-16 md:py-24 px-6 text-white relative rounded-[50px] mx-4 md:mx-10 shadow-2xl">
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-12 md:mb-16">
-            <h2 className="text-3xl md:text-5xl font-black mb-4 uppercase tracking-tight">Our Core Values</h2>
-            <p className="text-gray-400 font-bold text-sm md:text-base tracking-widest uppercase opacity-60">Built with integrity, driven by innovation.</p>
+            <h2 className="text-3xl md:text-5xl font-black mb-4  tracking-tight">Our Core Values</h2>
+            <p className="text-gray-400 font-bold text-sm md:text-base tracking-widest  opacity-60">Built with integrity, driven by innovation.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -121,7 +121,7 @@ export default function AboutPage() {
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-[#00d26a] rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform">
                   <value.icon className="text-[#00004d]" size={28} />
                 </div>
-                <h4 className="text-xl md:text-2xl font-black mb-3 uppercase tracking-tight">{value.title}</h4>
+                <h4 className="text-xl md:text-2xl font-black mb-3  tracking-tight">{value.title}</h4>
                 <p className="text-gray-400 text-xs md:text-sm leading-relaxed font-bold">{value.desc}</p>
               </motion.div>
             ))}

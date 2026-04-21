@@ -43,7 +43,7 @@ export default function MyJobs() {
                     <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#1e3a8a]"><Briefcase size={24} /></div>
                     <div>
                         <h4 className="text-xl font-black text-[#1e3a8a]">{job.title}</h4>
-                        <div className="flex gap-4 mt-1 text-gray-400 font-bold text-xs uppercase">
+                        <div className="flex gap-4 mt-1 text-gray-400 font-bold text-xs ">
                             <span>{job.location}</span>
                             <span>•</span>
                             <span>{new Date(job.createdAt).toLocaleDateString()}</span>
@@ -54,7 +54,7 @@ export default function MyJobs() {
                 <div className="flex items-center gap-8 mt-4 md:mt-0">
                     <div className="text-center">
                         <div className="font-black text-[#1e3a8a]">{job.applicantsCount || 0}</div>
-                        <div className="text-[10px] font-bold text-gray-400 uppercase">Applicants</div>
+                        <div className="text-[10px] font-bold text-gray-400 ">Applicants</div>
                     </div>
                     <div className="flex gap-2">
                         <button className="p-3 bg-slate-50 text-gray-400 rounded-xl hover:text-blue-600 transition-colors"><Edit size={18}/></button>

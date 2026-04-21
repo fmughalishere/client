@@ -99,7 +99,7 @@ export default function ApplicantDetail() {
             />
           </div>
           <div className="min-w-0">
-            <h1 className="text-2xl md:text-4xl font-black uppercase tracking-[0.1em] leading-tight truncate">
+            <h1 className="text-2xl md:text-4xl font-black  tracking-[0.1em] leading-tight truncate">
               {applicant.fullName}
             </h1>
             <p className="text-sm md:text-lg font-bold opacity-80 mt-1 tracking-[0.1em] truncate">
@@ -110,7 +110,7 @@ export default function ApplicantDetail() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white p-8 rounded-3xl shadow-sm space-y-5">
-            <h2 className="text-lg font-black text-[#00004d] uppercase tracking-wider flex items-center gap-2 border-b pb-3">
+            <h2 className="text-lg font-black text-[#00004d]  tracking-wider flex items-center gap-2 border-b pb-3">
               <MapPin size={18} /> Basic Info
             </h2>
             <div className="grid grid-cols-1 gap-4 text-sm font-bold text-gray-600">
@@ -121,7 +121,7 @@ export default function ApplicantDetail() {
             </div>
           </div>
           <div className="bg-white p-8 rounded-3xl shadow-sm space-y-5">
-            <h2 className="text-lg font-black text-[#00004d] uppercase tracking-wider flex items-center gap-2 border-b pb-3">
+            <h2 className="text-lg font-black text-[#00004d]  tracking-wider flex items-center gap-2 border-b pb-3">
               <GraduationCap size={18} /> Education & Job
             </h2>
             <div className="grid grid-cols-1 gap-4 text-sm font-bold text-gray-600">
@@ -132,15 +132,15 @@ export default function ApplicantDetail() {
         </div>
 
         <div className="bg-white p-8 rounded-3xl shadow-sm space-y-6">
-          <h2 className="text-lg font-black text-[#00004d] uppercase tracking-wider flex items-center gap-3 border-b pb-4">
+          <h2 className="text-lg font-black text-[#00004d]  tracking-wider flex items-center gap-3 border-b pb-4">
             <Briefcase size={20} /> Work Experiences
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {applicant.experience?.length > 0 ? (
               applicant.experience.slice(0, 3).map((exp: any, idx: number) => (
                 <div key={idx} className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">Experience {idx + 1}</span>
-                  <p className="font-black text-[#00004d] uppercase tracking-tight">{exp.designation}</p>
+                  <span className="text-[10px] font-black text-gray-400  tracking-widest mb-2 block">Experience {idx + 1}</span>
+                  <p className="font-black text-[#00004d]  tracking-tight">{exp.designation}</p>
                   <p className="text-sm font-bold text-gray-500">{exp.companyName}</p>
                   <p className="text-[10px] font-bold text-gray-300 mt-2">{exp.startDate} - {exp.isCurrentJob ? "Present" : exp.endDate}</p>
                 </div>
@@ -174,7 +174,7 @@ export default function ApplicantDetail() {
                   {offerData.companyLogo ? (<img src={offerData.companyLogo} className="w-full h-full object-cover" />) : (<Building className="text-gray-200" size={30} />)}
                   <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute inset-0 bg-black/40 text-white flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"><Camera size={18} /></button>
                 </div>
-                <button type="button" onClick={() => fileInputRef.current?.click()} className="text-[10px] font-black text-[#00004d] uppercase underline tracking-widest">Upload Company Logo</button>
+                <button type="button" onClick={() => fileInputRef.current?.click()} className="text-[10px] font-black text-[#00004d]  underline tracking-widest">Upload Company Logo</button>
                 <input type="file" ref={fileInputRef} className="hidden" onChange={handleLogoChange} accept="image/*" />
               </div>
               <div className="space-y-4">

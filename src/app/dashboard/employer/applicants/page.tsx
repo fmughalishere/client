@@ -63,7 +63,7 @@ export default function ApplicantsPage() {
             </div>
 
             <div className="flex gap-2">
-                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black  tracking-wider ${
                     app.status === 'shortlisted' ? 'bg-green-50 text-green-600' : 
                     app.status === 'rejected' ? 'bg-red-50 text-red-600' : 'bg-slate-50 text-slate-500'
                 }`}>
