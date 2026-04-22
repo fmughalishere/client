@@ -8,60 +8,9 @@ import { io } from "socket.io-client";
 import { useRouter } from "next/navigation";
 import { IoIosPin } from "react-icons/io";
 
-export const MOCK_APPLICANTS = [
-  {
-    _id: "69e0c087b717924a23c729fe",
-    fullName: "Ali Khan",
-    email: "ali@example.com",
-    category: "Software Engineer",
-    city: "Lahore",
-    country: "Pakistan",
-    gender: "Male",
-    dob: "2000-05-15T00:00:00.000Z",
-    image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400",
-    jobtype: "Full-time",
-    education: "Bachelors in CS",
-    isFresher: false,
-    status: "Pending",
-    experience: [{ _id: "1", designation: "Frontend Developer", companyName: "Tech Solutions", startDate: "2022-01-01", isCurrentJob: true }]
-  },
-  {
-    _id: "78f1d298c828035b34d830gf",
-    fullName: "Sara Ahmed",
-    email: "sara@example.com",
-    category: "Graphic Designer",
-    city: "Karachi",
-    country: "Pakistan",
-    gender: "Female",
-    dob: "1998-11-20T00:00:00.000Z",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400",
-    jobtype: "Remote",
-    education: "Masters in Arts",
-    isFresher: false,
-    status: "Offered",
-    experience: [{ _id: "2", designation: "Senior Designer", companyName: "Creative Agency", startDate: "2020-05-10", endDate: "2023-12-01", isCurrentJob: false }]
-  },
-  {
-    _id: "89g2e309d939146c45e941hi",
-    fullName: "Zain Malik", 
-    email: "zain@example.com", 
-    category: "Marketing Manager", 
-    city: "Islamabad", 
-    country: "Pakistan", 
-    gender: "Male", 
-    dob: "1995-03-10T00:00:00.000Z", 
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400", 
-    jobtype: "Full-time", 
-    education: "MBA", 
-    isFresher: true, 
-    status: "Pending", 
-    experience: [] 
-  }
-];
-
 export default function HomePage() {
-  const [applicants, setApplicants] = useState<any[]>(MOCK_APPLICANTS); 
-  const [loading, setLoading] = useState(false);
+  const [applicants, setApplicants] = useState<any[]>([]); // Mock data hata diya
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const [visitorCount, setVisitorCount] = useState(0);
@@ -73,11 +22,19 @@ export default function HomePage() {
     { label: "Job Offers", icon: <ClipboardList size={18} />, href: "/jobs" },
   ];
 
+  // API Call to fetch all applicants
   const fetchApplicants = async () => {
     try {
-      const res = await fetch("https://easyjobspk.onrender.com/api/applications/employer/all-applicants");
+      const token = localStorage.getItem("token"); // Token zaroori hai protected route k liye
+      const res = await fetch("https://easyjobspk.onrender.com/api/applications/employer/all-applicants", {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+      });
       const data = await res.json();
-      if(data && data.length > 0) setApplicants(data);
+      if(res.ok) {
+        setApplicants(data);
+      }
     } catch (error) {
       console.error("Error fetching data");
     } finally {

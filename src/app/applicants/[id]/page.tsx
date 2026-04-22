@@ -13,9 +13,14 @@ export default function PublicApplicantDetail() {
   useEffect(() => {
     const fetchDetail = async () => {
       try {
-        const res = await fetch(`https://easyjobspk.onrender.com/api/applications/${id}`);
+        const token = localStorage.getItem("token");
+        const res = await fetch(`https://easyjobspk.onrender.com/api/applications/${id}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
         const data = await res.json();
-        setApplicant(data);
+        if(res.ok) setApplicant(data);
       } catch (err) {
         console.error(err);
       } finally {
@@ -45,7 +50,6 @@ export default function PublicApplicantDetail() {
       </button>
 
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* Profile Header */}
         <div className="bg-[#00004d] text-white p-8 rounded-[40px] shadow-xl flex flex-col md:flex-row items-center gap-8">
           <div className="w-32 h-32 rounded-full border-4 border-white/20 overflow-hidden bg-white shadow-2xl">
             <img src={applicant.image || "https://via.placeholder.com/150"} className="w-full h-full object-cover" alt="Profile" />
@@ -60,7 +64,6 @@ export default function PublicApplicantDetail() {
           </div>
         </div>
 
-        {/* Info Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white p-8 rounded-3xl shadow-sm border border-white">
             <h2 className="text-lg font-black text-[#00004d] mb-5 flex items-center gap-2">
@@ -68,7 +71,7 @@ export default function PublicApplicantDetail() {
             </h2>
             <div className="space-y-4 text-sm font-bold text-gray-600">
               <p className="flex justify-between border-b pb-2"><span>Gender:</span> <span>{applicant.gender}</span></p>
-              <p className="flex justify-between border-b pb-2"><span>Born:</span> <span>{new Date(applicant.dob).toLocaleDateString()}</span></p>
+              <p className="flex justify-between border-b pb-2"><span>Born:</span> <span>{applicant.dob ? new Date(applicant.dob).toLocaleDateString() : 'N/A'}</span></p>
               <p className="flex justify-between border-b pb-2"><span>City:</span> <span>{applicant.city}</span></p>
             </div>
           </div>
@@ -84,7 +87,6 @@ export default function PublicApplicantDetail() {
           </div>
         </div>
 
-        {/* Experience Section */}
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-white">
           <h2 className="text-lg font-black text-[#00004d] mb-6 flex items-center gap-2">
             <Briefcase size={18} /> Work History
@@ -100,7 +102,7 @@ export default function PublicApplicantDetail() {
                    <h4 className="font-black text-[#00004d]">{exp.designation}</h4>
                    <p className="text-sm font-bold text-gray-500">{exp.companyName}</p>
                    <p className="text-[10px] font-black text-blue-500 mt-2 uppercase tracking-widest">
-                     {new Date(exp.startDate).getFullYear()} - {exp.isCurrentJob ? "Present" : new Date(exp.endDate).getFullYear()}
+                     {exp.startDate ? new Date(exp.startDate).getFullYear() : ''} - {exp.isCurrentJob ? "Present" : exp.endDate ? new Date(exp.endDate).getFullYear() : ''}
                    </p>
                 </div>
               ))}
@@ -108,7 +110,6 @@ export default function PublicApplicantDetail() {
           )}
         </div>
 
-        {/* Achievements */}
         {applicant.achievements && (
             <div className="bg-[#00004d] p-8 rounded-3xl text-white">
                 <h2 className="text-lg font-black mb-3">About / Achievements</h2>
