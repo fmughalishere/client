@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useRef, ChangeEvent, FormEvent } from "react";
+import React, { useState, useRef, ChangeEvent, FormEvent, useMemo } from "react";
 import { motion } from "framer-motion";
 import { 
-  User, Camera, Check, Globe, Calendar, Briefcase, Loader2, CheckCircle
+  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle
 } from "lucide-react";
 import { GrUserManager, GrUserFemale } from "react-icons/gr";
 
@@ -12,7 +12,6 @@ export default function MobileResponsiveJobForm() {
   
   const [activeExpTab, setActiveExpTab] = useState(1);
   const [isFresher, setIsFresher] = useState(false);
-  const [selectedIcon, setSelectedIcon] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -34,12 +33,21 @@ export default function MobileResponsiveJobForm() {
     agreeTerms: false
   });
 
-  const categories = [
-    { options: ["House Maid", "Full Time Maid", "Part Time Maid", "Live-in Maid", "Nanny", "Child Caretaker", "Elderly Caretaker", "Patient Care Attendant", "Home Nurse", "Cook", "Home Chef", "Assistant Cook", "Car Driver", "Truck Driver", "Bus Driver", "Personal Driver", "House Driver", "Office Driver", "Gardener", "Mali", "Security Guard", "Home Security Guard", "Gate Keeper", "Watchman", "Cleaner", "House Cleaner", "Office Cleaner", "Janitor", "Laundry Worker", "Ironing Man (Press Wala)", "Dish Washer", "Kitchen Helper", "Peon", "Office Boy", "House Boy", "Care Taker (General)", "Building Caretaker", "Helper", "General Helper", "Delivery Rider", "Courier Boy", "Receptionist", "Customer Care Taker", "Tractor Driver", "Beautition", "Barber", "Salesman", "Mid-Wife", "LHV", "Lab Technicain", "OTA", "Physiotherapist", "Nutritionist", "Coach", "Waiter", "Trainer", "Pilot", "Mobile Technician", "TV Technician", "Laptop Technician", "Motorcycle Mechanic", "Car Mechanic", "Car Painter", "Plumber", "Carpentar", "Phone Operator", "Air-Hostess", "Steward", "Translator", "Typist"] },
-    { options: ["Administrator", "Office Manager", "Executive Assistant", "Operations Manager", "Farmer", "Livestock Farmer", "Agricultural Engineer", "Agronomist", "Graphic Designer", "Painter", "Illustrator", "Fashion Designer", "Animator", "Mechanical Engineer", "Auto Mechanic", "Technician", "Vehicle Inspector", "Accountant", "Banker", "Auditor", "Financial Analyst", "Business Analyst", "Business Development Manager", "Consultant", "Operations Manager", "Strategy Consultant", "Project Manager", "Customer Support Executive", "Call Center Agent", "Client Relationship Manager", "Civil Engineer", "Structural Engineer", "Site Supervisor", "Data Analyst", "Data Scientist", "Machine Learning Engineer", "AI Researcher", "SEO Specialist", "Content Creator", "Social Media Manager", "Digital Marketer", "Teacher", "Lecturer", "Tutor", "Researcher", "Trainer", "E-commerce Manager", "Online Store Owner", "Marketplace Seller", "Electrical Engineer", "Electronics Technician", "Automation Engineer", "Doctor", "Nurse", "Pharmacist", "Lab Technician", "Surgeon", "HR Manager", "Recruiter", "HR Assistant", "Talent Acquisition Specialist", "Software Developer", "IT Support", "System Administrator", "Network Engineer", "Web Developer", "Frontend Developer", "Backend Developer", "Fullstack Developer", "Lawyer", "Judge", "Police Officer", "Paralegal", "Logistics Manager", "Warehouse Manager", "Supply Chain Analyst", "Driver", "Sales Executive", "Marketing Manager", "Brand Manager", "Business Development Executive", "Actor", "Musician", "Photographer", "Director", "Content Creator", "Pharmacist", "Lab Scientist", "Biotech Researcher", "Clinical Researcher", "Project Manager", "Program Manager", "Project Coordinator", "Researcher", "Lab Scientist", "R&D Engineer", "Biologist", "Chemist", "Physicist", "Lab Technician", "Security Guard", "Security Supervisor", "Investigator", "Social Worker", "NGO Coordinator", "Field Officer", "Telecom Engineer", "Network Technician", "Technical Support", "Travel Agent", "Tour Guide", "Visa Officer", "Ticketing Officer", "Veterinarian", "Animal Caretaker", "Pet Groomer", "Freelancer", "Content Writer", "Designer", "Online Consultant", "Other"] }
-  ];
+  const calculatedAge = useMemo(() => {
+    if (!formData.dob) return null;
+    const birthDate = new Date(formData.dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age < 0 ? 0 : age;
+  }, [formData.dob]);
 
-  const sortedCategories = [...new Set(categories.flatMap(cat => cat.options))].sort((a, b) => a.localeCompare(b));
+  const sortedCategories = [
+    "House Maid", "Full Time Maid", "Part Time Maid", "Live-in Maid", "Nanny", "Child Caretaker", "Elderly Caretaker", "Patient Care Attendant", "Home Nurse", "Cook", "Home Chef", "Assistant Cook", "Car Driver", "Truck Driver", "Bus Driver", "Personal Driver", "House Driver", "Office Driver", "Gardener", "Mali", "Security Guard", "Home Security Guard", "Gate Keeper", "Watchman", "Cleaner", "House Cleaner", "Office Cleaner", "Janitor", "Laundry Worker", "Ironing Man (Press Wala)", "Dish Washer", "Kitchen Helper", "Peon", "Office Boy", "House Boy", "Care Taker (General)", "Building Caretaker", "Helper", "General Helper", "Delivery Rider", "Courier Boy", "Receptionist", "Customer Care Taker", "Tractor Driver", "Beautition", "Barber", "Salesman", "Mid-Wife", "LHV", "Lab Technicain", "OTA", "Physiotherapist", "Nutritionist", "Coach", "Waiter", "Trainer", "Pilot", "Mobile Technician", "TV Technician", "Laptop Technician", "Motorcycle Mechanic", "Car Mechanic", "Car Painter", "Plumber", "Carpentar", "Phone Operator", "Air-Hostess", "Steward", "Translator", "Typist", "Administrator", "Office Manager", "Executive Assistant", "Operations Manager", "Farmer", "Livestock Farmer", "Agricultural Engineer", "Agronomist", "Graphic Designer", "Painter", "Illustrator", "Fashion Designer", "Animator", "Mechanical Engineer", "Auto Mechanic", "Technician", "Vehicle Inspector", "Accountant", "Banker", "Auditor", "Financial Analyst", "Business Analyst", "Business Development Manager", "Consultant", "Strategy Consultant", "Project Manager", "Customer Support Executive", "Call Center Agent", "Client Relationship Manager", "Civil Engineer", "Structural Engineer", "Site Supervisor", "Data Analyst", "Data Scientist", "Machine Learning Engineer", "AI Researcher", "SEO Specialist", "Content Creator", "Social Media Manager", "Digital Marketer", "Teacher", "Lecturer", "Tutor", "Researcher", "E-commerce Manager", "Online Store Owner", "Marketplace Seller", "Electrical Engineer", "Electronics Technician", "Automation Engineer", "Doctor", "Nurse", "Pharmacist", "Surgeon", "HR Manager", "Recruiter", "HR Assistant", "Talent Acquisition Specialist", "Software Developer", "IT Support", "System Administrator", "Network Engineer", "Web Developer", "Frontend Developer", "Backend Developer", "Fullstack Developer", "Lawyer", "Judge", "Police Officer", "Paralegal", "Logistics Manager", "Warehouse Manager", "Supply Chain Analyst", "Sales Executive", "Brand Manager", "Actor", "Musician", "Photographer", "Director", "Biotech Researcher", "Clinical Researcher", "Program Manager", "Project Coordinator", "Biologist", "Chemist", "Physicist", "Investigator", "Social Worker", "NGO Coordinator", "Field Officer", "Telecom Engineer", "Network Technician", "Technical Support", "Travel Agent", "Tour Guide", "Visa Officer", "Ticketing Officer", "Veterinarian", "Animal Caretaker", "Pet Groomer", "Freelancer", "Content Writer", "Online Consultant", "Other"
+  ].sort((a, b) => a.localeCompare(b));
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -58,7 +66,6 @@ export default function MobileResponsiveJobForm() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData({ ...formData, image: reader.result as string });
-        setSelectedIcon("");
       };
       reader.readAsDataURL(file);
     }
@@ -80,16 +87,15 @@ export default function MobileResponsiveJobForm() {
   };
 
   const cities = ["Karachi", "Lahore", "RWP/ISB", "Peshawar", "Quetta", "Multan", "Faisalabad"];
-  const educationLevels = ["Matric", "Intermediate", "Bachelor's", "Master's", "M.Phil / PhD", "Diploma", "Other"];
   const jobTypes = ["Full-Time", "Part-Time", "One-Day Task"];
 
   return (
     <div className="min-h-screen bg-[#f4f7f9] pb-10 font-sans">
       <div className="bg-[#e2f2f5] pt-12 pb-20 md:pt-16 md:pb-24 rounded-b-[40px] md:rounded-b-[60px] text-center border-b border-blue-100 px-4">
-        <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-[#00004d] text-3xl md:text-5xl font-black  tracking-tight">
+        <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-[#00004d] text-3xl md:text-5xl font-black tracking-tight">
           Apply for a Job
         </motion.h1>
-        <p className="text-[#00004d]/60 font-bold text-[10px] md:text-xs mt-3  tracking-[0.2em] md:tracking-[0.4em]">
+        <p className="text-[#00004d]/60 font-bold text-[10px] md:text-xs mt-3 tracking-[0.2em] md:tracking-[0.4em]">
           Create your professional profile
         </p>
       </div>
@@ -97,8 +103,7 @@ export default function MobileResponsiveJobForm() {
       <div className="max-w-4xl mx-auto -mt-12 md:-mt-16 px-4">
         <div className="bg-white rounded-[35px] md:rounded-[45px] shadow-xl overflow-hidden border border-white">
           <form onSubmit={handleSubmit} className="p-6 md:p-14 space-y-12 md:space-y-20">
-            
-            <section className="flex flex-col items-center gap-6">
+              <section className="flex flex-col items-center gap-6">
               <div className="relative">
                 <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-4 md:border-8 border-[#f8fcfd] shadow-lg bg-gray-50 flex items-center justify-center overflow-hidden">
                   {formData.image && formData.image.length > 20 ? (
@@ -116,28 +121,41 @@ export default function MobileResponsiveJobForm() {
                 </button>
               </div>
               <input type="file" ref={fileInputRef} className="hidden" onChange={handleImageChange} accept="image/*" />
-              
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Optional</span>
+              <div className="flex items-center gap-4 w-full max-w-xs">
+                <div className="h-[1px] bg-gray-200 flex-1"></div>
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Or Use Icon</span>
+                <div className="h-[1px] bg-gray-200 flex-1"></div>
+              </div>
+
               <div className="flex gap-4 w-full justify-center">
                   <button type="button" onClick={() => setFormData({...formData, image: "male"})} className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "male" ? 'border-[#00004d] bg-[#00004d] text-white' : 'border-gray-100 text-gray-400'}`}>
-                    <GrUserManager size={20} /> <span className="text-[10px] font-bold ">Male</span>
+                    <GrUserManager size={20} /> <span className="text-[10px] font-bold">Male</span>
                   </button>
                   <button type="button" onClick={() => setFormData({...formData, image: "female"})} className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "female" ? 'border-pink-500 bg-pink-500 text-white' : 'border-gray-100 text-gray-400'}`}>
-                    <GrUserFemale size={20} /> <span className="text-[10px] font-bold ">Female</span>
+                    <GrUserFemale size={20} /> <span className="text-[10px] font-bold">Female</span>
                   </button>
               </div>
             </section>
-
             <section className="space-y-6">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3">
-                <h2 className="text-[#00004d] font-black text-lg  tracking-wider">Personal Details</h2>
+                <h2 className="text-[#00004d] font-black text-lg tracking-wider">Personal Details</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-[#00004d]  ml-1">Full Name</label>
+                  <label className="text-[10px] font-black text-[#00004d] ml-1">Full Name</label>
                   <input required name="fullName" value={formData.fullName} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Enter Your Name" />
                 </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-[#00004d]  ml-1">Date of Birth</label>
+
+                <div className="space-y-1.5 relative">
+                  <div className="flex justify-between items-center ml-1">
+                    <label className="text-[10px] font-black text-[#00004d]">Date of Birth</label>
+                    {calculatedAge !== null && (
+                      <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md animate-pulse">
+                        {calculatedAge} Years Old
+                      </span>
+                    )}
+                  </div>
                   <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" />
                 </div>
                 <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none">
@@ -154,43 +172,40 @@ export default function MobileResponsiveJobForm() {
                 </div>
               </div>
             </section>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-[#00004d]  ml-1 block">Desired Job</label>
+                <label className="text-[10px] font-black text-[#00004d] ml-1 block">Desired Job</label>
                 <select required name="category" value={formData.category} onChange={handleChange} className="w-full bg-[#f8fafc] p-4 rounded-xl font-bold text-[#00004d] text-sm border border-gray-100 outline-none">
                   <option value="">Select Category</option>
                   {sortedCategories.map(opt => (<option key={opt} value={opt}>{opt}</option>))}
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-[#00004d]  ml-1 block">Job Type</label>
+                <label className="text-[10px] font-black text-[#00004d] ml-1 block">Job Type</label>
                 <select name="jobtype" value={formData.jobtype} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none">
                   {jobTypes.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
               </div>
             </div>
-
             <section className="space-y-8">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3">
-                <h2 className="text-[#00004d] font-black text-lg  tracking-wider">Education & Experience</h2>
+                <h2 className="text-[#00004d] font-black text-lg tracking-wider">Education & Experience</h2>
               </div>
               <div className="bg-[#f0f8f9] p-5 md:p-10 rounded-[30px] border-2 border-white shadow-inner">
                   <div className="flex justify-between items-center mb-8">
-                    <h3 className="text-[10px] font-black  text-[#00004d] tracking-widest flex items-center gap-2">
+                    <h3 className="text-[10px] font-black text-[#00004d] tracking-widest flex items-center gap-2">
                       <Briefcase size={14}/> Job Experience
                     </h3>
                     <label className="flex items-center gap-3 bg-white px-6 py-2 rounded-full cursor-pointer shadow-sm active:scale-95 transition-all">
                       <input type="checkbox" checked={isFresher} onChange={(e) => setIsFresher(e.target.checked)} className="accent-[#00004d] w-4 h-4" />
-                      <span className="text-[10px] font-black text-[#00004d] ">Fresher</span>
+                      <span className="text-[10px] font-black text-[#00004d]">Fresher</span>
                     </label>
                   </div>
-
                   {!isFresher && (
                     <div className="space-y-6">
                       <div className="grid grid-cols-3 gap-2">
                         {[1, 2, 3].map((n) => (
-                          <button key={n} type="button" onClick={() => setActiveExpTab(n)} className={`py-2.5 rounded-xl text-[9px] font-black  transition-all ${activeExpTab === n ? 'bg-[#00004d] text-white shadow-md' : 'bg-white text-gray-400'}`}>
+                          <button key={n} type="button" onClick={() => setActiveExpTab(n)} className={`py-2.5 rounded-xl text-[9px] font-black transition-all ${activeExpTab === n ? 'bg-[#00004d] text-white shadow-md' : 'bg-white text-gray-400'}`}>
                             Exp {n}
                           </button>
                         ))}
@@ -198,42 +213,30 @@ export default function MobileResponsiveJobForm() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input value={formData.experienceData[activeExpTab-1].company} onChange={(e)=>handleExpFieldChange('company', e.target.value)} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Company Name" />
                         <input value={formData.experienceData[activeExpTab-1].role} onChange={(e)=>handleExpFieldChange('role', e.target.value)} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Role/Designation" />
+                        <input value={formData.experienceData[activeExpTab-1].role} onChange={(e)=>handleExpFieldChange('role', e.target.value)} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experience Details" />
                       </div>
                     </div>
                   )}
               </div>
             </section>
-
-             <div className="space-y-4">
-                <label className="text-[10px] font-black text-[#00004d]  ml-1 block">Documents (Optional)</label>
-                <div className="bg-[#f8fafc] p-4 rounded-xl border border-dashed border-gray-200">
-                  <span className="text-[8px] font-black text-gray-400 ">Resume / CV</span>
-                  <input type="file" className="block w-full text-[10px] mt-2 file:bg-[#00004d] file:text-white file:border-0 file:rounded-lg file:px-3 file:py-1 file:font-black cursor-pointer" />
-                </div>
-                <div className="bg-[#f8fafc] p-4 rounded-xl border border-dashed border-gray-200">
-                  <span className="text-[8px] font-black text-gray-400 ">Cover Letter</span>
-                  <input type="file" className="block w-full text-[10px] mt-2 file:bg-[#00004d] file:text-white file:border-0 file:rounded-lg file:px-3 file:py-1 file:font-black cursor-pointer" />
-                </div>
-              </div>
-            <div className="flex flex-col items-center gap-8 pt-10 border-t border-[#f8fafc]">
-              <button type="button" className="w-full md:w-auto bg-[#e2f2f5] text-[#00004d] px-12 py-3.5 rounded-full text-[10px] font-black  tracking-widest active:scale-95 transition-all shadow-sm">
+            <div className="flex flex-col items-center gap-8 pt-1 border-t border-[#f8fafc]">
+              <button type="button" className="w-full md:w-auto bg-[#e2f2f5] text-[#00004d] px-12 py-3.5 rounded-full text-[10px] font-black tracking-widest active:scale-95 transition-all shadow-sm">
                 Read Privacy Policy
               </button>
-              </div>
-
+            </div>
             <div className="flex flex-col items-center gap-8 pt-10 border-t">
               <label className="flex items-center gap-3 cursor-pointer">
                 <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${formData.agreeTerms ? 'bg-[#00004d] border-[#00004d]' : 'bg-white border-gray-200'}`}>
                    <input type="checkbox" className="hidden" checked={formData.agreeTerms} onChange={(e)=>setFormData({...formData, agreeTerms: e.target.checked})} />
                    {formData.agreeTerms && <Check size={14} className="text-white" />}
                 </div>
-                <span className="text-[10px] font-black text-gray-400 ">I agree to the privacy policy</span>
+                <span className="text-[10px] font-black text-gray-400">I agree to the privacy policy</span>
               </label>
               <button 
                 type="submit"
                 disabled={loading || submitted}
                 className={`
-                  w-full md:w-80 font-black py-5 rounded-2xl shadow-xl  tracking-[0.2em] text-xs transition-all flex justify-center items-center gap-2
+                  w-full md:w-80 font-black py-5 rounded-2xl shadow-xl tracking-[0.2em] text-xs transition-all flex justify-center items-center gap-2
                   ${submitted ? 'bg-green-600 text-white' : 'bg-[#00004d] text-white active:scale-95'}
                 `}
               >
