@@ -4,7 +4,8 @@ import React, { useState, useRef, ChangeEvent, FormEvent, useMemo } from "react"
 import { motion } from "framer-motion";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import SuccessModal from "../../components/SuccessModal";
+import { useSession } from "next-auth/react";
+import SuccessModal from "../../components/SuccessModal"; 
 import { 
   User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle
 } from "lucide-react";
@@ -13,6 +14,7 @@ import { GrUserManager, GrUserFemale } from "react-icons/gr";
 export default function MobileResponsiveJobForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const { data: session, status } = useSession();
   
   const [activeExpTab, setActiveExpTab] = useState(1);
   const [isFresher, setIsFresher] = useState(false);
@@ -80,9 +82,7 @@ export default function MobileResponsiveJobForm() {
     e.preventDefault();
     if (!formData.agreeTerms) return alert("Please agree to privacy policy");
     
-    const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
-    const token = userInfo.token;
-    if (!token) {
+    if (status === "unauthenticated") {
         router.push("/login");
         return;
     }
@@ -111,11 +111,9 @@ export default function MobileResponsiveJobForm() {
                     isCurrentJob: exp.current
                 }))
         };
-
         const config = {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
             }
         };
 
@@ -258,6 +256,7 @@ export default function MobileResponsiveJobForm() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input value={formData.experienceData[activeExpTab-1].company} onChange={(e)=>handleExpFieldChange('company', e.target.value)} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Company Name" />
                         <input value={formData.experienceData[activeExpTab-1].role} onChange={(e)=>handleExpFieldChange('role', e.target.value)} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Role/Designation" />
+                        <input value={formData.experienceData[activeExpTab-1].role} onChange={(e)=>handleExpFieldChange('role', e.target.value)} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experince Details" />
                       </div>
                     </div>
                   )}
