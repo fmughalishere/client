@@ -2,6 +2,9 @@
 
 import React, { useState, useRef, ChangeEvent, FormEvent, useMemo } from "react";
 import { motion } from "framer-motion";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import SuccessModal from "../../components/SuccessModal";
 import { 
   User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle
 } from "lucide-react";
@@ -9,11 +12,13 @@ import { GrUserManager, GrUserFemale } from "react-icons/gr";
 
 export default function MobileResponsiveJobForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
   
   const [activeExpTab, setActiveExpTab] = useState(1);
   const [isFresher, setIsFresher] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -71,19 +76,59 @@ export default function MobileResponsiveJobForm() {
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!formData.agreeTerms) return alert("Please agree to privacy policy");
     
+    const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    const token = userInfo.token;
+    if (!token) {
+        router.push("/login");
+        return;
+    }
+
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-      alert("Application Submitted Successfully!");
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
-    }, 2000);
+
+    try {
+        const apiPayload = {
+            fullName: formData.fullName,
+            dob: formData.dob,
+            gender: formData.gender,
+            city: formData.city,
+            image: formData.image,
+            jobtype: formData.jobtype,
+            category: formData.category,
+            education: formData.education,
+            isFresher: isFresher,
+            achievements: formData.achievements,
+            experience: isFresher ? [] : formData.experienceData
+                .filter(exp => exp.company.trim() !== "")
+                .map(exp => ({
+                    companyName: exp.company,
+                    designation: exp.role,
+                    startDate: exp.start || null,
+                    endDate: exp.end || null,
+                    isCurrentJob: exp.current
+                }))
+        };
+
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        };
+
+        await axios.post("http://localhost:5000/api/applications", apiPayload, config);
+
+        setLoading(false);
+        setSubmitted(true);
+        setShowModal(true);
+
+    } catch (error: any) {
+        setLoading(false);
+        alert(error.response?.data?.message || "Something went wrong!");
+    }
   };
 
   const cities = ["Karachi", "Lahore", "RWP/ISB", "Peshawar", "Quetta", "Multan", "Faisalabad"];
@@ -213,7 +258,6 @@ export default function MobileResponsiveJobForm() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input value={formData.experienceData[activeExpTab-1].company} onChange={(e)=>handleExpFieldChange('company', e.target.value)} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Company Name" />
                         <input value={formData.experienceData[activeExpTab-1].role} onChange={(e)=>handleExpFieldChange('role', e.target.value)} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Role/Designation" />
-                        <input value={formData.experienceData[activeExpTab-1].role} onChange={(e)=>handleExpFieldChange('role', e.target.value)} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experience Details" />
                       </div>
                     </div>
                   )}
@@ -247,6 +291,15 @@ export default function MobileResponsiveJobForm() {
           </form>
         </div>
       </div>
+      {showModal && (
+        <SuccessModal 
+          isOpen={showModal} 
+          onClose={() => {
+            setShowModal(false);
+            window.location.reload();
+          }} 
+        />
+      )}
     </div>
   );
 }
