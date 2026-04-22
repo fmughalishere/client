@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { IoIosPin } from "react-icons/io";
 
 export default function HomePage() {
-  const [applicants, setApplicants] = useState<any[]>([]); // Mock data hata diya
+  const [applicants, setApplicants] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
@@ -22,15 +22,10 @@ export default function HomePage() {
     { label: "Job Offers", icon: <ClipboardList size={18} />, href: "/jobs" },
   ];
 
-  // API Call to fetch all applicants
   const fetchApplicants = async () => {
     try {
-      const token = localStorage.getItem("token"); // Token zaroori hai protected route k liye
-      const res = await fetch("https://easyjobspk.onrender.com/api/applications/employer/all-applicants", {
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
-      });
+      const token = localStorage.getItem("token");
+      const res = await fetch("https://easyjobspk.onrender.com/api/applications/employer/all-applicants",)
       const data = await res.json();
       if(res.ok) {
         setApplicants(data);

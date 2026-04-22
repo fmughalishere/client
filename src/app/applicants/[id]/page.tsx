@@ -13,12 +13,7 @@ export default function PublicApplicantDetail() {
   useEffect(() => {
     const fetchDetail = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await fetch(`https://easyjobspk.onrender.com/api/applications/${id}`, {
-          headers: {
-            "Authorization": `Bearer ${token}`
-          }
-        });
+        const res = await fetch(`https://easyjobspk.onrender.com/api/applications/${id}`,);
         const data = await res.json();
         if(res.ok) setApplicant(data);
       } catch (err) {
