@@ -59,7 +59,15 @@ const Navbar = () => {
     <header className="relative z-50 w-full bg-white border-b border-gray-100 shadow-sm">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
         <Link href="/">
-          <Image src="/images/header_logo.png" alt="Logo" width={180} height={50} priority className="object-contain" />
+          <Image 
+            src="/images/header-logo.png" 
+            alt="Logo" 
+            width={180} 
+            height={50} 
+            priority 
+            className="object-contain"
+            style={{ height: 'auto' }}
+          />
         </Link>
         <div className="hidden md:flex space-x-2">
           {navLinks.map((link) => (
@@ -73,16 +81,17 @@ const Navbar = () => {
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </nav>
-      <div className="bg-[#00004d] text-white py-3 px-2 flex justify-around items-center w-full">
+      <div className="bg-[#00004d] text-white py-2 px-0 flex justify-around items-center w-full">
         <Link href="/" className="flex items-center gap-1 hover:opacity-80 transition-all">
           <AiFillHome size={18} />
           <span className="text-[10px] sm:text-[13px] whitespace-nowrap">Home</span>
         </Link>
+        <div className="h-5 w-[1px] bg-white/30"></div> 
         <Link href={dashboardLink} className="flex items-center gap-1 hover:opacity-80 transition-all">
           <FaUserGear size={18} />
           <span className="text-[10px] sm:text-[13px] whitespace-nowrap">My Control Panel</span>
         </Link>
-
+        <div className="h-5 w-[1px] bg-white/30"></div>
         <button onClick={handleInstallClick} className="flex items-center gap-1 hover:opacity-80 transition-all">
           <PlusCircle size={18} />
           <span className="text-[10px] sm:text-[13px] whitespace-nowrap">Add to Home Screen</span>

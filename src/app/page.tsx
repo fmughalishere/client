@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Search, MapPin, PlusCircle, Briefcase, Users, ClipboardList, ChevronDown, Loader2, AlertCircle } from "lucide-react";
+import { Search, PlusCircle, Briefcase, Users, ClipboardList, ChevronDown, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useRouter } from "next/navigation";
+import { IoIosPin } from "react-icons/io";
 
 export const MOCK_APPLICANTS = [
   {
@@ -42,25 +43,26 @@ export const MOCK_APPLICANTS = [
   },
   {
     _id: "89g2e309d939146c45e941hi",
-    fullName: "Zain Malik",
-    email: "zain@example.com",
-    category: "Marketing Manager",
-    city: "Islamabad",
-    country: "Pakistan",
-    gender: "Male",
-    dob: "1995-03-10T00:00:00.000Z",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
-    jobtype: "Full-time",
-    education: "MBA",
-    isFresher: true,
-    status: "Pending",
-    experience: []
+    fullName: "Zain Malik", 
+    email: "zain@example.com", 
+    category: "Marketing Manager", 
+    city: "Islamabad", 
+    country: "Pakistan", 
+    gender: "Male", 
+    dob: "1995-03-10T00:00:00.000Z", 
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400", 
+    jobtype: "Full-time", 
+    education: "MBA", 
+    isFresher: true, 
+    status: "Pending", 
+    experience: [] 
   }
 ];
 
 export default function HomePage() {
   const [applicants, setApplicants] = useState<any[]>(MOCK_APPLICANTS); 
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const [visitorCount, setVisitorCount] = useState(0);
 
@@ -92,24 +94,20 @@ export default function HomePage() {
 
   const handleActionClick = (e: React.MouseEvent, action: any) => {
     e.preventDefault();
-    
     if (action.label === "Post a Job") {
       const token = localStorage.getItem("token");
       const user = JSON.parse(localStorage.getItem("user") || "{}");
-
-      if (!token) {
-        router.push("/login");
-        return;
-      }
-
-      if (user.role === "jobseeker") {
-        router.push("/dashboard/employer/post-job");
-        return;
-      }
-
+      if (!token) { router.push("/login"); return; }
+      if (user.role === "jobseeker") { router.push("/dashboard/employer/post-job"); return; }
       router.push(action.href);
     } else {
       router.push(action.href);
+    }
+  };
+
+  const handleSearch = () => {
+    if(searchQuery.trim()) {
+      router.push(`/jobs?search=${searchQuery}`);
     }
   };
 
@@ -121,19 +119,29 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-8 font-sans">
       <section className="px-0 pt-0 relative">
-        <div className="bg-[#e2f2f5] rounded-b-[35px] pt-5 pb-10 px-6 flex flex-col items-center shadow-sm relative">
-          <div className="bg-white text-[#00004d] font-black px-3 py-1 rounded-full tracking-tighter text-[10px] absolute top-2 z-30 shadow-md border border-[#00004d] whitespace-nowrap">
-             Real-time Visitors: {3000 + visitorCount}
-          </div>            
-          <div className="text-center mb-1 mt-5">
+        <div className="bg-[#e2f2f5] rounded-b-[35px] pt-5 pb-10 px-6 flex flex-col items-center shadow-sm relative">          
+          <div className="text-center mb-1 mt-0">
             <h1 className="text-[22px] font-black text-[#00004d] leading-none">Hire easy</h1>
             <h1 className="text-[22px] font-black text-[#00004d] leading-tight">Get hired easy</h1>
           </div>
           <div className="relative w-full max-w-[250px] mt-4">
-             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
               <Search className="h-4 w-4 text-[#00004d]" strokeWidth={3} />
             </div>
-            <input type="text" placeholder="Search jobs..." className="block w-full pl-9 pr-4 py-2 bg-white border border-[#00004d] rounded-full shadow-md text-xs text-[#00004d] font-bold outline-none" />
+            <input 
+              type="text" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              placeholder="Search jobs..." 
+              className="block w-full pl-9 pr-12 py-2 bg-white border border-[#00004d] rounded-full shadow-md text-xs text-[#00004d] font-bold outline-none" 
+            />
+            <button 
+              onClick={handleSearch}
+              className="absolute inset-y-0 right-0 pr-4 flex items-center text-[#00004d] font-black text-[13px] hover:opacity-70 active:scale-90 transition-all"
+            >
+              Go
+            </button>
           </div>
         </div>
       </section>
@@ -146,9 +154,9 @@ export default function HomePage() {
               onClick={(e) => handleActionClick(e, action)}
               className="w-full max-w-[210px] transition-transform active:scale-95"
             >
-              <div className="flex items-center justify-center gap-2 h-[40px] bg-[#e2f2f5] rounded-full shadow border border-[#00004d] text-[#00004d] hover:bg-[#00004d] hover:text-white transition-all duration-300 group">
+              <div className="flex items-center justify-center gap-2 h-[40px] bg-[#00004d] rounded-full text-white transition-all duration-300 group">
                 <span>{action.icon}</span>
-                <span className="font-bold text-[13px] whitespace-nowrap">{action.label}</span>
+                <span className="font-normal text-[13px] whitespace-nowrap">{action.label}</span>
               </div>
             </button>
           ))}
@@ -183,7 +191,7 @@ export default function HomePage() {
                   <span className="text-[10px] font-bold text-gray-400 mt-1">{getExperienceLabel(app)}</span>
                 </div>
                 <div className="absolute top-3 right-4 flex flex-col items-center">
-                  <MapPin size={14} className="text-[#00004d]" strokeWidth={4} />
+                  <IoIosPin size={14} className="text-[#00004d]" strokeWidth={4} />
                   <span className="font-bold text-[#00004d] text-[9px]">{app.city}</span>
                 </div>
                 <button 
