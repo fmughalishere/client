@@ -2,10 +2,6 @@
 
 import React, { useState, useRef, ChangeEvent, FormEvent, useMemo } from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import SuccessModal from "../../components/SuccessModal"; 
 import { 
   User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle
 } from "lucide-react";
@@ -13,14 +9,11 @@ import { GrUserManager, GrUserFemale } from "react-icons/gr";
 
 export default function MobileResponsiveJobForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
-  const { data: session, status } = useSession();
   
   const [activeExpTab, setActiveExpTab] = useState(1);
   const [isFresher, setIsFresher] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [showModal, setShowModal] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -82,50 +75,46 @@ export default function MobileResponsiveJobForm() {
     e.preventDefault();
     if (!formData.agreeTerms) return alert("Please agree to privacy policy");
     
-    if (status === "unauthenticated") {
-        router.push("/login");
-        return;
-    }
-
     setLoading(true);
 
     try {
-        const apiPayload = {
-            fullName: formData.fullName,
-            dob: formData.dob,
-            gender: formData.gender,
-            city: formData.city,
-            image: formData.image,
-            jobtype: formData.jobtype,
-            category: formData.category,
-            education: formData.education,
-            isFresher: isFresher,
-            achievements: formData.achievements,
-            experience: isFresher ? [] : formData.experienceData
-                .filter(exp => exp.company.trim() !== "")
-                .map(exp => ({
-                    companyName: exp.company,
-                    designation: exp.role,
-                    startDate: exp.start || null,
-                    endDate: exp.end || null,
-                    isCurrentJob: exp.current
-                }))
-        };
-        const config = {
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
+      const token = localStorage.getItem("token"); 
+      const response = await fetch("https://easyjobspk.onrender.com/api/applications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          dob: formData.dob,
+          gender: formData.gender,
+          city: formData.city,
+          image: formData.image,
+          jobType: formData.jobtype,
+          category: formData.category,
+          education: formData.education,
+          experience: isFresher ? [] : formData.experienceData.filter(exp => exp.company !== ""),
+          achievements: formData.achievements
+        }),
+      });
 
-        await axios.post("http://localhost:5000/api/applications", apiPayload, config);
+      const data = await response.json();
 
-        setLoading(false);
+      if (response.ok) {
         setSubmitted(true);
-        setShowModal(true);
-
-    } catch (error: any) {
-        setLoading(false);
-        alert(error.response?.data?.message || "Something went wrong!");
+        alert("Application Submitted Successfully!");
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        alert(data.message || "Something went wrong. Please check if you are logged in.");
+      }
+    } catch (error) {
+      console.error("Submission Error:", error);
+      alert("Server is not responding. Check your connection.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -256,17 +245,12 @@ export default function MobileResponsiveJobForm() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input value={formData.experienceData[activeExpTab-1].company} onChange={(e)=>handleExpFieldChange('company', e.target.value)} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Company Name" />
                         <input value={formData.experienceData[activeExpTab-1].role} onChange={(e)=>handleExpFieldChange('role', e.target.value)} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Role/Designation" />
-                        <input value={formData.experienceData[activeExpTab-1].role} onChange={(e)=>handleExpFieldChange('role', e.target.value)} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experince Details" />
+                        <textarea value={formData.achievements} name="achievements" onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none md:col-span-2" placeholder="Experience Details or Achievements" rows={3} />
                       </div>
                     </div>
                   )}
               </div>
             </section>
-            <div className="flex flex-col items-center gap-8 pt-1 border-t border-[#f8fafc]">
-              <button type="button" className="w-full md:w-auto bg-[#e2f2f5] text-[#00004d] px-12 py-3.5 rounded-full text-[10px] font-black tracking-widest active:scale-95 transition-all shadow-sm">
-                Read Privacy Policy
-              </button>
-            </div>
             <div className="flex flex-col items-center gap-8 pt-10 border-t">
               <label className="flex items-center gap-3 cursor-pointer">
                 <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${formData.agreeTerms ? 'bg-[#00004d] border-[#00004d]' : 'bg-white border-gray-200'}`}>
@@ -281,6 +265,7 @@ export default function MobileResponsiveJobForm() {
                 className={`
                   w-full md:w-80 font-black py-5 rounded-2xl shadow-xl tracking-[0.2em] text-xs transition-all flex justify-center items-center gap-2
                   ${submitted ? 'bg-green-600 text-white' : 'bg-[#00004d] text-white active:scale-95'}
+                  ${loading ? 'opacity-70 cursor-not-allowed' : ''}
                 `}
               >
                 {loading ? <Loader2 className="animate-spin" size={18}/> : submitted ? <CheckCircle size={18}/> : "Submit Application"}
@@ -290,15 +275,6 @@ export default function MobileResponsiveJobForm() {
           </form>
         </div>
       </div>
-      {showModal && (
-        <SuccessModal 
-          isOpen={showModal} 
-          onClose={() => {
-            setShowModal(false);
-            window.location.reload();
-          }} 
-        />
-      )}
     </div>
   );
 }
