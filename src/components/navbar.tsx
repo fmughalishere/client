@@ -81,17 +81,17 @@ const Navbar = () => {
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </nav>
-      <div className="bg-[#00004d] text-white py-2 px-0 flex justify-around items-center w-full">
+      <div className="bg-[#00004d] text-white py-1 px-0 flex justify-around items-center w-full">
         <Link href="/" className="flex items-center gap-1 hover:opacity-80 transition-all">
           <AiFillHome size={18} />
           <span className="text-[10px] sm:text-[13px] whitespace-nowrap">Home</span>
         </Link>
-        <div className="h-5 w-[1px] bg-white/30"></div> 
+        <div className="h-5 w-[1px] bg-white"></div> 
         <Link href={dashboardLink} className="flex items-center gap-1 hover:opacity-80 transition-all">
           <FaUserGear size={18} />
           <span className="text-[10px] sm:text-[13px] whitespace-nowrap">My Control Panel</span>
         </Link>
-        <div className="h-5 w-[1px] bg-white/30"></div>
+        <div className="h-5 w-[1px] bg-white"></div>
         <button onClick={handleInstallClick} className="flex items-center gap-1 hover:opacity-80 transition-all">
           <PlusCircle size={18} />
           <span className="text-[10px] sm:text-[13px] whitespace-nowrap">Add to Home Screen</span>

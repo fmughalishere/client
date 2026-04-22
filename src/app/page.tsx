@@ -134,14 +134,17 @@ export default function HomePage() {
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               placeholder="Search jobs..." 
-              className="block w-full pl-9 pr-12 py-2 bg-white border border-[#00004d] rounded-full shadow-md text-xs text-[#00004d] font-bold outline-none" 
+              className="block w-full pl-9 pr-14 py-2 bg-white border border-[#00004d] rounded-full shadow-md text-xs text-[#00004d] font-bold outline-none" 
             />
-            <button 
-              onClick={handleSearch}
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-[#00004d] font-black text-[13px] hover:opacity-70 active:scale-90 transition-all"
-            >
-              Go
-            </button>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 gap-2">
+              <div className="h-4 w-[1px] bg-[#00004d]"></div>
+              <button 
+                onClick={handleSearch}
+                className="text-[#00004d] font-black text-[13px] hover:opacity-70 active:scale-90 transition-all"
+              >
+                Go
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -190,10 +193,11 @@ export default function HomePage() {
                   <p className="text-[12px] font-bold text-gray-700 truncate">{app.category}</p>
                   <span className="text-[10px] font-bold text-gray-400 mt-1">{getExperienceLabel(app)}</span>
                 </div>
-                <div className="absolute top-3 right-4 flex flex-col items-center">
-                  <IoIosPin size={14} className="text-[#00004d]" strokeWidth={4} />
+                  <div className="absolute top-3 right-4 flex flex-col items-center">
+                  <IoIosPin size={14} className="text-[#00004d]" />
                   <span className="font-bold text-[#00004d] text-[9px]">{app.city}</span>
                 </div>
+
                 <button 
                   onClick={() => router.push(`/dashboard/employer/applicants/${app._id}`)}
                   className="absolute bottom-3 right-4 bg-[#00004d] text-white px-2 py-1 rounded-full text-[11px] font-bold shadow-sm active:scale-95 transition-transform"
