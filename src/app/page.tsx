@@ -169,7 +169,7 @@ export default function HomePage() {
 
                 <button 
                   onClick={() => router.push(`/applicants/${app._id}`)}
-                  className="absolute bottom-3 right-4 bg-[#00004d] text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-sm active:scale-95 transition-transform"
+                  className="absolute bottom-3 right-4 bg-[#00004d] text-white px-2 py-1 rounded-full text-[10px] font-bold shadow-sm active:scale-95 transition-transform"
                 >
                   Visit profile
                 </button>
