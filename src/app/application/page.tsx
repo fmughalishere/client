@@ -1,19 +1,64 @@
 "use client";
 
 import React, { useState, useRef, ChangeEvent, FormEvent, useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
-  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle
+  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, X
 } from "lucide-react";
 import { GrUserManager, GrUserFemale } from "react-icons/gr";
 
+interface SuccessModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  message: string;
+}
+
+function SuccessModal({ isOpen, onClose, title, message }: SuccessModalProps) {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            onClick={onClose} 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
+          />
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0, y: 50 }} 
+            animate={{ scale: 1, opacity: 1, y: 0 }} 
+            exit={{ scale: 0.9, opacity: 0, y: 50 }} 
+            className="relative w-full max-w-[340px] md:max-w-sm bg-white rounded-[30px] p-6 md:p-8 text-center shadow-2xl"
+          >
+            <div className="flex justify-center mb-4">
+              <div className="bg-green-100 p-3 rounded-full">
+                <CheckCircle2 size={40} className="text-green-500 md:w-12 md:h-12" />
+              </div>
+            </div>
+            <h3 className="text-xl md:text-2xl font-black text-[#00004d] mb-2">{title}</h3>
+            <p className="text-sm md:text-base text-gray-500 mb-6 md:mb-8 leading-relaxed">{message}</p>
+            <button 
+              onClick={onClose} 
+              className="w-full bg-[#00004d] text-white py-4 rounded-full font-black text-sm md:text-base active:scale-95 transition-transform"
+            >
+              Go to Dashboard
+            </button>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export default function MobileResponsiveJobForm() {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  const [activeExpTab, setActiveExpTab] = useState(1);
+  const fileInputRef = useRef<HTMLInputElement>(null); 
   const [isFresher, setIsFresher] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: "", message: "" });
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -24,11 +69,7 @@ export default function MobileResponsiveJobForm() {
     jobtype: "Full-Time",
     category: "",
     education: "Matric",
-    experienceData: [
-      { company: "", role: "", start: "", end: "", current: false },
-      { company: "", role: "", start: "", end: "", current: false },
-      { company: "", role: "", start: "", end: "", current: false }
-    ],
+    yearsOfExperience: "",
     achievements: "",
     agreeTerms: false
   });
@@ -54,12 +95,6 @@ export default function MobileResponsiveJobForm() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleExpFieldChange = (field: string, value: any) => {
-    const updatedExp = [...formData.experienceData];
-    (updatedExp[activeExpTab - 1] as any)[field] = value;
-    setFormData(prev => ({ ...prev, experienceData: updatedExp }));
-  };
-
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -73,18 +108,21 @@ export default function MobileResponsiveJobForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!formData.agreeTerms) return alert("Please agree to privacy policy");
+    if (!formData.agreeTerms) {
+      setModalContent({
+        title: "Agreement Required",
+        message: "Please agree to the privacy policy before submitting."
+      });
+      setIsModalOpen(true);
+      return;
+    }
     
     setLoading(true);
 
     try {
-      const token = localStorage.getItem("token"); 
       const response = await fetch("https://easyjobspk.onrender.com/api/applications", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           fullName: formData.fullName,
           dob: formData.dob,
@@ -94,7 +132,7 @@ export default function MobileResponsiveJobForm() {
           jobType: formData.jobtype,
           category: formData.category,
           education: formData.education,
-          experience: isFresher ? [] : formData.experienceData.filter(exp => exp.company !== ""),
+          yearsOfExperience: isFresher ? "Fresher" : formData.yearsOfExperience, 
           achievements: formData.achievements
         }),
       });
@@ -103,26 +141,49 @@ export default function MobileResponsiveJobForm() {
 
       if (response.ok) {
         setSubmitted(true);
-        alert("Application Submitted Successfully!");
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        setModalContent({
+          title: "Application Received!",
+          message: "Your job application has been submitted successfully. We will get back to you soon."
+        });
+        setIsModalOpen(true);
       } else {
-        alert(data.message || "Something went wrong. Please check if you are logged in.");
+        setModalContent({
+          title: "Submission Failed",
+          message: data.message || "Something went wrong. Please check if you are logged in."
+        });
+        setIsModalOpen(true);
       }
     } catch (error) {
       console.error("Submission Error:", error);
-      alert("Server is not responding. Check your connection.");
+      setModalContent({
+        title: "Connection Error",
+        message: "Server is not responding. Check your internet connection."
+      });
+      setIsModalOpen(true);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    if (submitted) {
+        window.location.reload();
+    }
+  };
+
   const cities = ["Karachi", "Lahore", "RWP/ISB", "Peshawar", "Quetta", "Multan", "Faisalabad"];
   const jobTypes = ["Full-Time", "Part-Time", "One-Day Task"];
+  const educationOptions = ["Matric", "Intermediate", "Bachelors", "Masters", "M-Phil", "PhD", "Diploma"];
 
   return (
     <div className="min-h-screen bg-[#f4f7f9] pb-10 font-sans">
+      <SuccessModal 
+        isOpen={isModalOpen} 
+        onClose={handleModalClose} 
+        title={modalContent.title} 
+        message={modalContent.message} 
+      />
       <div className="bg-[#e2f2f5] pt-12 pb-20 md:pt-16 md:pb-24 rounded-b-[40px] md:rounded-b-[60px] text-center border-b border-blue-100 px-4">
         <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-[#00004d] text-3xl md:text-5xl font-black tracking-tight">
           Apply for a Job
@@ -135,7 +196,7 @@ export default function MobileResponsiveJobForm() {
       <div className="max-w-4xl mx-auto -mt-12 md:-mt-16 px-4">
         <div className="bg-white rounded-[35px] md:rounded-[45px] shadow-xl overflow-hidden border border-white">
           <form onSubmit={handleSubmit} className="p-6 md:p-14 space-y-12 md:space-y-20">
-              <section className="flex flex-col items-center gap-6">
+            <section className="flex flex-col items-center gap-6">
               <div className="relative">
                 <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-4 md:border-8 border-[#f8fcfd] shadow-lg bg-gray-50 flex items-center justify-center overflow-hidden">
                   {formData.image && formData.image.length > 20 ? (
@@ -159,7 +220,6 @@ export default function MobileResponsiveJobForm() {
                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Or Use Icon</span>
                 <div className="h-[1px] bg-gray-200 flex-1"></div>
               </div>
-
               <div className="flex gap-4 w-full justify-center">
                   <button type="button" onClick={() => setFormData({...formData, image: "male"})} className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "male" ? 'border-[#00004d] bg-[#00004d] text-white' : 'border-gray-100 text-gray-400'}`}>
                     <GrUserManager size={20} /> <span className="text-[10px] font-bold">Male</span>
@@ -223,35 +283,55 @@ export default function MobileResponsiveJobForm() {
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3">
                 <h2 className="text-[#00004d] font-black text-lg tracking-wider">Education & Experience</h2>
               </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-[#00004d] ml-1 block">Education</label>
+                <select name="education" value={formData.education} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none">
+                  {educationOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
               <div className="bg-[#f0f8f9] p-5 md:p-10 rounded-[30px] border-2 border-white shadow-inner">
                   <div className="flex justify-between items-center mb-8">
-                    <h3 className="text-[10px] font-black text-[#00004d] tracking-widest flex items-center gap-2">
-                      <Briefcase size={14}/> Job Experience
+                    <h3 className="text-[10px] font-black text-[#00004d] tracking-widest flex items-center gap-2 uppercase">
+                      <Briefcase size={14}/> Work Experience
                     </h3>
                     <label className="flex items-center gap-3 bg-white px-6 py-2 rounded-full cursor-pointer shadow-sm active:scale-95 transition-all">
                       <input type="checkbox" checked={isFresher} onChange={(e) => setIsFresher(e.target.checked)} className="accent-[#00004d] w-4 h-4" />
                       <span className="text-[10px] font-black text-[#00004d]">Fresher</span>
                     </label>
                   </div>
+                  
                   {!isFresher && (
                     <div className="space-y-6">
-                      <div className="grid grid-cols-3 gap-2">
-                        {[1, 2, 3].map((n) => (
-                          <button key={n} type="button" onClick={() => setActiveExpTab(n)} className={`py-2.5 rounded-xl text-[9px] font-black transition-all ${activeExpTab === n ? 'bg-[#00004d] text-white shadow-md' : 'bg-white text-gray-400'}`}>
-                            Exp {n}
-                          </button>
-                        ))}
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-[#00004d] ml-1 block">How many years of experience?</label>
+                        <input 
+                          type="text"
+                          name="yearsOfExperience"
+                          value={formData.yearsOfExperience}
+                          onChange={handleChange}
+                          className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none border border-transparent focus:border-[#00004d] transition-all" 
+                          placeholder="e.g. 2 Years, 5 Months, 10 Years etc." 
+                        />
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input value={formData.experienceData[activeExpTab-1].company} onChange={(e)=>handleExpFieldChange('company', e.target.value)} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Company Name" />
-                        <input value={formData.experienceData[activeExpTab-1].role} onChange={(e)=>handleExpFieldChange('role', e.target.value)} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Role/Designation" />
-                        <textarea value={formData.achievements} name="achievements" onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none md:col-span-2" placeholder="Experience Details or Achievements" rows={3} />
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-[#00004d] ml-1 block">Experience Details or Achievements</label>
+                        <textarea 
+                          value={formData.achievements} 
+                          name="achievements" 
+                          onChange={handleChange} 
+                          className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" 
+                          placeholder="Tell us more about your work..." 
+                          rows={4} 
+                        />
                       </div>
                     </div>
                   )}
               </div>
             </section>
             <div className="flex flex-col items-center gap-8 pt-10 border-t">
+              <button type="button" className="w-full md:w-auto bg-[#e2f2f5] text-[#00004d] px-12 py-3.5 rounded-full text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all shadow-sm">
+                Read Privacy Policy
+              </button>
               <label className="flex items-center gap-3 cursor-pointer">
                 <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${formData.agreeTerms ? 'bg-[#00004d] border-[#00004d]' : 'bg-white border-gray-200'}`}>
                    <input type="checkbox" className="hidden" checked={formData.agreeTerms} onChange={(e)=>setFormData({...formData, agreeTerms: e.target.checked})} />

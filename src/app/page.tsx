@@ -62,8 +62,17 @@ export default function HomePage() {
       router.push(`/jobs?search=${searchQuery}`);
     }
   };
-
+  const calculateAge = (dob: string) => {
+    if (!dob) return "";
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) age--;
+    return age;
+  };
   const getExperienceLabel = (app: any) => {
+    if (app.yearsOfExperience) return app.yearsOfExperience;
     if (app.isFresher || !app.experience || app.experience.length === 0) return "Fresher";
     return "Experienced"; 
   };
@@ -140,19 +149,27 @@ export default function HomePage() {
                 <div className="w-16 h-16 rounded-full border-2 border-[#00004d] overflow-hidden relative bg-gray-50 flex items-center justify-center">
                   <Image src={app.image || "https://via.placeholder.com/150"} alt={app.fullName || "User"} fill className="object-cover" unoptimized />
                 </div>
-                <div className="flex flex-col overflow-hidden flex-1">
-                  <h2 className="text-base font-black text-[#00004d] truncate">{app.fullName}</h2>
-                  <p className="text-[12px] font-bold text-gray-700 truncate">{app.category}</p>
-                  <span className="text-[10px] font-bold text-gray-400 mt-1">{getExperienceLabel(app)}</span>
+                <div className="flex flex-col overflow-hidden flex-1 pr-10">
+                  <h2 className="text-[15px] font-black text-[#00004d] truncate leading-tight">{app.fullName}</h2>
+                  <p className="text-[11px] font-bold text-gray-700 truncate">{app.category}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-[9px] font-black text-[#00004d] bg-white/50 px-1.5 py-0.5 rounded shadow-sm italic">
+                      {calculateAge(app.dob)} Years Old
+                    </span>
+                    <span className="text-[9px] font-bold text-gray-500 truncate">
+                      • {getExperienceLabel(app)}
+                    </span>
+                  </div>
                 </div>
-                  <div className="absolute top-3 right-4 flex flex-col items-center">
+
+                <div className="absolute top-3 right-4 flex flex-col items-center">
                   <IoIosPin size={14} className="text-[#00004d]" />
-                  <span className="font-bold text-[#00004d] text-[9px]">{app.city}</span>
+                  <span className="font-bold text-[#00004d] text-[9px] uppercase">{app.city}</span>
                 </div>
 
                 <button 
-                  onClick={() => router.push(`/dashboard/employer/applicants/${app._id}`)}
-                  className="absolute bottom-3 right-4 bg-[#00004d] text-white px-2 py-1 rounded-full text-[11px] font-bold shadow-sm active:scale-95 transition-transform"
+                  onClick={() => router.push(`/applicants/${app._id}`)}
+                  className="absolute bottom-3 right-4 bg-[#00004d] text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-sm active:scale-95 transition-transform"
                 >
                   Visit profile
                 </button>
