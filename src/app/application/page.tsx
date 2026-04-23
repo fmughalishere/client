@@ -3,7 +3,7 @@
 import React, { useState, useRef, ChangeEvent, FormEvent, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, X
+  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, X, Wand2
 } from "lucide-react";
 import { GrUserManager, GrUserFemale } from "react-icons/gr";
 
@@ -59,7 +59,7 @@ export default function MobileResponsiveJobForm() {
   const [submitted, setSubmitted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
-  const token = localStorage.getItem("token"); 
+  
   const [formData, setFormData] = useState({
     fullName: "",
     dob: "",
@@ -70,6 +70,7 @@ export default function MobileResponsiveJobForm() {
     category: "",
     education: "Matric",
     yearsOfExperience: "",
+    skills: "",
     achievements: "",
     agreeTerms: false
   });
@@ -108,6 +109,8 @@ export default function MobileResponsiveJobForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    const token = localStorage.getItem("token"); 
+
     if (!formData.agreeTerms) {
       setModalContent({
         title: "Agreement Required",
@@ -122,19 +125,22 @@ export default function MobileResponsiveJobForm() {
     try {
       const response = await fetch("https://easyjobspk.onrender.com/api/applications", {
         method: "POST",
-        headers: { "Content-Type": "application/json",
+        headers: { 
+          "Content-Type": "application/json",
           "Authorization": `Bearer ${token}` 
-         },
+        },
         body: JSON.stringify({
           fullName: formData.fullName,
           dob: formData.dob,
           gender: formData.gender,
           city: formData.city,
           image: formData.image,
-          jobType: formData.jobtype,
+          jobtype: formData.jobtype,
           category: formData.category,
           education: formData.education,
-          yearsOfExperience: isFresher ? "Fresher" : formData.yearsOfExperience, 
+          isFresher: isFresher,
+          yearsOfExperience: isFresher ? "Fresher" : formData.yearsOfExperience,
+          skills: formData.skills.split(",").map(s => s.trim()),
           achievements: formData.achievements
         }),
       });
@@ -328,6 +334,22 @@ export default function MobileResponsiveJobForm() {
                       </div>
                     </div>
                   )}
+              </div>
+            </section>
+            <section className="space-y-6">
+              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3">
+                <h2 className="text-[#00004d] font-black text-lg tracking-wider">Skills</h2>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-[#00004d] ml-1 block">Your Skills (Comma Separated)</label>
+                <input 
+                  type="text"
+                  name="skills"
+                  value={formData.skills}
+                  onChange={handleChange}
+                  className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none focus:border-[#00004d] transition-all" 
+                  placeholder="e.g. Cooking, Driving, Cleaning, Security" 
+                />
               </div>
             </section>
             <div className="flex flex-col items-center gap-8 pt-10 border-t">

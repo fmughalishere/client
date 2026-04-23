@@ -2,11 +2,15 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Search, PlusCircle, Briefcase, Users, ClipboardList, ChevronDown, Loader2 } from "lucide-react";
+import { 
+  Search, PlusCircle, Briefcase, Users, ClipboardList, 
+  ChevronDown, Loader2, User 
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useRouter } from "next/navigation";
 import { IoIosPin } from "react-icons/io";
+import { GrUserManager, GrUserFemale } from "react-icons/gr";
 
 export default function HomePage() {
   const [applicants, setApplicants] = useState<any[]>([]);
@@ -25,7 +29,12 @@ export default function HomePage() {
   const fetchApplicants = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("https://easyjobspk.onrender.com/api/applications/employer/all-applicants",)
+      // Authorization header add kiya taake backend reject na kare
+      const res = await fetch("https://easyjobspk.onrender.com/api/applications/employer/all-applicants", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
       const data = await res.json();
       if(res.ok) {
         setApplicants(data);
@@ -62,8 +71,9 @@ export default function HomePage() {
       router.push(`/jobs?search=${searchQuery}`);
     }
   };
+
   const calculateAge = (dob: string) => {
-    if (!dob) return "";
+    if (!dob) return "N/A";
     const birthDate = new Date(dob);
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -71,6 +81,7 @@ export default function HomePage() {
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) age--;
     return age;
   };
+
   const getExperienceLabel = (app: any) => {
     if (app.yearsOfExperience) return app.yearsOfExperience;
     if (app.isFresher || !app.experience || app.experience.length === 0) return "Fresher";
@@ -146,9 +157,27 @@ export default function HomePage() {
           ) : applicants.length > 0 ? (
             applicants.map((app: any, idx: number) => (
               <div key={idx} className="bg-[#e2f2f5] border border-gray-100 rounded-3xl p-3 flex items-center gap-4 relative shadow-sm h-21">
-                <div className="w-16 h-16 rounded-full border-2 border-[#00004d] overflow-hidden relative bg-gray-50 flex items-center justify-center">
-                  <Image src={app.image || "https://via.placeholder.com/150"} alt={app.fullName || "User"} fill className="object-cover" unoptimized />
+                
+                {/* Profile Image / Icon Logic Start */}
+                <div className="w-16 h-16 rounded-full border-2 border-[#00004d] overflow-hidden relative bg-white flex items-center justify-center">
+                  {app.image === "male" ? (
+                    <GrUserManager size={38} className="text-[#00004d]" />
+                  ) : app.image === "female" ? (
+                    <GrUserFemale size={38} className="text-pink-500" />
+                  ) : app.image ? (
+                    <Image 
+                      src={app.image} 
+                      alt={app.fullName || "User"} 
+                      fill 
+                      className="object-cover" 
+                      unoptimized 
+                    />
+                  ) : (
+                    <User size={30} className="text-gray-300" />
+                  )}
                 </div>
+                {/* Profile Image / Icon Logic End */}
+
                 <div className="flex flex-col overflow-hidden flex-1 pr-10">
                   <h2 className="text-[15px] font-black text-[#00004d] truncate leading-tight">{app.fullName}</h2>
                   <p className="text-[11px] font-bold text-gray-700 truncate">{app.category}</p>
