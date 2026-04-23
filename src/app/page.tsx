@@ -10,6 +10,7 @@ import { io } from "socket.io-client";
 import { useRouter } from "next/navigation";
 import { IoIosPin } from "react-icons/io";
 import { GrUserManager, GrUserFemale } from "react-icons/gr";
+import { LuChevronsRight } from "react-icons/lu";
 
 export default function HomePage() {
   const [applicants, setApplicants] = useState<any[]>([]);
@@ -29,14 +30,10 @@ export default function HomePage() {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch("https://easyjobspk.onrender.com/api/applications/employer/all-applicants", {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
+        headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();
-      if(res.ok) {
-        setApplicants(data);
-      }
+      if(res.ok) setApplicants(data);
     } catch (error) {
       console.error("Error fetching data");
     } finally {
@@ -51,23 +48,8 @@ export default function HomePage() {
     return () => { socket.disconnect(); };
   }, []);
 
-  const handleActionClick = (e: React.MouseEvent, action: any) => {
-    e.preventDefault();
-    if (action.label === "Post a Job") {
-      const token = localStorage.getItem("token");
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
-      if (!token) { router.push("/login"); return; }
-      if (user.role === "jobseeker") { router.push("/dashboard/employer/post-job"); return; }
-      router.push(action.href);
-    } else {
-      router.push(action.href);
-    }
-  };
-
   const handleSearch = () => {
-    if(searchQuery.trim()) {
-      router.push(`/jobs?search=${searchQuery}`);
-    }
+    if(searchQuery.trim()) router.push(`/jobs?search=${searchQuery}`);
   };
 
   const calculateAge = (dob: string) => {
@@ -82,8 +64,7 @@ export default function HomePage() {
 
   const getExperienceLabel = (app: any) => {
     if (app.isFresher === true || app.yearsOfExperience === "Fresher") return "Fresher";
-    if (app.yearsOfExperience) return app.yearsOfExperience;
-    return "Fresher";
+    return app.yearsOfExperience || "Fresher";
   };
 
   return (
@@ -106,14 +87,9 @@ export default function HomePage() {
               placeholder="Search jobs..." 
               className="block w-full pl-9 pr-14 py-2 bg-white border border-[#00004d] rounded-full shadow-md text-xs text-[#00004d] font-bold outline-none" 
             />
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 gap-2">
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3 gap-2">
               <div className="h-4 w-[1px] bg-[#00004d]"></div>
-              <button 
-                onClick={handleSearch}
-                className="text-[#00004d] font-black text-[13px] hover:opacity-70 active:scale-90 transition-all"
-              >
-                Go
-              </button>
+              <button onClick={handleSearch} className="text-[#00004d] font-black text-[13px] hover:opacity-70">Go</button>
             </div>
           </div>
         </div>
@@ -122,12 +98,8 @@ export default function HomePage() {
       <section className="max-w-md mx-auto px-6 -mt-6 relative z-20">
         <div className="flex flex-col gap-2 items-center justify-center w-full">
           {quickActions.map((action, i) => (
-            <button 
-              key={i} 
-              onClick={(e) => handleActionClick(e, action)}
-              className="w-full max-w-[210px] transition-transform active:scale-95"
-            >
-              <div className="flex items-center justify-center gap-2 h-[40px] bg-[#00004d] rounded-full text-white transition-all duration-300 group">
+            <button key={i} onClick={() => router.push(action.href)} className="w-full max-w-[210px] transition-transform active:scale-95">
+              <div className="flex items-center justify-center gap-2 h-[40px] bg-[#00004d] rounded-full text-white">
                 <span>{action.icon}</span>
                 <span className="font-normal text-[13px] whitespace-nowrap">{action.label}</span>
               </div>
@@ -138,64 +110,55 @@ export default function HomePage() {
 
       <section className="max-w-[360px] mx-auto px-4 mt-4 mb-4 relative z-30">
         <div className="bg-[#e2f2f5] text-[#00004d] rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm border border-[#00004d]"> 
-          <span className="text-[16px] font-black tracking-[0.2em] leading-none mb-1 text-center px-4">
-            I am seeking for a job
-          </span>
+          <span className="text-[16px] font-black tracking-[0.2em] leading-none mb-1 text-center px-4">I am seeking for a job</span>
           <div className="flex flex-col items-center -space-y-3">
             <ChevronDown size={20} strokeWidth={4} />
             <ChevronDown size={20} strokeWidth={4} className="opacity-40" />
           </div>
         </div>
       </section>
-
       <section className="max-w-[360px] mx-auto px-4 mt-2 mb-10">
         <div className="flex flex-col gap-3">
           {loading ? (
              <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#00004d]" /></div>
           ) : applicants.length > 0 ? (
             applicants.map((app: any, idx: number) => (
-              <div key={idx} className="bg-[#e2f2f5] border border-gray-100 rounded-3xl p-3 flex items-center gap-4 relative shadow-sm h-21">
-               <div className="w-16 h-16 rounded-full border-2 border-[#00004d] overflow-hidden relative bg-white flex items-center justify-center">
+              <div key={idx} className="bg-white border border-gray-100 rounded-[15px] p-3 flex items-center gap-3 relative shadow-md min-h-[90px]">
+                <div className="w-16 h-16 rounded-full flex-shrink-0 relative bg-[#00004d] flex items-center justify-center overflow-hidden">
                   {app.image === "male" ? (
-                    <GrUserManager size={38} className="text-[#00004d]" />
+                    <GrUserManager size={40} className="text-white" />
                   ) : app.image === "female" ? (
-                    <GrUserFemale size={38} className="text-pink-500" />
+                    <GrUserFemale size={40} className="text-white" />
                   ) : app.image ? (
-                    <Image 
-                      src={app.image} 
-                      alt={app.fullName || "User"} 
-                      fill 
-                      className="object-cover" 
-                      unoptimized 
-                    />
+                    <Image src={app.image} alt="User" fill className="object-cover" unoptimized />
                   ) : (
-                    <User size={30} className="text-gray-300" />
+                    <User size={35} className="text-white" />
                   )}
                 </div>
-                <div className="flex flex-col overflow-hidden flex-1 pr-10">
-                  <h2 className="text-[15px] font-black text-[#00004d] truncate leading-tight">{app.fullName}</h2>
-                  <p className="text-[11px] font-bold text-gray-700 truncate">{app.category}</p>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[9px] font-black text-[#00004d] bg-white/50 px-1.5 py-0.5 rounded shadow-sm">
-                      {calculateAge(app.dob)} Years Old
-                    </span>
-                    <span className="text-[9px] font-bold text-gray-500 truncate">
-                      • {getExperienceLabel(app)}
-                    </span>
+                <div className="flex flex-col flex-1">
+                  <h2 className="text-[15px] font-black text-[#00004d] leading-tight truncate">{app.fullName}</h2>
+                  <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">{app.category || "Consultant"}</p>
+                    <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] mt-1 whitespace-nowrap">
+                    <span>Edu. {app.education || "BSIT"}</span>
+                    <span className="opacity-30">|</span>
+                    <span>Exp. {getExperienceLabel(app)}</span>
+                    <span className="opacity-30">|</span>
+                    <span>Age {calculateAge(app.dob)}</span>
+                  </div>
+                  <div className="flex items-center justify-between mt-2 pt-1">
+                    <div className="flex items-center gap-0.5 text-[#00004d]">
+                      <IoIosPin size={13} />
+                      <span className="font-bold text-[10px] uppercase">{app.city}</span>
+                    </div>
+
+                    <button 
+                      onClick={() => router.push(`/applicants/${app._id}`)}
+                      className="text-[#00004d] font-black text-[10px] flex items-center gap-0.5"
+                    >
+                      Visit my profile <LuChevronsRight size={14} strokeWidth={3} />
+                    </button>
                   </div>
                 </div>
-
-                <div className="absolute top-3 right-4 flex flex-col items-center">
-                  <IoIosPin size={14} className="text-[#00004d]" />
-                  <span className="font-bold text-[#00004d] text-[9px] uppercase">{app.city}</span>
-                </div>
-
-                <button 
-                  onClick={() => router.push(`/applicants/${app._id}`)}
-                  className="absolute bottom-3 right-4 bg-[#00004d] text-white px-2 py-1 rounded-full text-[10px] font-bold shadow-sm active:scale-95 transition-transform"
-                >
-                  Visit profile
-                </button>
               </div>
             ))
           ) : (
