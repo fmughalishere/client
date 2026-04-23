@@ -153,7 +153,7 @@ export default function HomePage() {
                   <h2 className="text-[15px] font-black text-[#00004d] truncate leading-tight">{app.fullName}</h2>
                   <p className="text-[11px] font-bold text-gray-700 truncate">{app.category}</p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[9px] font-black text-[#00004d] bg-white/50 px-1.5 py-0.5 rounded shadow-sm italic">
+                    <span className="text-[9px] font-black text-[#00004d] bg-white/50 px-1.5 py-0.5 rounded shadow-sm">
                       {calculateAge(app.dob)} Years Old
                     </span>
                     <span className="text-[9px] font-bold text-gray-500 truncate">
