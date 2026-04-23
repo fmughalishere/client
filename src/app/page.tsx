@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { 
   Search, PlusCircle, Briefcase, Users, ClipboardList, 
@@ -29,7 +28,6 @@ export default function HomePage() {
   const fetchApplicants = async () => {
     try {
       const token = localStorage.getItem("token");
-      // Authorization header add kiya taake backend reject na kare
       const res = await fetch("https://easyjobspk.onrender.com/api/applications/employer/all-applicants", {
         headers: {
           "Authorization": `Bearer ${token}`
@@ -83,9 +81,9 @@ export default function HomePage() {
   };
 
   const getExperienceLabel = (app: any) => {
+    if (app.isFresher === true || app.yearsOfExperience === "Fresher") return "Fresher";
     if (app.yearsOfExperience) return app.yearsOfExperience;
-    if (app.isFresher || !app.experience || app.experience.length === 0) return "Fresher";
-    return "Experienced"; 
+    return "Fresher";
   };
 
   return (
@@ -157,9 +155,7 @@ export default function HomePage() {
           ) : applicants.length > 0 ? (
             applicants.map((app: any, idx: number) => (
               <div key={idx} className="bg-[#e2f2f5] border border-gray-100 rounded-3xl p-3 flex items-center gap-4 relative shadow-sm h-21">
-                
-                {/* Profile Image / Icon Logic Start */}
-                <div className="w-16 h-16 rounded-full border-2 border-[#00004d] overflow-hidden relative bg-white flex items-center justify-center">
+               <div className="w-16 h-16 rounded-full border-2 border-[#00004d] overflow-hidden relative bg-white flex items-center justify-center">
                   {app.image === "male" ? (
                     <GrUserManager size={38} className="text-[#00004d]" />
                   ) : app.image === "female" ? (
@@ -176,8 +172,6 @@ export default function HomePage() {
                     <User size={30} className="text-gray-300" />
                   )}
                 </div>
-                {/* Profile Image / Icon Logic End */}
-
                 <div className="flex flex-col overflow-hidden flex-1 pr-10">
                   <h2 className="text-[15px] font-black text-[#00004d] truncate leading-tight">{app.fullName}</h2>
                   <p className="text-[11px] font-bold text-gray-700 truncate">{app.category}</p>

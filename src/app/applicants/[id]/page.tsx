@@ -4,9 +4,10 @@ import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import {
   Loader2, User, Calendar, Globe, MapPin, Briefcase,
-  GraduationCap, Send, CheckCircle, X, Building, Camera
+  GraduationCap, Send, CheckCircle, X, Building, Camera, Wand2
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
+import { GrUserManager, GrUserFemale } from "react-icons/gr";
 
 export default function ApplicantDetail() {
   const { id } = useParams();
@@ -33,7 +34,10 @@ export default function ApplicantDetail() {
   useEffect(() => {
     const fetchApplicant = async () => {
       try {
-        const res = await fetch(`https://easyjobspk.onrender.com/api/applications/${id}`);
+        const token = localStorage.getItem("token");
+        const res = await fetch(`https://easyjobspk.onrender.com/api/applications/${id}`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
         const data = await res.json();
         if (data && !data.message) {
           setApplicant(data);
@@ -94,13 +98,21 @@ export default function ApplicantDetail() {
   return (
     <div className="min-h-screen bg-[#e2f2f5] p-4 md:p-10 pb-24 font-sans">
       <div className="max-w-5xl mx-auto space-y-6">
-        <div className="bg-[#00004d] text-white p-6 md:p-10 rounded-[40px] shadow-lg flex items-center gap-6 overflow-hidden">
-          <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white/20 overflow-hidden bg-gray-200 shadow-xl flex-shrink-0">
-            <img
-              src={applicant.image || "https://via.placeholder.com/150"}
-              className="w-full h-full object-cover"
-              alt="Profile"
-            />
+                <div className="bg-[#00004d] text-white p-6 md:p-10 rounded-[40px] shadow-lg flex items-center gap-6 overflow-hidden">
+          <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white/20 overflow-hidden bg-white shadow-xl flex-shrink-0 flex items-center justify-center">
+            {applicant.image === "male" ? (
+              <GrUserManager size={60} className="text-[#00004d]" />
+            ) : applicant.image === "female" ? (
+              <GrUserFemale size={60} className="text-pink-500" />
+            ) : applicant.image ? (
+              <img
+                src={applicant.image}
+                className="w-full h-full object-cover"
+                alt="Profile"
+              />
+            ) : (
+              <User size={50} className="text-gray-300" />
+            )}
           </div>
           <div className="min-w-0">
             <h1 className="text-2xl md:text-4xl font-black tracking-[0.1em] leading-tight truncate">
@@ -111,8 +123,8 @@ export default function ApplicantDetail() {
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white p-8 rounded-3xl shadow-sm space-y-5">
             <h2 className="text-lg font-black text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">
               <MapPin size={18} /> Basic Info
@@ -148,37 +160,56 @@ export default function ApplicantDetail() {
               </p>
               <p className="flex items-center gap-2">
                 <Briefcase size={16} className="text-gray-400" />
-                Job Type: {applicant.jobtype}
+                Job Type: {applicant.jobtype || applicant.jobType}
               </p>
             </div>
           </div>
         </div>
         <div className="bg-white p-8 rounded-3xl shadow-sm space-y-6">
           <h2 className="text-lg font-black text-[#00004d] tracking-wider flex items-center gap-3 border-b pb-4">
-            <Briefcase size={20} /> Work Experiences
+            <Wand2 size={20} /> Skills
           </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {applicant.experience?.length > 0 ? (
-              applicant.experience.slice(0, 3).map((exp: any, idx: number) => (
-                <div key={idx} className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
-                  <span className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block">
-                    Experience {idx + 1}
-                  </span>
-                  <p className="font-black text-[#00004d]">{exp.designation}</p>
-                  <p className="text-sm font-bold text-gray-500">{exp.companyName}</p>
-                  <p className="text-[10px] font-bold text-gray-300 mt-2">
-                    {exp.startDate} - {exp.isCurrentJob ? "Present" : exp.endDate}
-                  </p>
-                </div>
+          <div className="flex flex-wrap gap-3">
+            {applicant.skills && applicant.skills.length > 0 ? (
+              applicant.skills.map((skill: string, i: number) => (
+                <span key={i} className="px-4 py-2 bg-blue-50 text-[#00004d] text-xs font-black rounded-full border border-blue-100 uppercase tracking-wider">
+                  {skill}
+                </span>
               ))
             ) : (
+              <p className="text-sm text-gray-400 font-bold">No skills specified.</p>
+            )}
+          </div>
+        </div>
+
+        <div className="bg-white p-8 rounded-3xl shadow-sm space-y-6">
+          <h2 className="text-lg font-black text-[#00004d] tracking-wider flex items-center gap-3 border-b pb-4">
+            <Briefcase size={20} /> Work Experiences
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {applicant.yearsOfExperience === "Fresher" || applicant.isFresher ? (
+               <p className="text-sm text-[#00004d] font-black p-6 bg-gray-50 rounded-3xl border border-dashed border-gray-200 col-span-3 text-center">
+               Entry Level / Fresher
+             </p>
+            ) : applicant.yearsOfExperience ? (
+              <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 col-span-3">
+                <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Total Experience</p>
+                <p className="font-black text-[#00004d] text-lg">{applicant.yearsOfExperience}</p>
+                {applicant.achievements && (
+                   <div className="mt-4 pt-4 border-t border-gray-200">
+                      <p className="text-[10px] font-black text-gray-400 uppercase mb-2">Details / Achievements</p>
+                      <p className="text-sm font-bold text-gray-600 leading-relaxed">{applicant.achievements}</p>
+                   </div>
+                )}
+              </div>
+            ) : (
               <p className="text-sm text-gray-400 font-bold p-4 col-span-3 text-center">
-                No experience added.
+                No experience details provided.
               </p>
             )}
           </div>
         </div>
+
         <div className="mt-12 flex justify-center pb-10">
           <button
             onClick={() => setIsModalOpen(true)}
@@ -193,14 +224,12 @@ export default function ApplicantDetail() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
           <div className="bg-white w-full max-w-lg rounded-[45px] overflow-hidden shadow-2xl relative">
-
             <div className="bg-[#00004d] p-8 text-white flex justify-between items-center">
               <h3 className="text-2xl font-black tracking-[0.1em]">Submit Offer</h3>
               <button onClick={() => setIsModalOpen(false)} className="bg-white/10 p-2 rounded-full">
                 <X size={24} />
               </button>
             </div>
-
             <form onSubmit={handleFormSubmit} className="p-8 space-y-6 max-h-[75vh] overflow-y-auto">
               <div className="flex flex-col items-center gap-3 border-b pb-6">
                 <div className="w-20 h-20 rounded-2xl bg-gray-50 border-2 border-dashed flex items-center justify-center overflow-hidden relative">
@@ -213,29 +242,24 @@ export default function ApplicantDetail() {
                     <Camera size={18} />
                   </button>
                 </div>
-
                 <button type="button" onClick={() => fileInputRef.current?.click()} className="text-[10px] font-black text-[#00004d] underline">
                   Upload Company Logo
                 </button>
-
                 <input type="file" ref={fileInputRef} className="hidden" onChange={handleLogoChange} accept="image/*" />
               </div>
-              <input required name="companyName" placeholder="Company Name" onChange={handleInputChange} className="input" />
-              <input required name="cityName" placeholder="City Name" onChange={handleInputChange} className="input" />
-              <input required name="employerName" placeholder="Contact Person" onChange={handleInputChange} className="input" />
-              <input required name="designation" placeholder="Designation" onChange={handleInputChange} className="input" />
-              <input type="email" required name="email" placeholder="Email" onChange={handleInputChange} className="input" />
-
+              <input required name="companyName" placeholder="Company Name" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-sm" />
+              <input required name="cityName" placeholder="City Name" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-sm" />
+              <input required name="employerName" placeholder="Contact Person" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-sm" />
+              <input required name="designation" placeholder="Designation" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-sm" />
+              <input type="email" required name="email" placeholder="Email" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-sm" />
               <div className="relative">
-                <FaWhatsapp className="absolute left-3 top-3.5 text-green-500" size={16} />
-                <input required name="whatsapp" placeholder="+92..." onChange={handleInputChange} className="input pl-10" />
+                <FaWhatsapp className="absolute left-3 top-4 text-green-500" size={16} />
+                <input required name="whatsapp" placeholder="+92..." onChange={handleInputChange} className="w-full p-4 pl-10 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-sm" />
               </div>
-
-              <input type="datetime-local" name="interviewDate" onChange={handleInputChange} className="input" />
-              <button type="submit" disabled={isSubmitting || isSubmitted} className="w-full py-5 rounded-[20px] font-black text-white bg-[#00004d]">
+              <input type="datetime-local" name="interviewDate" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-sm" />
+              <button type="submit" disabled={isSubmitting || isSubmitted} className="w-full py-5 rounded-[20px] font-black text-white bg-[#00004d] active:scale-95 transition-all">
                 {isSubmitting ? "Submitting..." : isSubmitted ? "Submitted!" : "Submit Offer"}
               </button>
-
             </form>
           </div>
         </div>
