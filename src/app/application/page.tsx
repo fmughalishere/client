@@ -109,9 +109,9 @@ export default function MobileResponsiveJobForm() {
     <div className="min-h-screen bg-[#f4f7f9] pb-10 font-sans">
       <SuccessModal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); if (submitted) window.location.reload(); }} title={modalContent.title} message={modalContent.message} />
       
-      <div className="bg-[#e2f2f5] pt-12 pb-20 md:pt-16 md:pb-24 rounded-b-[40px] md:rounded-b-[60px] text-center border-b border-blue-100 px-4">
-        <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-[#00004d] text-3xl md:text-5xl font-black tracking-tight">Apply for a Job</motion.h1>
-        <p className="text-[#00004d]/60 font-bold text-[10px] md:text-xs mt-3 tracking-[0.2em] md:tracking-[0.4em] uppercase">Create your professional profile</p>
+      <div className="bg-[#0E8449] pt-12 pb-20 md:pt-16 md:pb-24 rounded-b-[40px] md:rounded-b-[60px] text-center border-b border-blue-100 px-4">
+        <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-white text-3xl md:text-5xl font-black tracking-tight">Apply for a Job</motion.h1>
+        <p className="text-white/60 font-bold text-[10px] md:text-xs mt-3 tracking-[0.2em] md:tracking-[0.4em] uppercase">Create your professional profile</p>
       </div>
 
       <div className="max-w-4xl mx-auto -mt-12 md:-mt-16 px-4">
@@ -201,7 +201,7 @@ export default function MobileResponsiveJobForm() {
                   ))}
               </select>
             </section>
-            <section className="bg-[#f0f8f9] p-5 md:p-10 rounded-[30px] border-2 border-white shadow-inner">
+            <section className="p-5 md:p-10 rounded-[30px] border-2 border-white shadow-inner">
                 <div className="flex justify-between items-center mb-8">
                   <h3 className="text-[10px] font-black text-[#00004d] tracking-widest flex items-center gap-2 uppercase"><Briefcase size={14}/> Work Experience</h3>
                   <label className="flex items-center gap-3 bg-white px-6 py-2 rounded-full cursor-pointer shadow-sm active:scale-95 transition-all">
@@ -221,7 +221,7 @@ export default function MobileResponsiveJobForm() {
               <input type="text" name="skills" value={formData.skills} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Your Skills (Comma Separated)" />
             </section>
             <div className="flex flex-col items-center gap-8 pt-10 border-t">
-              <button type="button" className="w-full md:w-auto bg-[#e2f2f5] text-[#00004d] px-12 py-3.5 rounded-full text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all shadow-sm">
+              <button type="button" className="w-full md:w-auto bg-[#0E8449] text-white px-12 py-3.5 rounded-full text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all shadow-sm">
                 Read Privacy Policy
               </button>
               <label className="flex items-center gap-3 cursor-pointer">

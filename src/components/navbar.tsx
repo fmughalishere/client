@@ -60,7 +60,7 @@ const Navbar = () => {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
         <Link href="/">
           <Image 
-            src="/images/header-logo.png" 
+            src="/images/nav-logo.png" 
             alt="Logo" 
             width={180} 
             height={50} 

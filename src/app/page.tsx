@@ -9,9 +9,8 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useRouter } from "next/navigation";
 import { IoIosPin } from "react-icons/io";
-import { GrUserManager, GrUserFemale } from "react-icons/gr";
 import { LuChevronsRight } from "react-icons/lu";
-
+import { MALE_ICON, FEMALE_ICON } from "./constants"
 export default function HomePage() {
   const [applicants, setApplicants] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,10 +69,10 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-8 font-sans">
       <section className="px-0 pt-0 relative">
-        <div className="bg-[#e2f2f5] rounded-b-[35px] pt-5 pb-10 px-6 flex flex-col items-center shadow-sm relative">          
+        <div className="bg-[#0E8449] rounded-b-[35px] pt-5 pb-10 px-6 flex flex-col items-center shadow-sm relative">          
           <div className="text-center mb-1 mt-0">
-            <h1 className="text-[22px] font-black text-[#00004d] leading-none">Hire easy</h1>
-            <h1 className="text-[22px] font-black text-[#00004d] leading-tight">Get hired easy</h1>
+            <h1 className="text-[22px] font-black text-white leading-none">Hire easy</h1>
+            <h1 className="text-[22px] font-black text-white leading-tight">Get hired easy</h1>
           </div>
           <div className="relative w-full max-w-[250px] mt-4">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -109,7 +108,7 @@ export default function HomePage() {
       </section>
 
       <section className="max-w-[360px] mx-auto px-4 mt-4 mb-4 relative z-30">
-        <div className="bg-[#e2f2f5] text-[#00004d] rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm border border-[#00004d]"> 
+        <div className="bg-[#0E8449] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm "> 
           <span className="text-[16px] font-black tracking-[0.2em] leading-none mb-1 text-center px-4">I am seeking for a job</span>
           <div className="flex flex-col items-center -space-y-3">
             <ChevronDown size={20} strokeWidth={4} />
@@ -117,6 +116,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
       <section className="max-w-[360px] mx-auto px-4 mt-2 mb-10">
         <div className="flex flex-col gap-3">
           {loading ? (
@@ -124,17 +124,20 @@ export default function HomePage() {
           ) : applicants.length > 0 ? (
             applicants.map((app: any, idx: number) => (
               <div key={idx} className="bg-white border border-gray-100 rounded-[15px] p-3 flex items-center gap-3 relative shadow-md min-h-[90px]">
-                <div className="w-16 h-16 rounded-full flex-shrink-0 relative bg-[#00004d] flex items-center justify-center overflow-hidden">
+                  <div className="w-16 h-16 rounded-full flex-shrink-0 relative bg-[#f8fafc] border border-gray-50 flex items-center justify-center overflow-hidden">
                   {app.image === "male" ? (
-                    <GrUserManager size={40} className="text-white" />
+                    <Image src={MALE_ICON} alt="Male" fill className="object-contain p-1" unoptimized />
                   ) : app.image === "female" ? (
-                    <GrUserFemale size={40} className="text-white" />
-                  ) : app.image ? (
+                    <Image src={FEMALE_ICON} alt="Female" fill className="object-contain p-1" unoptimized />
+                  ) : app.image && app.image.length > 20 ? (
                     <Image src={app.image} alt="User" fill className="object-cover" unoptimized />
                   ) : (
-                    <User size={35} className="text-white" />
+                    <div className="bg-[#00004d] w-full h-full flex items-center justify-center">
+                      <User size={35} className="text-white" />
+                    </div>
                   )}
                 </div>
+
                 <div className="flex flex-col flex-1">
                   <h2 className="text-[15px] font-black text-[#00004d] leading-tight truncate">{app.fullName}</h2>
                   <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">{app.category || "Consultant"}</p>
@@ -146,14 +149,14 @@ export default function HomePage() {
                     <span>Age {calculateAge(app.dob)}</span>
                   </div>
                   <div className="flex items-center justify-between mt-2 pt-1">
-                    <div className="flex items-center gap-0.5 text-[#00004d]">
+                    <div className="flex items-center gap-0.5 text-[#0E8449]">
                       <IoIosPin size={13} />
                       <span className="font-bold text-[10px] uppercase">{app.city}</span>
                     </div>
 
                     <button 
                       onClick={() => router.push(`/applicants/${app._id}`)}
-                      className="text-[#00004d] font-black text-[10px] flex items-center gap-0.5"
+                      className="text-[#0E8449] font-black text-[10px] flex items-center gap-0.5"
                     >
                       Visit my profile <LuChevronsRight size={14} strokeWidth={3} />
                     </button>
