@@ -142,9 +142,9 @@ export default function HomePage() {
                   <h2 className="text-[15px] font-black text-[#00004d] leading-tight truncate">{app.fullName}</h2>
                   <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">{app.category || "Consultant"}</p>
                     <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] mt-1 whitespace-nowrap">
-                    <span>Edu. {app.education || "BSIT"}</span>
+                    <span>{app.education || "BSIT"}</span>
                     <span className="opacity-30">|</span>
-                    <span>Exp. {getExperienceLabel(app)}</span>
+                    <span>{getExperienceLabel(app)}</span>
                     <span className="opacity-30">|</span>
                     <span>Age {calculateAge(app.dob)}</span>
                   </div>
