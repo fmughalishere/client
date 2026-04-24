@@ -2,12 +2,12 @@
 
 import React, { useState, useRef, ChangeEvent, FormEvent, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
+import {
   User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, X, Wand2
 } from "lucide-react";
 
-import { 
-  MALE_ICON, FEMALE_ICON, CITIES, JOB_TYPES, JOB_CATEGORIES, EDUCATION_GROUPS 
+import {
+  MALE_ICON, FEMALE_ICON, CITIES, JOB_TYPES, JOB_CATEGORIES, EDUCATION_GROUPS
 } from "../constants";
 
 interface SuccessModalProps {
@@ -40,13 +40,13 @@ function SuccessModal({ isOpen, onClose, title, message }: SuccessModalProps) {
 }
 
 export default function MobileResponsiveJobForm() {
-  const fileInputRef = useRef<HTMLInputElement>(null); 
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isFresher, setIsFresher] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
-  
+
   const [formData, setFormData] = useState({
     fullName: "", dob: "", gender: "Male", city: "", image: "", jobtype: "Full-Time", category: "", education: "", yearsOfExperience: "", skills: "", achievements: "", agreeTerms: false
   });
@@ -108,7 +108,7 @@ export default function MobileResponsiveJobForm() {
   return (
     <div className="min-h-screen bg-[#f4f7f9] pb-10 font-sans">
       <SuccessModal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); if (submitted) window.location.reload(); }} title={modalContent.title} message={modalContent.message} />
-      
+
       <div className="bg-[#0E8449] pt-12 pb-20 md:pt-16 md:pb-24 rounded-b-[40px] md:rounded-b-[60px] text-center border-b border-blue-100 px-4">
         <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-white text-3xl md:text-5xl font-black tracking-tight">Apply for a Job</motion.h1>
         <p className="text-white/60 font-bold text-[10px] md:text-xs mt-3 tracking-[0.2em] md:tracking-[0.4em] uppercase">Create your professional profile</p>
@@ -117,7 +117,7 @@ export default function MobileResponsiveJobForm() {
       <div className="max-w-4xl mx-auto -mt-12 md:-mt-16 px-4">
         <div className="bg-white rounded-[35px] md:rounded-[45px] shadow-xl overflow-hidden border border-white">
           <form onSubmit={handleSubmit} className="p-6 md:p-14 space-y-12 md:space-y-20">
-              <section className="flex flex-col items-center gap-6">
+            <section className="flex flex-col items-center gap-6">
               <div className="relative">
                 <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-4 md:border-8 border-[#f8fcfd] shadow-lg bg-gray-50 flex items-center justify-center overflow-hidden">
                   {formData.image.length > 20 ? (
@@ -132,14 +132,20 @@ export default function MobileResponsiveJobForm() {
                 </div>
                 <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute bottom-1 right-1 bg-[#00004d] text-white p-2.5 rounded-full shadow-lg"><Camera size={18} /></button>
               </div>
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Optional</span>
+              <div className="flex items-center gap-4 w-full max-w-xs">
+                <div className="h-[1px] bg-gray-200 flex-1"></div>
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Or Use Icon</span>
+                <div className="h-[1px] bg-gray-200 flex-1"></div>
+              </div>
               <input type="file" ref={fileInputRef} className="hidden" onChange={handleImageChange} accept="image/*" />
               <div className="flex gap-4 w-full justify-center">
-                  <button type="button" onClick={() => setFormData({...formData, image: "male"})} className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "male" ? 'border-[#00004d] bg-[#00004d] text-white' : 'border-gray-100 text-gray-400'}`}>
-                    <img src={MALE_ICON} className={`w-5 h-5 ${formData.image === "male" ? 'brightness-0 invert' : ''}`} alt="" /> <span className="text-[10px] font-bold">Male</span>
-                  </button>
-                  <button type="button" onClick={() => setFormData({...formData, image: "female"})} className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "female" ? 'border-pink-500 bg-pink-500 text-white' : 'border-gray-100 text-gray-400'}`}>
-                    <img src={FEMALE_ICON} className={`w-5 h-5 ${formData.image === "female" ? 'brightness-0 invert' : ''}`} alt="" /> <span className="text-[10px] font-bold">Female</span>
-                  </button>
+                <button type="button" onClick={() => setFormData({ ...formData, image: "male" })} className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "male" ? 'border-[#00004d] bg-[#00004d] text-white' : 'border-gray-100 text-gray-400'}`}>
+                  <img src={MALE_ICON} className={`w-5 h-5 ${formData.image === "male" ? 'brightness-0 invert' : ''}`} alt="" /> <span className="text-[10px] font-bold">Male</span>
+                </button>
+                <button type="button" onClick={() => setFormData({ ...formData, image: "female" })} className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "female" ? 'border-pink-500 bg-pink-500 text-white' : 'border-gray-100 text-gray-400'}`}>
+                  <img src={FEMALE_ICON} className={`w-5 h-5 ${formData.image === "female" ? 'brightness-0 invert' : ''}`} alt="" /> <span className="text-[10px] font-bold">Female</span>
+                </button>
               </div>
             </section>
             <section className="space-y-6">
@@ -181,40 +187,58 @@ export default function MobileResponsiveJobForm() {
                 </select>
               </div>
             </div>
-            <section className="space-y-6">
-              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Education</h2></div>
-              <select required name="education" value={formData.education} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none">
-                  <option value="">Select Your Qualification</option>
-                  {EDUCATION_GROUPS.map((group, idx) => (
-                    <optgroup key={idx} label={group.label}>
-                      {group.options ? (
-                        group.options.map(opt => <option key={opt} value={opt}>{opt}</option>)
-                      ) : (
-                        group.subGroups?.map((sub, sIdx) => (
-                          <React.Fragment key={sIdx}>
-                            <option disabled className="text-gray-400 font-bold">-- {sub.title} --</option>
-                            {sub.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                          </React.Fragment>
-                        ))
-                      )}
-                    </optgroup>
-                  ))}
+            <section className="space-y-3">
+              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Experience</h2></div>
+              <select
+                required
+                name="education"
+                value={formData.education}
+                onChange={handleChange}
+                className="w-full bg-[#f8fafc] border border-gray-100 rounded-lg p-2 text-xs font-semibold outline-none"
+              >
+                <option value="">Select Your Qualification</option>
+
+                {EDUCATION_GROUPS.map((group, idx) => (
+                  <optgroup key={idx} label={group.label}>
+                    {group.options ? (
+                      group.options.map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))
+                    ) : (
+                      group.subGroups?.map((sub, sIdx) => (
+                        <React.Fragment key={sIdx}>
+                          <option disabled className="text-gray-400 font-semibold">
+                            -- {sub.title} --
+                          </option>
+                          {sub.options.map((opt) => (
+                            <option key={opt} value={opt}>
+                              {opt}
+                            </option>
+                          ))}
+                        </React.Fragment>
+                      ))
+                    )}
+                  </optgroup>
+                ))}
               </select>
             </section>
+            <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Experience</h2></div>
             <section className="p-5 md:p-10 rounded-[30px] border-2 border-white shadow-inner">
-                <div className="flex justify-between items-center mb-8">
-                  <h3 className="text-[10px] font-black text-[#00004d] tracking-widest flex items-center gap-2 uppercase"><Briefcase size={14}/> Work Experience</h3>
-                  <label className="flex items-center gap-3 bg-white px-4 py-2 rounded-full cursor-pointer shadow-sm active:scale-95 transition-all">
-                    <input type="checkbox" checked={isFresher} onChange={(e) => setIsFresher(e.target.checked)} className="accent-[#00004d] w-4 h-4" />
-                    <span className="text-[10px] font-black text-[#00004d]">Fresher</span>
-                  </label>
+              <div className="flex justify-between items-center mb-8">
+                <h3 className="text-[10px] font-black text-[#00004d] tracking-widest flex items-center gap-2 uppercase"><Briefcase size={14} /> Work Experience</h3>
+                <label className="flex items-center gap-3 bg-white px-4 py-2 rounded-full cursor-pointer shadow-sm active:scale-95 transition-all">
+                  <input type="checkbox" checked={isFresher} onChange={(e) => setIsFresher(e.target.checked)} className="accent-[#00004d] w-4 h-4" />
+                  <span className="text-[10px] font-black text-[#00004d]">Fresher</span>
+                </label>
+              </div>
+              {!isFresher && (
+                <div className="space-y-6">
+                  <input type="text" name="yearsOfExperience" value={formData.yearsOfExperience} onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experience (e.g. 2 Years, 5 Months)" />
+                  <textarea value={formData.achievements} name="achievements" onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experience Details or Achievements..." rows={4} />
                 </div>
-                {!isFresher && (
-                  <div className="space-y-6">
-                    <input type="text" name="yearsOfExperience" value={formData.yearsOfExperience} onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experience (e.g. 2 Years, 5 Months)" />
-                    <textarea value={formData.achievements} name="achievements" onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experience Details or Achievements..." rows={4} />
-                  </div>
-                )}
+              )}
             </section>
             <section className="space-y-6">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Skills</h2></div>
@@ -226,13 +250,13 @@ export default function MobileResponsiveJobForm() {
               </button>
               <label className="flex items-center gap-3 cursor-pointer">
                 <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${formData.agreeTerms ? 'bg-[#00004d] border-[#00004d]' : 'bg-white border-gray-200'}`}>
-                   <input type="checkbox" className="hidden" checked={formData.agreeTerms} onChange={(e)=>setFormData({...formData, agreeTerms: e.target.checked})} />
-                   {formData.agreeTerms && <Check size={14} className="text-white" />}
+                  <input type="checkbox" className="hidden" checked={formData.agreeTerms} onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })} />
+                  {formData.agreeTerms && <Check size={14} className="text-white" />}
                 </div>
                 <span className="text-[10px] font-black text-gray-400">I agree to the privacy policy</span>
               </label>
               <button disabled={loading || submitted} className={`w-full md:w-80 font-black py-5 rounded-2xl shadow-xl tracking-[0.2em] text-xs transition-all flex justify-center items-center gap-2 ${submitted ? 'bg-green-600 text-white' : 'bg-[#00004d] text-white active:scale-95'} ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}>
-                {loading ? <Loader2 className="animate-spin" size={18}/> : submitted ? <CheckCircle size={18}/> : "Submit Application"}
+                {loading ? <Loader2 className="animate-spin" size={18} /> : submitted ? <CheckCircle size={18} /> : "Submit Application"}
                 {loading ? " Submitting..." : submitted ? " Submitted!" : ""}
               </button>
             </div>

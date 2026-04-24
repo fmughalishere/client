@@ -1,22 +1,27 @@
 "use client";
 
 import Image from "next/image";
-import { 
-  Search, PlusCircle, Briefcase, Users, ClipboardList, 
-  ChevronDown, Loader2, User 
+import {
+  Search, PlusCircle, Briefcase, Users, ClipboardList,
+  ChevronDown, Loader2, User
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useRouter } from "next/navigation";
 import { IoIosPin } from "react-icons/io";
 import { LuChevronsRight } from "react-icons/lu";
-import { MALE_ICON, FEMALE_ICON } from "./constants"
+import { MALE_ICON, FEMALE_ICON } from "./constants";
+
 export default function HomePage() {
   const [applicants, setApplicants] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const [visitorCount, setVisitorCount] = useState(0);
+
+  const navyBlueFilter = {
+    filter: "invert(7%) sepia(76%) saturate(5793%) hue-rotate(241deg) brightness(91%) contrast(108%)"
+  };
 
   const quickActions = [
     { label: "Apply for a Job", icon: <Briefcase size={18} />, href: "/application" },
@@ -32,7 +37,7 @@ export default function HomePage() {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();
-      if(res.ok) setApplicants(data);
+      if (res.ok) setApplicants(data);
     } catch (error) {
       console.error("Error fetching data");
     } finally {
@@ -48,7 +53,7 @@ export default function HomePage() {
   }, []);
 
   const handleSearch = () => {
-    if(searchQuery.trim()) router.push(`/jobs?search=${searchQuery}`);
+    if (searchQuery.trim()) router.push(`/jobs?search=${searchQuery}`);
   };
 
   const calculateAge = (dob: string) => {
@@ -69,7 +74,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-8 font-sans">
       <section className="px-0 pt-0 relative">
-        <div className="bg-[#0E8449] rounded-b-[35px] pt-5 pb-10 px-6 flex flex-col items-center shadow-sm relative">          
+        <div className="bg-[#0E8449] rounded-b-[35px] pt-5 pb-10 px-6 flex flex-col items-center shadow-sm relative">
           <div className="text-center mb-1 mt-0">
             <h1 className="text-[22px] font-black text-white leading-none">Hire easy</h1>
             <h1 className="text-[22px] font-black text-white leading-tight">Get hired easy</h1>
@@ -78,13 +83,13 @@ export default function HomePage() {
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
               <Search className="h-4 w-4 text-[#00004d]" strokeWidth={3} />
             </div>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              placeholder="Search jobs..." 
-              className="block w-full pl-9 pr-14 py-2 bg-white border border-[#00004d] rounded-full shadow-md text-xs text-[#00004d] font-bold outline-none" 
+              placeholder="Search jobs..."
+              className="block w-full pl-9 pr-14 py-2 bg-white border border-[#00004d] rounded-full shadow-md text-xs text-[#00004d] font-bold outline-none"
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 gap-2">
               <div className="h-4 w-[1px] bg-[#00004d]"></div>
@@ -98,7 +103,7 @@ export default function HomePage() {
         <div className="flex flex-col gap-2 items-center justify-center w-full">
           {quickActions.map((action, i) => (
             <button key={i} onClick={() => router.push(action.href)} className="w-full max-w-[210px] transition-transform active:scale-95">
-              <div className="flex items-center justify-center gap-2 h-[40px] bg-[#00004d] rounded-full text-white">
+              <div className="flex items-center justify-center gap-2 h-[40px] bg-[#00004d] rounded-full text-white shadow-lg">
                 <span>{action.icon}</span>
                 <span className="font-normal text-[13px] whitespace-nowrap">{action.label}</span>
               </div>
@@ -108,7 +113,7 @@ export default function HomePage() {
       </section>
 
       <section className="max-w-[360px] mx-auto px-4 mt-4 mb-4 relative z-30">
-        <div className="bg-[#0E8449] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm "> 
+        <div className="bg-[#0E8449] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm ">
           <span className="text-[16px] font-black tracking-[0.2em] leading-none mb-1 text-center px-4">I am seeking for a job</span>
           <div className="flex flex-col items-center -space-y-3">
             <ChevronDown size={20} strokeWidth={4} />
@@ -120,15 +125,29 @@ export default function HomePage() {
       <section className="max-w-[360px] mx-auto px-4 mt-2 mb-10">
         <div className="flex flex-col gap-3">
           {loading ? (
-             <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#00004d]" /></div>
+            <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#00004d]" /></div>
           ) : applicants.length > 0 ? (
             applicants.map((app: any, idx: number) => (
               <div key={idx} className="bg-white border border-gray-100 rounded-[15px] p-3 flex items-center gap-3 relative shadow-md min-h-[90px]">
-                  <div className="w-16 h-16 rounded-full flex-shrink-0 relative bg-[#f8fafc] border border-gray-50 flex items-center justify-center overflow-hidden">
+                <div className="w-16 h-16 rounded-full flex-shrink-0 relative bg-[#f8fafc] border border-gray-50 flex items-center justify-center overflow-hidden">
                   {app.image === "male" ? (
-                    <Image src={MALE_ICON} alt="Male" fill className="object-contain p-1" unoptimized />
+                    <Image
+                      src={MALE_ICON}
+                      alt="Male"
+                      fill
+                      className="object-contain p-1"
+                      style={navyBlueFilter}
+                      unoptimized
+                    />
                   ) : app.image === "female" ? (
-                    <Image src={FEMALE_ICON} alt="Female" fill className="object-contain p-1" unoptimized />
+                    <Image
+                      src={FEMALE_ICON}
+                      alt="Female"
+                      fill
+                      className="object-contain p-1"
+                      style={navyBlueFilter}
+                      unoptimized
+                    />
                   ) : app.image && app.image.length > 20 ? (
                     <Image src={app.image} alt="User" fill className="object-cover" unoptimized />
                   ) : (
@@ -141,20 +160,22 @@ export default function HomePage() {
                 <div className="flex flex-col flex-1">
                   <h2 className="text-[15px] font-black text-[#00004d] leading-tight truncate">{app.fullName}</h2>
                   <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">{app.category || "Consultant"}</p>
-                    <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] mt-1 whitespace-nowrap">
+
+                  <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] mt-1 whitespace-nowrap">
                     <span>{app.education || "BSIT"}</span>
                     <span className="opacity-30">|</span>
                     <span>{getExperienceLabel(app)}</span>
                     <span className="opacity-30">|</span>
                     <span>Age {calculateAge(app.dob)}</span>
                   </div>
+
                   <div className="flex items-center justify-between mt-2 pt-1">
                     <div className="flex items-center gap-0.5 text-[#0E8449]">
                       <IoIosPin size={13} />
                       <span className="font-bold text-[10px] uppercase">{app.city}</span>
                     </div>
 
-                    <button 
+                    <button
                       onClick={() => router.push(`/applicants/${app._id}`)}
                       className="text-[#0E8449] font-black text-[10px] flex items-center gap-0.5"
                     >
