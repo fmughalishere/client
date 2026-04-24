@@ -204,7 +204,7 @@ export default function MobileResponsiveJobForm() {
             <section className="p-5 md:p-10 rounded-[30px] border-2 border-white shadow-inner">
                 <div className="flex justify-between items-center mb-8">
                   <h3 className="text-[10px] font-black text-[#00004d] tracking-widest flex items-center gap-2 uppercase"><Briefcase size={14}/> Work Experience</h3>
-                  <label className="flex items-center gap-3 bg-white px-6 py-2 rounded-full cursor-pointer shadow-sm active:scale-95 transition-all">
+                  <label className="flex items-center gap-3 bg-white px-4 py-2 rounded-full cursor-pointer shadow-sm active:scale-95 transition-all">
                     <input type="checkbox" checked={isFresher} onChange={(e) => setIsFresher(e.target.checked)} className="accent-[#00004d] w-4 h-4" />
                     <span className="text-[10px] font-black text-[#00004d]">Fresher</span>
                   </label>
