@@ -3,7 +3,7 @@
 import React, { useState, useRef, ChangeEvent, FormEvent, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, X, Wand2
+  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, X, Wand2, Mail, Phone, MessageCircle
 } from "lucide-react";
 
 import {
@@ -48,8 +48,24 @@ export default function MobileResponsiveJobForm() {
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
 
   const [formData, setFormData] = useState({
-    fullName: "", dob: "", gender: "Male", city: "", image: "", jobtype: "Full-Time", category: "", education: "", yearsOfExperience: "", skills: "", achievements: "", agreeTerms: false
+    fullName: "", dob: "", gender: "Male", city: "", image: "", jobtype: "Full-Time", category: "", education: "", yearsOfExperience: "", skills: "", achievements: "", email: "", phone: "+92 ", whatsapp: "+92 ", agreeTerms: false
   });
+
+  const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>, field: string) => {
+    let value = e.target.value;
+    if (!value.startsWith("+92 ")) {
+      value = "+92 ";
+    }
+
+    const prefix = "+92 ";
+    const suffix = value.slice(4).replace(/[^\d]/g, "");
+    
+    let formatted = prefix;
+    if (suffix.length > 0) formatted += suffix.slice(0, 3);
+    if (suffix.length > 3) formatted += " " + suffix.slice(3, 10);
+
+    setFormData({ ...formData, [field]: formatted });
+  };
 
   const calculatedAge = useMemo(() => {
     if (!formData.dob) return null;
@@ -188,7 +204,7 @@ export default function MobileResponsiveJobForm() {
               </div>
             </div>
             <section className="space-y-3">
-              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Experience</h2></div>
+              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Education</h2></div>
               <select
                 required
                 name="education"
@@ -197,25 +213,18 @@ export default function MobileResponsiveJobForm() {
                 className="w-full bg-[#f8fafc] border border-gray-100 rounded-lg p-2 text-xs font-semibold outline-none"
               >
                 <option value="">Select Your Qualification</option>
-
                 {EDUCATION_GROUPS.map((group, idx) => (
                   <optgroup key={idx} label={group.label}>
                     {group.options ? (
                       group.options.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
+                        <option key={opt} value={opt}>{opt}</option>
                       ))
                     ) : (
                       group.subGroups?.map((sub, sIdx) => (
                         <React.Fragment key={sIdx}>
-                          <option disabled className="text-gray-400 font-semibold">
-                            -- {sub.title} --
-                          </option>
+                          <option disabled className="text-gray-400 font-semibold">-- {sub.title} --</option>
                           {sub.options.map((opt) => (
-                            <option key={opt} value={opt}>
-                              {opt}
-                            </option>
+                            <option key={opt} value={opt}>{opt}</option>
                           ))}
                         </React.Fragment>
                       ))
@@ -224,25 +233,44 @@ export default function MobileResponsiveJobForm() {
                 ))}
               </select>
             </section>
-            <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Experience</h2></div>
-            <section className="p-5 md:p-10 rounded-[30px] border-2 border-white shadow-inner">
-              <div className="flex justify-between items-center mb-8">
-                <h3 className="text-[10px] font-black text-[#00004d] tracking-widest flex items-center gap-2 uppercase"><Briefcase size={14} /> Work Experience</h3>
-                <label className="flex items-center gap-3 bg-white px-4 py-2 rounded-full cursor-pointer shadow-sm active:scale-95 transition-all">
-                  <input type="checkbox" checked={isFresher} onChange={(e) => setIsFresher(e.target.checked)} className="accent-[#00004d] w-4 h-4" />
-                  <span className="text-[10px] font-black text-[#00004d]">Fresher</span>
-                </label>
-              </div>
-              {!isFresher && (
-                <div className="space-y-6">
-                  <input type="text" name="yearsOfExperience" value={formData.yearsOfExperience} onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experience (e.g. 2 Years, 5 Months)" />
-                  <textarea value={formData.achievements} name="achievements" onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experience Details or Achievements..." rows={4} />
+            <section className="space-y-6">
+              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Experience</h2></div>
+              <div className="p-5 md:p-10 rounded-[30px] border-2 border-white shadow-inner bg-gray-50/50">
+                <div className="flex justify-between items-center mb-8">
+                  <h3 className="text-[10px] font-black text-[#00004d] tracking-widest flex items-center gap-2 uppercase"><Briefcase size={14} /> Work Experience</h3>
+                  <label className="flex items-center gap-3 bg-white px-4 py-2 rounded-full cursor-pointer shadow-sm active:scale-95 transition-all">
+                    <input type="checkbox" checked={isFresher} onChange={(e) => setIsFresher(e.target.checked)} className="accent-[#00004d] w-4 h-4" />
+                    <span className="text-[10px] font-black text-[#00004d]">Fresher</span>
+                  </label>
                 </div>
-              )}
+                {!isFresher && (
+                  <div className="space-y-6">
+                    <input type="text" name="yearsOfExperience" value={formData.yearsOfExperience} onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experience (e.g. 2 Years, 5 Months)" />
+                    <textarea value={formData.achievements} name="achievements" onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experience Details or Achievements..." rows={4} />
+                  </div>
+                )}
+              </div>
             </section>
             <section className="space-y-6">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Skills</h2></div>
               <input type="text" name="skills" value={formData.skills} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Your Skills (Comma Separated)" />
+            </section>
+            <section className="space-y-6">
+              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Contact Info</h2></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
+                <div className="space-y-1.5 md:col-span-2">
+                  <label className="text-[10px] font-black text-[#00004d] ml-1 flex items-center gap-1"><Mail size={12}/> Email Address</label>
+                  <input type="email" required name="email" value={formData.email} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="example@mail.com" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black text-[#00004d] ml-1 flex items-center gap-1"><Phone size={12}/> Phone Number</label>
+                  <input required name="phone" value={formData.phone} onChange={(e) => handlePhoneChange(e, "phone")} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="+92 300 0000000" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black text-[#00004d] ml-1 flex items-center gap-1"><MessageCircle size={12}/> WhatsApp Number</label>
+                  <input required name="whatsapp" value={formData.whatsapp} onChange={(e) => handlePhoneChange(e, "whatsapp")} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="+92 300 0000000" />
+                </div>
+              </div>
             </section>
             <div className="flex flex-col items-center gap-8 pt-10 border-t">
               <button type="button" className="w-full md:w-auto bg-[#0E8449] text-white px-12 py-3.5 rounded-full text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all shadow-sm">
