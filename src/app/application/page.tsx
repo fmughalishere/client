@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useRef, ChangeEvent, FormEvent, useMemo } from "react";
+import React, { useState, useRef, ChangeEvent, FormEvent, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 import {
   User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, X, Wand2, Mail, Phone, MessageCircle
 } from "lucide-react";
@@ -40,6 +41,7 @@ function SuccessModal({ isOpen, onClose, title, message }: SuccessModalProps) {
 }
 
 export default function MobileResponsiveJobForm() {
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isFresher, setIsFresher] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -50,6 +52,16 @@ export default function MobileResponsiveJobForm() {
   const [formData, setFormData] = useState({
     fullName: "", dob: "", gender: "Male", city: "", image: "", jobtype: "Full-Time", category: "", education: "", yearsOfExperience: "", skills: "", achievements: "", email: "", phone: "+92 ", whatsapp: "+92 ", agreeTerms: false
   });
+
+  useEffect(() => {
+    const savedData = localStorage.getItem("pendingJobApplication");
+    if (savedData) {
+      const parsed = JSON.parse(savedData);
+      setFormData(parsed.formData);
+      setIsFresher(parsed.isFresher);
+      localStorage.removeItem("pendingJobApplication");
+    }
+  }, []);
 
   const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>, field: string) => {
     let value = e.target.value;
@@ -93,18 +105,40 @@ export default function MobileResponsiveJobForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    // --- LOGIN CHECK START ---
+    const token = localStorage.getItem("token");
+    if (!token) {
+      // Form ka data save krlo taky login k bd user ko dubara na likhna paray
+      localStorage.setItem("pendingJobApplication", JSON.stringify({ formData, isFresher }));
+      // Login page pe bhej do (saath redirect parameter bhi de skty hain agar apka login page handle krta ho)
+      router.push("/login"); 
+      return;
+    }
+    // --- LOGIN CHECK END ---
+
     if (!formData.agreeTerms) {
       setModalContent({ title: "Agreement Required", message: "Please agree to the privacy policy before submitting." });
       setIsModalOpen(true);
       return;
     }
+
     setLoading(true);
     try {
       const response = await fetch("https://easyjobspk.onrender.com/api/applications", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}` },
-        body: JSON.stringify({ ...formData, skills: formData.skills.split(",").map(s => s.trim()), isFresher, yearsOfExperience: isFresher ? "Fresher" : formData.yearsOfExperience }),
+        headers: { 
+          "Content-Type": "application/json", 
+          "Authorization": `Bearer ${token}` 
+        },
+        body: JSON.stringify({ 
+          ...formData, 
+          skills: formData.skills.split(",").map(s => s.trim()), 
+          isFresher, 
+          yearsOfExperience: isFresher ? "Fresher" : formData.yearsOfExperience 
+        }),
       });
+
       if (response.ok) {
         setSubmitted(true);
         setModalContent({ title: "Application Received!", message: "Your application has been submitted successfully." });
@@ -133,6 +167,7 @@ export default function MobileResponsiveJobForm() {
       <div className="max-w-4xl mx-auto -mt-12 md:-mt-16 px-4">
         <div className="bg-white rounded-[35px] md:rounded-[45px] shadow-xl overflow-hidden border border-white">
           <form onSubmit={handleSubmit} className="p-6 md:p-14 space-y-12 md:space-y-20">
+            {/* Image Section */}
             <section className="flex flex-col items-center gap-6">
               <div className="relative">
                 <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-4 md:border-8 border-[#f8fcfd] shadow-lg bg-gray-50 flex items-center justify-center overflow-hidden">
@@ -164,6 +199,8 @@ export default function MobileResponsiveJobForm() {
                 </button>
               </div>
             </section>
+
+            {/* Personal Details */}
             <section className="space-y-6">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Personal Details</h2></div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
@@ -188,6 +225,8 @@ export default function MobileResponsiveJobForm() {
                 </div>
               </div>
             </section>
+
+            {/* Job Details */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-[#00004d] ml-1 block">Desired Job</label>
@@ -203,6 +242,8 @@ export default function MobileResponsiveJobForm() {
                 </select>
               </div>
             </div>
+
+            {/* Education */}
             <section className="space-y-3">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Education</h2></div>
               <select
@@ -233,6 +274,8 @@ export default function MobileResponsiveJobForm() {
                 ))}
               </select>
             </section>
+
+            {/* Experience Section */}
             <section className="space-y-6">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Experience</h2></div>
               <div className="p-5 md:p-10 rounded-[30px] border-2 border-white shadow-inner bg-gray-50/50">
@@ -251,10 +294,14 @@ export default function MobileResponsiveJobForm() {
                 )}
               </div>
             </section>
+
+            {/* Skills */}
             <section className="space-y-6">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Skills</h2></div>
               <input type="text" name="skills" value={formData.skills} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Your Skills (Comma Separated)" />
             </section>
+
+            {/* Contact Info */}
             <section className="space-y-6">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Contact Info</h2></div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
@@ -272,6 +319,8 @@ export default function MobileResponsiveJobForm() {
                 </div>
               </div>
             </section>
+
+            {/* Privacy & Submit */}
             <div className="flex flex-col items-center gap-8 pt-10 border-t">
               <button type="button" className="w-full md:w-auto bg-[#0E8449] text-white px-12 py-3.5 rounded-full text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all shadow-sm">
                 Read Privacy Policy

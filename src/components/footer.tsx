@@ -11,15 +11,15 @@ const Footer = () => {
     <footer className="w-full bg-[#f3ead8]">
       <div className="relative w-full h-[180px] md:h-[220px]">
         <Image 
-          src="/images/IMG (1).jpeg" 
+          src="/images/IMG (1).png" 
           alt="Illustration" 
           fill 
           className="object-cover object-top"
           priority
         />
-                <div className="absolute inset-0 flex flex-col items-center justify-start pt-4 px-4 z-10">
+                <div className="absolute inset-0 flex flex-col items-center justify-start pt-2 px-4 z-10">
               <div className="flex items-center justify-between w-full max-w-[290px] mb-10">
-               <Link href="https://facebook.com" target="_blank" className="text-[#1877F2]">
+               <Link href="https://facebook.com" target="_blank" className="text-white">
               <IoLogoFacebook size={25} />
             </Link>
             <Link href="https://linkedin.com" target="_blank" className="flex items-center">
@@ -29,7 +29,7 @@ const Footer = () => {
             </Link>
             <Link 
               href="/help" 
-              className="bg-[#00004d] text-white px-3 py-1 rounded-full text-[10px] font-normal shadow-md transition-colors"
+              className="bg-[#0E8449] text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-md transition-colors"
             >
               GET HELP
             </Link>
