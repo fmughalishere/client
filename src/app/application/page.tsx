@@ -1,10 +1,10 @@
-"use client";
+""use client";
 
 import React, { useState, useRef, ChangeEvent, FormEvent, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import {
-  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, X, Wand2, Mail, Phone, MessageCircle
+  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, Mail, Phone, MessageCircle
 } from "lucide-react";
 
 import {
@@ -16,23 +16,43 @@ interface SuccessModalProps {
   onClose: () => void;
   title: string;
   message: string;
+  onAction: () => void;
 }
 
-function SuccessModal({ isOpen, onClose, title, message }: SuccessModalProps) {
+function SuccessModal({ isOpen, onClose, title, message, onAction }: SuccessModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-          <motion.div initial={{ scale: 0.9, opacity: 0, y: 50 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 50 }} className="relative w-full max-w-[340px] md:max-w-sm bg-white rounded-[30px] p-6 md:p-8 text-center shadow-2xl">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+          />
+
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0, y: 50 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 50 }}
+            className="relative w-full max-w-[340px] md:max-w-sm bg-white rounded-[30px] p-6 md:p-8 text-center shadow-2xl"
+          >
             <div className="flex justify-center mb-4">
               <div className="bg-green-100 p-3 rounded-full">
                 <CheckCircle2 size={40} className="text-green-500 md:w-12 md:h-12" />
               </div>
             </div>
+
             <h3 className="text-xl md:text-2xl font-black text-[#00004d] mb-2">{title}</h3>
             <p className="text-sm md:text-base text-gray-500 mb-6 md:mb-8 leading-relaxed">{message}</p>
-            <button onClick={onClose} className="w-full bg-[#00004d] text-white py-4 rounded-full font-black text-sm md:text-base active:scale-95 transition-transform">Go to Dashboard</button>
+
+            <button
+              onClick={onAction}
+              className="w-full bg-[#00004d] text-white py-4 rounded-full font-black text-sm md:text-base active:scale-95 transition-transform"
+            >
+              Go to Dashboard
+            </button>
           </motion.div>
         </div>
       )}
@@ -43,14 +63,19 @@ function SuccessModal({ isOpen, onClose, title, message }: SuccessModalProps) {
 export default function MobileResponsiveJobForm() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [isFresher, setIsFresher] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
 
   const [formData, setFormData] = useState({
-    fullName: "", dob: "", gender: "Male", city: "", image: "", jobtype: "Full-Time", category: "", education: "", yearsOfExperience: "", skills: "", achievements: "", email: "", phone: "+92 ", whatsapp: "+92 ", agreeTerms: false
+    fullName: "", dob: "", gender: "Male", city: "", image: "",
+    jobtype: "Full-Time", category: "", education: "",
+    yearsOfExperience: "", skills: "", achievements: "",
+    email: "", phone: "+92 ", whatsapp: "+92 ", agreeTerms: false
   });
 
   useEffect(() => {
@@ -63,16 +88,24 @@ export default function MobileResponsiveJobForm() {
     }
   }, []);
 
+  // 🔥 MAIN LOGIC
+  const handleRedirect = () => {
+    const token = localStorage.getItem("token");
+    setIsModalOpen(false);
+
+    if (!token) {
+      router.push("/login");
+    } else {
+      router.push("/dashboard");
+    }
+  };
+
   const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>, field: string) => {
     let value = e.target.value;
-    if (!value.startsWith("+92 ")) {
-      value = "+92 ";
-    }
+    if (!value.startsWith("+92 ")) value = "+92 ";
 
-    const prefix = "+92 ";
     const suffix = value.slice(4).replace(/[^\d]/g, "");
-    
-    let formatted = prefix;
+    let formatted = "+92 ";
     if (suffix.length > 0) formatted += suffix.slice(0, 3);
     if (suffix.length > 3) formatted += " " + suffix.slice(3, 10);
 
@@ -84,75 +117,92 @@ export default function MobileResponsiveJobForm() {
     const birthDate = new Date(formData.dob);
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) age--;
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
     return age < 0 ? 0 : age;
   }, [formData.dob]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: ChangeEvent<any>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setFormData({ ...formData, image: reader.result as string });
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => setFormData({ ...formData, image: reader.result as string });
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
+
     if (!token) {
       localStorage.setItem("pendingJobApplication", JSON.stringify({ formData, isFresher }));
-      router.push("/login"); 
+      router.push("/login");
       return;
     }
 
     if (!formData.agreeTerms) {
-      setModalContent({ title: "Agreement Required", message: "Please agree to the privacy policy before submitting." });
+      setModalContent({ title: "Agreement Required", message: "Please agree to the privacy policy." });
       setIsModalOpen(true);
       return;
     }
 
     setLoading(true);
+
     try {
-      const response = await fetch("https://easyjobspk.onrender.com/api/applications", {
+      const res = await fetch("https://easyjobspk.onrender.com/api/applications", {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json", 
-          "Authorization": `Bearer ${token}` 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ 
-          ...formData, 
-          skills: formData.skills.split(",").map(s => s.trim()), 
-          isFresher, 
-          yearsOfExperience: isFresher ? "Fresher" : formData.yearsOfExperience 
-        }),
+        body: JSON.stringify({
+          ...formData,
+          skills: formData.skills.split(",").map(s => s.trim()),
+          isFresher,
+          yearsOfExperience: isFresher ? "Fresher" : formData.yearsOfExperience
+        })
       });
 
-      if (response.ok) {
+      if (res.ok) {
         setSubmitted(true);
-        setModalContent({ title: "Application Received!", message: "Your application has been submitted successfully." });
+        setModalContent({
+          title: "Application Received!",
+          message: "Submitted successfully."
+        });
       } else {
-        const data = await response.json();
-        setModalContent({ title: "Submission Failed", message: data.message || "Something went wrong." });
+        const data = await res.json();
+        setModalContent({
+          title: "Error",
+          message: data.message || "Something went wrong"
+        });
       }
+
       setIsModalOpen(true);
-    } catch (error) {
-      setModalContent({ title: "Connection Error", message: "Server is not responding." });
+    } catch {
+      setModalContent({
+        title: "Server Error",
+        message: "Try again later"
+      });
       setIsModalOpen(true);
     } finally {
       setLoading(false);
     }
   };
-
+      
   return (
     <div className="min-h-screen bg-[#f4f7f9] pb-10 font-sans">
-      <SuccessModal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); if (submitted) window.location.reload(); }} title={modalContent.title} message={modalContent.message} />
+      <SuccessModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={modalContent.title}
+        message={modalContent.message}
+        onAction={handleRedirect}
+      />
 
       <div className="bg-[#0E8449] pt-12 pb-20 md:pt-16 md:pb-24 rounded-b-[40px] md:rounded-b-[60px] text-center border-b border-blue-100 px-4">
         <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-white text-3xl md:text-5xl font-black tracking-tight">Apply for a Job</motion.h1>
