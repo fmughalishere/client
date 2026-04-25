@@ -88,7 +88,6 @@ export default function MobileResponsiveJobForm() {
     }
   }, []);
 
-  // 🔥 MAIN LOGIC
   const handleRedirect = () => {
     const token = localStorage.getItem("token");
     setIsModalOpen(false);
@@ -96,7 +95,7 @@ export default function MobileResponsiveJobForm() {
     if (!token) {
       router.push("/login");
     } else {
-      router.push("/dashboard");
+      router.push("/");
     }
   };
 
@@ -152,20 +151,21 @@ export default function MobileResponsiveJobForm() {
     }
 
     setLoading(true);
+    const finalPayload = {
+      ...formData,
+      skills: formData.skills ? formData.skills.split(",").map(s => s.trim()) : [],
+      isFresher: isFresher,
+      yearsOfExperience: isFresher ? "Fresher" : formData.yearsOfExperience 
+    };
 
     try {
-      const res = await fetch("https://easyjobspk.onrender.com/api/applications", {
+      const res = await fetch("http://localhost:5000/api/applications", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({
-          ...formData,
-          skills: formData.skills.split(",").map(s => s.trim()),
-          isFresher,
-          yearsOfExperience: isFresher ? "Fresher" : formData.yearsOfExperience
-        })
+        body: JSON.stringify(finalPayload)
       });
 
       if (res.ok) {
@@ -324,7 +324,7 @@ export default function MobileResponsiveJobForm() {
                 </div>
                 {!isFresher && (
                   <div className="space-y-6">
-                    <input type="text" name="yearsOfExperience" value={formData.yearsOfExperience} onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experience (e.g. 2 Years, 5 Months)" />
+                    <input type="number" name="yearsOfExperience" value={formData.yearsOfExperience} onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experience (e.g. 2 Years, 5 Months)" />
                     <textarea value={formData.achievements} name="achievements" onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experience Details or Achievements..." rows={4} />
                   </div>
                 )}

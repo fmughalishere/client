@@ -67,8 +67,11 @@ export default function HomePage() {
   };
 
   const getExperienceLabel = (app: any) => {
-    if (app.isFresher === true || app.yearsOfExperience === "Fresher") return "Fresher";
-    return app.yearsOfExperience || "Fresher";
+    if (app.isFresher === true) return "Fresher";
+    if (app.yearsOfExperience && app.yearsOfExperience.trim() !== "" && app.yearsOfExperience !== "Fresher") {
+      return app.yearsOfExperience;
+    }
+    return "Fresher";
   };
 
   return (
@@ -164,7 +167,7 @@ export default function HomePage() {
                   <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] mt-1 whitespace-nowrap">
                     <span>{app.education || "BSIT"}</span>
                     <span className="opacity-30">|</span>
-                    <span>{getExperienceLabel(app)}</span>
+                    <span className="text-[#0E8449]">{getExperienceLabel(app)}</span>
                     <span className="opacity-30">|</span>
                     <span>Age {calculateAge(app.dob)}</span>
                   </div>
