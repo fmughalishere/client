@@ -159,7 +159,7 @@ export default function MobileResponsiveJobForm() {
     };
 
     try {
-      const res = await fetch("http://localhost:5000/api/applications", {
+      const res = await fetch("https://easyjobspk.onrender.com/api/applications", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
