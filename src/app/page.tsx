@@ -134,7 +134,7 @@ export default function HomePage() {
       <section className="max-w-[360px] mx-auto px-4 mt-4 mb-4 relative z-30">
         <div className="bg-[#5DBB63] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm ">
           <span className="text-[16px] font-black tracking-[0.2em] leading-none mb-1 text-center px-4">I am seeking for a job</span>
-          <div className="flex flex-col items-center -space-y-3 animate-bounce">
+          <div className="flex flex-col items-center mt-1 -space-y-3 animate-bounce">
             <ChevronDown size={20} strokeWidth={4} />
             <ChevronDown size={20} strokeWidth={4} className="opacity-40" />
           </div>
