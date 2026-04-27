@@ -70,11 +70,10 @@ const Navbar = () => {
             <Link
               key={link.href}
               href={link.href}
-              className={`px-4 py-2 rounded-full text-[14px] font-semibold transition ${
-                pathname === link.href
-                  ? "text-blue-900 bg-blue-50"
-                  : "text-gray-500 hover:text-blue-800 hover:bg-gray-50"
-              }`}
+              className={`px-4 py-2 rounded-full text-[14px] font-semibold transition ${pathname === link.href
+                ? "text-blue-900 bg-blue-50"
+                : "text-gray-500 hover:text-blue-800 hover:bg-gray-50"
+                }`}
             >
               {link.name}
             </Link>
@@ -94,12 +93,12 @@ const Navbar = () => {
       </nav>
       <div className="bg-[#00004d] text-white flex items-center justify-around py-2 text-[10px]">
         <Link href="/" className="flex items-center gap-1 hover:opacity-80">
-          <AiFillHome size={18} />
+          <AiFillHome size={18} style={{ color: "#5DBB63" }} />
           Home
         </Link>
         <div className="w-[1px] h-4 bg-white"></div>
         <Link href={dashboardLink} className="flex items-center gap-1 hover:opacity-80">
-          <FaUserGear size={18} />
+          <FaUserGear size={18} style={{ color: "#5DBB63" }} />
           My Control Panel
         </Link>
         <div className="w-[1px] h-4 bg-white"></div>
@@ -107,7 +106,7 @@ const Navbar = () => {
           onClick={handleInstallClick}
           className="flex items-center gap-1 hover:opacity-80"
         >
-          <PlusCircle size={18} />
+          <PlusCircle size={18} style={{ color: "#5DBB63" }} />
           Add to Home Screen
         </button>
       </div>
