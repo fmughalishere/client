@@ -82,7 +82,7 @@ const Navbar = () => {
         </div>
         <div className="flex items-center gap-2">
           <button className="relative p-2 rounded-full hover:bg-gray-100 transition">
-            <Bell size={18} className="text-gray-700" />
+            <Bell size={22} className="text-gray-700" />
           </button>
           <button
             onClick={() => setIsOpen(!isOpen)}
