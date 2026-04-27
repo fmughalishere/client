@@ -152,10 +152,27 @@ export default function MobileResponsiveJobForm() {
 
     setLoading(true);
     const finalPayload = {
-      ...formData,
-      skills: formData.skills ? formData.skills.split(",").map(s => s.trim()) : [],
+      fullName: formData.fullName,
+      dob: formData.dob,
+      gender: formData.gender,
+      city: formData.city,
+      image: formData.image,
+      jobtype: formData.jobtype,
+      category: formData.category,
+      education: formData.education,
+      email: formData.email,
+      phone: formData.phone,
+      whatsapp: formData.whatsapp,
+      achievements: formData.achievements,
+
+      skills: formData.skills
+        ? formData.skills.split(",").map(s => s.trim())
+        : [],
+
       isFresher: isFresher,
-      yearsOfExperience: isFresher ? "Fresher" : formData.yearsOfExperience 
+      yearsOfExperience: isFresher
+        ? 0
+        : Number(formData.yearsOfExperience || 0)
     };
 
     try {
@@ -193,7 +210,7 @@ export default function MobileResponsiveJobForm() {
       setLoading(false);
     }
   };
-      
+
   return (
     <div className="min-h-screen bg-[#f4f7f9] pb-10 font-sans">
       <SuccessModal
@@ -338,20 +355,20 @@ export default function MobileResponsiveJobForm() {
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Contact Info</h2></div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
                 <div className="space-y-1.5 md:col-span-2">
-                  <label className="text-[10px] font-black text-[#00004d] ml-1 flex items-center gap-1"><Mail size={12}/> Email Address</label>
+                  <label className="text-[10px] font-black text-[#00004d] ml-1 flex items-center gap-1"><Mail size={12} /> Email Address</label>
                   <input type="email" required name="email" value={formData.email} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="example@mail.com" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-[#00004d] ml-1 flex items-center gap-1"><Phone size={12}/> Phone Number</label>
+                  <label className="text-[10px] font-black text-[#00004d] ml-1 flex items-center gap-1"><Phone size={12} /> Phone Number</label>
                   <input required name="phone" value={formData.phone} onChange={(e) => handlePhoneChange(e, "phone")} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="+92 300 0000000" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-[#00004d] ml-1 flex items-center gap-1"><MessageCircle size={12}/> WhatsApp Number</label>
+                  <label className="text-[10px] font-black text-[#00004d] ml-1 flex items-center gap-1"><MessageCircle size={12} /> WhatsApp Number</label>
                   <input required name="whatsapp" value={formData.whatsapp} onChange={(e) => handlePhoneChange(e, "whatsapp")} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="+92 300 0000000" />
                 </div>
               </div>
             </section>
-          <div className="flex flex-col items-center gap-8 pt-10 border-t">
+            <div className="flex flex-col items-center gap-8 pt-10 border-t">
               <button type="button" className="w-full md:w-auto bg-[#0E8449] text-white px-12 py-3.5 rounded-full text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all shadow-sm">
                 Read Privacy Policy
               </button>

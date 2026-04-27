@@ -66,18 +66,17 @@ export default function HomePage() {
     return age;
   };
 
-  const getExperienceLabel = (app: any) => {
-    if (app.isFresher === true) return "Fresher";
-    if (app.yearsOfExperience && app.yearsOfExperience.trim() !== "" && app.yearsOfExperience !== "Fresher") {
-      return app.yearsOfExperience;
-    }
-    return "Fresher";
-  };
+const getExperienceLabel = (app: any) => {
+  if (app.yearsOfExperience && app.yearsOfExperience > 0) {
+    return `${app.yearsOfExperience} Years`;
+  }
+  return "Fresher";
+};
 
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-8 font-sans">
       <section className="px-0 pt-0 relative">
-        <div className="bg-[#0E8449] rounded-b-[35px] pt-5 pb-10 px-6 flex flex-col items-center shadow-sm relative">
+        <div className="bg-[#5DBB63] rounded-b-[35px] pt-5 pb-10 px-6 flex flex-col items-center shadow-sm relative">
           <div className="text-center mb-1 mt-0">
             <h1 className="text-[22px] font-black text-white leading-none">Hire easy</h1>
             <h1 className="text-[22px] font-black text-white leading-tight">Get hired easy</h1>
@@ -116,7 +115,7 @@ export default function HomePage() {
       </section>
 
       <section className="max-w-[360px] mx-auto px-4 mt-4 mb-4 relative z-30">
-        <div className="bg-[#0E8449] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm ">
+        <div className="bg-[#5DBB63] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm ">
           <span className="text-[16px] font-black tracking-[0.2em] leading-none mb-1 text-center px-4">I am seeking for a job</span>
           <div className="flex flex-col items-center -space-y-3">
             <ChevronDown size={20} strokeWidth={4} />
@@ -132,25 +131,12 @@ export default function HomePage() {
           ) : applicants.length > 0 ? (
             applicants.map((app: any, idx: number) => (
               <div key={idx} className="bg-white border border-gray-100 rounded-[15px] p-3 flex items-center gap-3 relative shadow-md min-h-[90px]">
+                
                 <div className="w-16 h-16 rounded-full flex-shrink-0 relative bg-[#f8fafc] border border-gray-50 flex items-center justify-center overflow-hidden">
                   {app.image === "male" ? (
-                    <Image
-                      src={MALE_ICON}
-                      alt="Male"
-                      fill
-                      className="object-contain p-1"
-                      style={navyBlueFilter}
-                      unoptimized
-                    />
+                    <Image src={MALE_ICON} alt="Male" fill className="object-contain p-1" style={navyBlueFilter} unoptimized />
                   ) : app.image === "female" ? (
-                    <Image
-                      src={FEMALE_ICON}
-                      alt="Female"
-                      fill
-                      className="object-contain p-1"
-                      style={navyBlueFilter}
-                      unoptimized
-                    />
+                    <Image src={FEMALE_ICON} alt="Female" fill className="object-contain p-1" style={navyBlueFilter} unoptimized />
                   ) : app.image && app.image.length > 20 ? (
                     <Image src={app.image} alt="User" fill className="object-cover" unoptimized />
                   ) : (
@@ -162,25 +148,32 @@ export default function HomePage() {
 
                 <div className="flex flex-col flex-1">
                   <h2 className="text-[15px] font-black text-[#00004d] leading-tight truncate">{app.fullName}</h2>
-                  <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">{app.category || "Consultant"}</p>
+
+                  {/* ✅ Profession */}
+                  <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">
+                    {app.category || "Consultant"}
+                  </p>
+
+                  {/* ✅ Experience under profession */}
+                  <p className="text-[10px] font-bold text-[#5DBB63] mt-0.5">
+                    {getExperienceLabel(app)}
+                  </p>
 
                   <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] mt-1 whitespace-nowrap">
                     <span>{app.education || "BSIT"}</span>
-                    <span className="opacity-30">|</span>
-                    <span className="text-[#0E8449]">{getExperienceLabel(app)}</span>
                     <span className="opacity-30">|</span>
                     <span>Age {calculateAge(app.dob)}</span>
                   </div>
 
                   <div className="flex items-center justify-between mt-2 pt-1">
-                    <div className="flex items-center gap-0.5 text-[#0E8449]">
+                    <div className="flex items-center gap-0.5 text-[#5DBB63]">
                       <IoIosPin size={13} />
                       <span className="font-bold text-[10px] uppercase">{app.city}</span>
                     </div>
 
                     <button
                       onClick={() => router.push(`/applicants/${app._id}`)}
-                      className="text-[#0E8449] font-black text-[10px] flex items-center gap-0.5"
+                      className="text-[#5DBB63] font-black text-[10px] flex items-center gap-0.5"
                     >
                       Visit my profile <LuChevronsRight size={14} strokeWidth={3} />
                     </button>

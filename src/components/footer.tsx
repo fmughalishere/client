@@ -29,7 +29,7 @@ const Footer = () => {
             </Link>
             <Link 
               href="/help" 
-              className="bg-[#0E8449] text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-md transition-colors"
+              className="bg-[#5DBB63] text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-md transition-colors"
             >
               GET HELP
             </Link>
