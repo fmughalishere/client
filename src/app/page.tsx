@@ -133,8 +133,8 @@ export default function HomePage() {
       </section>
       <section className="max-w-[360px] mx-auto px-4 mt-4 mb-4 relative z-30">
         <div className="bg-[#5DBB63] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm ">
-          <span className="text-[16px] font-black tracking-[0.2em] leading-none mb-1 text-center px-4">I am seeking for a job</span>
-          <div className="flex flex-col items-center mt-1 -space-y-3 animate-bounce">
+          <span className="text-[16px] font-black tracking-[0.2em] leading-none mt-3 text-center px-4 animate-bounce">I am seeking for a job</span>
+          <div className="flex flex-col items-center mt-2 -space-y-3 animate-bounce">
             <ChevronDown size={20} strokeWidth={4} />
             <ChevronDown size={20} strokeWidth={4} className="opacity-40" />
           </div>
@@ -172,7 +172,7 @@ export default function HomePage() {
                   <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">
                     {app.category || "Consultant"}
                   </p>
-                  <p className="text-[10px] font-bold text-[#5DBB63] mt-0.5 tracking-[0.1em]">
+                  <p className="text-[10px] font-bold text-[#00004d] mt-0.5 tracking-[0.1em]">
                     {calculateTotalExperience(app.experience, app.isFresher)}
                   </p>
                   <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] mt-1 whitespace-nowrap">
