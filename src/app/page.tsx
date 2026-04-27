@@ -24,10 +24,10 @@ export default function HomePage() {
   };
 
   const quickActions = [
-    { label: "Apply for a Job", icon: <Briefcase size={18} />, href: "/application" },
-    { label: "Post a Job", icon: <PlusCircle size={18} />, href: "/dashboard/employer/post-job" },
-    { label: "Job Seekers", icon: <Users size={18} />, href: "/dashboard/jobseeker" },
-    { label: "Job Offers", icon: <ClipboardList size={18} />, href: "/jobs" },
+    { label: "Apply for a Job", icon: <Briefcase size={18} style={{ color: "#5DBB63" }} />, href: "/application" },
+    { label: "Post a Job", icon: <PlusCircle size={18} style={{ color: "#5DBB63" }} />, href: "/dashboard/employer/post-job" },
+    { label: "Job Seekers", icon: <Users size={18} style={{ color: "#5DBB63" }} />, href: "/dashboard/jobseeker" },
+    { label: "Job Offers", icon: <ClipboardList size={18} style={{ color: "#5DBB63" }} />, href: "/jobs" },
   ];
 
   const fetchApplicants = useCallback(async () => {
@@ -132,7 +132,7 @@ export default function HomePage() {
         </div>
       </section>
       <section className="max-w-[360px] mx-auto px-4 mt-4 mb-4 relative z-30">
-        <div className="bg-[#5DBB63] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm ">
+        <div className="bg-[#5DBB63] text-[#00004d] rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm ">
           <span className="text-[16px] font-black tracking-[0.2em] leading-none mt-3 text-center px-4 animate-bounce">I am seeking for a job</span>
           <div className="flex flex-col items-center mt-2 -space-y-3 animate-bounce">
             <ChevronDown size={20} strokeWidth={4} />
@@ -172,13 +172,12 @@ export default function HomePage() {
                   <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">
                     {app.category || "Consultant"}
                   </p>
-                  <p className="text-[10px] font-bold text-[#00004d] mt-0.5 tracking-[0.1em]">
-                    {calculateTotalExperience(app.experience, app.isFresher)}
-                  </p>
                   <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] mt-1 whitespace-nowrap">
                     <span>{app.education || "BSIT"}</span>
                   </div>
-
+                  <p className="text-[10px] font-bold text-[#00004d] mt-0.5 tracking-[0.1em]">
+                    {calculateTotalExperience(app.experience, app.isFresher)}
+                  </p>
                   <div className="flex items-center justify-between mt-2 pt-1">
                     <div className="flex items-center gap-1 text-[#5DBB63]">
                       <IoIosPin size={13} />
