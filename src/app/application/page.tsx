@@ -446,7 +446,7 @@ export default function MobileResponsiveJobForm() {
               </div>
             </section>
             <div className="flex flex-col items-center gap-8 pt-10 border-t">
-              <button type="button" className="w-full md:w-auto bg-[#0E8449] text-white px-12 py-3.5 rounded-full text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all shadow-sm">
+              <button type="button" className="w-full md:w-auto bg-[#5DBB63] text-white px-12 py-3.5 rounded-full text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all shadow-sm">
                 Read Privacy Policy
               </button>
               <label className="flex items-center gap-3 cursor-pointer">
