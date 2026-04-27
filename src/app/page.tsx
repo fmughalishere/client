@@ -5,7 +5,7 @@ import {
   Search, PlusCircle, Briefcase, Users, ClipboardList,
   ChevronDown, Loader2, User
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { io } from "socket.io-client";
 import { useRouter } from "next/navigation";
 import { IoIosPin } from "react-icons/io";
@@ -30,7 +30,7 @@ export default function HomePage() {
     { label: "Job Offers", icon: <ClipboardList size={18} />, href: "/jobs" },
   ];
 
-  const fetchApplicants = async () => {
+  const fetchApplicants = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch("https://easyjobspk.onrender.com/api/applications/employer/all-applicants", {
@@ -43,14 +43,14 @@ export default function HomePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     const socket = io("https://easyjobspk.onrender.com/");
     socket.on("visitorCount", (count: number) => setVisitorCount(count));
     fetchApplicants();
     return () => { socket.disconnect(); };
-  }, []);
+  }, [fetchApplicants]);
 
   const handleSearch = () => {
     if (searchQuery.trim()) router.push(`/jobs?search=${searchQuery}`);
@@ -66,12 +66,31 @@ export default function HomePage() {
     return age;
   };
 
-const getExperienceLabel = (app: any) => {
-  if (app.yearsOfExperience && app.yearsOfExperience > 0) {
-    return `${app.yearsOfExperience} Years`;
-  }
-  return "Fresher";
-};
+  const calculateTotalExperience = (experienceArray: any[], isFresher: boolean) => {
+    if (isFresher || !experienceArray || experienceArray.length === 0) {
+      return "Fresher";
+    }
+
+    let totalMonths = 0;
+    experienceArray.forEach((exp) => {
+      const start = new Date(exp.startDate);
+      const end = exp.isCurrentJob ? new Date() : new Date(exp.endDate);
+      if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+        const diffInMonths = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+        if (diffInMonths > 0) totalMonths += diffInMonths;
+      }
+    });
+
+    if (totalMonths === 0) return "Fresher";
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
+
+    if (years > 0) {
+      return `Exp ${years}${months > 0 ? `.${Math.round(months / 1.2)}` : ""} ${years === 1 && months === 0 ? "Year" : "Years"}`;
+    } else {
+      return `Exp ${months} Months`;
+    }
+  };
 
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-8 font-sans">
@@ -100,7 +119,6 @@ const getExperienceLabel = (app: any) => {
           </div>
         </div>
       </section>
-
       <section className="max-w-md mx-auto px-6 -mt-6 relative z-20">
         <div className="flex flex-col gap-2 items-center justify-center w-full">
           {quickActions.map((action, i) => (
@@ -113,7 +131,6 @@ const getExperienceLabel = (app: any) => {
           ))}
         </div>
       </section>
-
       <section className="max-w-[360px] mx-auto px-4 mt-4 mb-4 relative z-30">
         <div className="bg-[#5DBB63] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm ">
           <span className="text-[16px] font-black tracking-[0.2em] leading-none mb-1 text-center px-4">I am seeking for a job</span>
@@ -123,7 +140,6 @@ const getExperienceLabel = (app: any) => {
           </div>
         </div>
       </section>
-
       <section className="max-w-[360px] mx-auto px-4 mt-2 mb-10">
         <div className="flex flex-col gap-3">
           {loading ? (
@@ -132,43 +148,41 @@ const getExperienceLabel = (app: any) => {
             applicants.map((app: any, idx: number) => (
               <div key={idx} className="bg-white border border-gray-100 rounded-[15px] p-3 flex items-center gap-3 relative shadow-md min-h-[90px]">
                 
-                <div className="w-16 h-16 rounded-full flex-shrink-0 relative bg-[#f8fafc] border border-gray-50 flex items-center justify-center overflow-hidden">
+                <div className="w-16 h-16 rounded-full flex-shrink-0 relative bg-[#f8fafc] border border-gray-100 flex items-center justify-center overflow-hidden">
                   {app.image === "male" ? (
-                    <Image src={MALE_ICON} alt="Male" fill className="object-contain p-1" style={navyBlueFilter} unoptimized />
+                    <Image src={MALE_ICON} alt="Male" fill className="object-contain p-1.5" style={navyBlueFilter} unoptimized />
                   ) : app.image === "female" ? (
-                    <Image src={FEMALE_ICON} alt="Female" fill className="object-contain p-1" style={navyBlueFilter} unoptimized />
+                    <Image src={FEMALE_ICON} alt="Female" fill className="object-contain p-1.5" style={navyBlueFilter} unoptimized />
                   ) : app.image && app.image.length > 20 ? (
                     <Image src={app.image} alt="User" fill className="object-cover" unoptimized />
                   ) : (
                     <div className="bg-[#00004d] w-full h-full flex items-center justify-center">
-                      <User size={35} className="text-white" />
+                      <User size={30} className="text-white" />
                     </div>
                   )}
                 </div>
 
                 <div className="flex flex-col flex-1">
-                  <h2 className="text-[15px] font-black text-[#00004d] leading-tight truncate">{app.fullName}</h2>
-
-                  {/* ✅ Profession */}
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-[15px] font-black text-[#00004d] leading-tight truncate">{app.fullName}</h2>
+                    <span className="text-[10px] font-bold text-[#00004d] bg-gray-100 px-1.5 py-0.5 rounded-md">
+                      Age {calculateAge(app.dob)}
+                    </span>
+                  </div>
                   <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">
                     {app.category || "Consultant"}
                   </p>
-
-                  {/* ✅ Experience under profession */}
-                  <p className="text-[10px] font-bold text-[#5DBB63] mt-0.5">
-                    {getExperienceLabel(app)}
+                  <p className="text-[10px] font-bold text-[#5DBB63] mt-0.5 tracking-[0.1em]">
+                    {calculateTotalExperience(app.experience, app.isFresher)}
                   </p>
-
                   <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] mt-1 whitespace-nowrap">
                     <span>{app.education || "BSIT"}</span>
-                    <span className="opacity-30">|</span>
-                    <span>Age {calculateAge(app.dob)}</span>
                   </div>
 
                   <div className="flex items-center justify-between mt-2 pt-1">
-                    <div className="flex items-center gap-0.5 text-[#5DBB63]">
+                    <div className="flex items-center gap-1 text-[#5DBB63]">
                       <IoIosPin size={13} />
-                      <span className="font-bold text-[10px] uppercase">{app.city}</span>
+                      <span className="font-bold text-[10px]">{app.city}</span>
                     </div>
 
                     <button

@@ -4,12 +4,24 @@ import React, { useState, useRef, ChangeEvent, FormEvent, useMemo, useEffect } f
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import {
-  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, Mail, Phone, MessageCircle
+  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, Mail, Phone, MessageCircle, Plus, Trash2
 } from "lucide-react";
 
 import {
   MALE_ICON, FEMALE_ICON, CITIES, JOB_TYPES, JOB_CATEGORIES, EDUCATION_GROUPS
 } from "../constants";
+
+const navyBlueFilter = {
+  filter: "invert(7%) sepia(76%) saturate(5793%) hue-rotate(241deg) brightness(91%) contrast(108%)"
+};
+
+interface ExperienceEntry {
+  companyName: string;
+  designation: string;
+  startDate: string;
+  endDate: string;
+  isCurrentJob: boolean;
+}
 
 interface SuccessModalProps {
   isOpen: boolean;
@@ -74,9 +86,27 @@ export default function MobileResponsiveJobForm() {
   const [formData, setFormData] = useState({
     fullName: "", dob: "", gender: "Male", city: "", image: "",
     jobtype: "Full-Time", category: "", education: "",
-    yearsOfExperience: "", skills: "", achievements: "",
+    yearsOfExperience: "0", skills: "", achievements: "",
     email: "", phone: "+92 ", whatsapp: "+92 ", agreeTerms: false
   });
+
+  const [experienceList, setExperienceList] = useState<ExperienceEntry[]>([
+    { companyName: "", designation: "", startDate: "", endDate: "", isCurrentJob: false }
+  ]);
+
+  const calculatedTotalYears = useMemo(() => {
+    if (isFresher) return 0;
+    let totalMonths = 0;
+    experienceList.forEach(exp => {
+      if (exp.startDate) {
+        const start = new Date(exp.startDate);
+        const end = exp.isCurrentJob ? new Date() : (exp.endDate ? new Date(exp.endDate) : new Date());
+        const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+        if (months > 0) totalMonths += months;
+      }
+    });
+    return (totalMonths / 12).toFixed(1);
+  }, [experienceList, isFresher]);
 
   useEffect(() => {
     const savedData = localStorage.getItem("pendingJobApplication");
@@ -84,6 +114,7 @@ export default function MobileResponsiveJobForm() {
       const parsed = JSON.parse(savedData);
       setFormData(parsed.formData);
       setIsFresher(parsed.isFresher);
+      if (parsed.experienceList) setExperienceList(parsed.experienceList);
       localStorage.removeItem("pendingJobApplication");
     }
   }, []);
@@ -91,7 +122,6 @@ export default function MobileResponsiveJobForm() {
   const handleRedirect = () => {
     const token = localStorage.getItem("token");
     setIsModalOpen(false);
-
     if (!token) {
       router.push("/login");
     } else {
@@ -126,6 +156,20 @@ export default function MobileResponsiveJobForm() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleExperienceChange = (index: number, field: keyof ExperienceEntry, value: any) => {
+    const newList = [...experienceList];
+    newList[index] = { ...newList[index], [field]: value };
+    setExperienceList(newList);
+  };
+
+  const addExperience = () => {
+    setExperienceList([...experienceList, { companyName: "", designation: "", startDate: "", endDate: "", isCurrentJob: false }]);
+  };
+
+  const removeExperience = (index: number) => {
+    setExperienceList(experienceList.filter((_, i) => i !== index));
+  };
+
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -139,7 +183,7 @@ export default function MobileResponsiveJobForm() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      localStorage.setItem("pendingJobApplication", JSON.stringify({ formData, isFresher }));
+      localStorage.setItem("pendingJobApplication", JSON.stringify({ formData, isFresher, experienceList }));
       router.push("/login");
       return;
     }
@@ -152,27 +196,11 @@ export default function MobileResponsiveJobForm() {
 
     setLoading(true);
     const finalPayload = {
-      fullName: formData.fullName,
-      dob: formData.dob,
-      gender: formData.gender,
-      city: formData.city,
-      image: formData.image,
-      jobtype: formData.jobtype,
-      category: formData.category,
-      education: formData.education,
-      email: formData.email,
-      phone: formData.phone,
-      whatsapp: formData.whatsapp,
-      achievements: formData.achievements,
-
-      skills: formData.skills
-        ? formData.skills.split(",").map(s => s.trim())
-        : [],
-
+      ...formData,
+      skills: formData.skills ? formData.skills.split(",").map(s => s.trim()) : [],
       isFresher: isFresher,
-      yearsOfExperience: isFresher
-        ? 0
-        : Number(formData.yearsOfExperience || 0)
+      yearsOfExperience: isFresher ? 0 : Number(calculatedTotalYears),
+      experience: isFresher ? [] : experienceList
     };
 
     try {
@@ -229,17 +257,19 @@ export default function MobileResponsiveJobForm() {
       <div className="max-w-4xl mx-auto -mt-12 md:-mt-16 px-4">
         <div className="bg-white rounded-[35px] md:rounded-[45px] shadow-xl overflow-hidden border border-white">
           <form onSubmit={handleSubmit} className="p-6 md:p-14 space-y-12 md:space-y-20">
-            <section className="flex flex-col items-center gap-6">
+              <section className="flex flex-col items-center gap-6">
               <div className="relative">
                 <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-4 md:border-8 border-[#f8fcfd] shadow-lg bg-gray-50 flex items-center justify-center overflow-hidden">
                   {formData.image.length > 20 ? (
                     <img src={formData.image} className="w-full h-full object-cover" alt="Profile" />
                   ) : formData.image === "male" ? (
-                    <img src={MALE_ICON} className="w-[85%] h-[85%] object-contain" alt="Male Icon" />
+                    <img src={MALE_ICON} className="w-[80%] h-[80%] object-contain" style={navyBlueFilter} alt="Male Icon" />
                   ) : formData.image === "female" ? (
-                    <img src={FEMALE_ICON} className="w-[85%] h-[85%] object-contain" alt="Female Icon" />
+                    <img src={FEMALE_ICON} className="w-[80%] h-[80%] object-contain" style={navyBlueFilter} alt="Female Icon" />
                   ) : (
-                    <User className="w-16 h-16 text-gray-200" />
+                    <div className="bg-[#00004d] w-full h-full flex items-center justify-center">
+                      <User className="w-16 h-16 text-white" />
+                    </div>
                   )}
                 </div>
                 <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute bottom-1 right-1 bg-[#00004d] text-white p-2.5 rounded-full shadow-lg"><Camera size={18} /></button>
@@ -253,14 +283,14 @@ export default function MobileResponsiveJobForm() {
               <input type="file" ref={fileInputRef} className="hidden" onChange={handleImageChange} accept="image/*" />
               <div className="flex gap-4 w-full justify-center">
                 <button type="button" onClick={() => setFormData({ ...formData, image: "male" })} className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "male" ? 'border-[#00004d] bg-[#00004d] text-white' : 'border-gray-100 text-gray-400'}`}>
-                  <img src={MALE_ICON} className={`w-5 h-5 ${formData.image === "male" ? 'brightness-0 invert' : ''}`} alt="" /> <span className="text-[10px] font-bold">Male</span>
+                  <img src={MALE_ICON} className={`w-5 h-5 ${formData.image === "male" ? 'brightness-0 invert' : ''}`} style={formData.image !== "male" ? navyBlueFilter : {}} alt="" /> <span className="text-[10px] font-bold">Male</span>
                 </button>
-                <button type="button" onClick={() => setFormData({ ...formData, image: "female" })} className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "female" ? 'border-pink-500 bg-pink-500 text-white' : 'border-gray-100 text-gray-400'}`}>
-                  <img src={FEMALE_ICON} className={`w-5 h-5 ${formData.image === "female" ? 'brightness-0 invert' : ''}`} alt="" /> <span className="text-[10px] font-bold">Female</span>
+                <button type="button" onClick={() => setFormData({ ...formData, image: "female" })} className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "female" ? 'border-[#00004d] bg-[#00004d] text-white' : 'border-gray-100 text-gray-400'}`}>
+                  <img src={FEMALE_ICON} className={`w-5 h-5 ${formData.image === "female" ? 'brightness-0 invert' : ''}`} style={formData.image !== "female" ? navyBlueFilter : {}} alt="" /> <span className="text-[10px] font-bold">Female</span>
                 </button>
               </div>
             </section>
-            <section className="space-y-6">
+              <section className="space-y-6">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Personal Details</h2></div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
                 <div className="space-y-1.5">
@@ -330,26 +360,73 @@ export default function MobileResponsiveJobForm() {
               </select>
             </section>
             <section className="space-y-6">
-              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Experience</h2></div>
-              <div className="p-5 md:p-10 rounded-[30px] border-2 border-white shadow-inner bg-gray-50/50">
-                <div className="flex justify-between items-center mb-8">
-                  <h3 className="text-[10px] font-black text-[#00004d] tracking-widest flex items-center gap-2 uppercase"><Briefcase size={14} /> Work Experience</h3>
-                  <label className="flex items-center gap-3 bg-white px-4 py-2 rounded-full cursor-pointer shadow-sm active:scale-95 transition-all">
+              <div className="flex items-center justify-between border-l-4 border-[#00004d] pl-3">
+                <h2 className="text-[#00004d] font-black text-lg tracking-wider">Experience</h2>
+                <label className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-full cursor-pointer border border-gray-100">
                     <input type="checkbox" checked={isFresher} onChange={(e) => setIsFresher(e.target.checked)} className="accent-[#00004d] w-4 h-4" />
-                    <span className="text-[10px] font-black text-[#00004d]">Fresher</span>
-                  </label>
-                </div>
-                {!isFresher && (
-                  <div className="space-y-6">
-                    <input type="number" name="yearsOfExperience" value={formData.yearsOfExperience} onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experience (e.g. 2 Years, 5 Months)" />
-                    <textarea value={formData.achievements} name="achievements" onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none" placeholder="Experience Details or Achievements..." rows={4} />
-                  </div>
-                )}
+                    <span className="text-[10px] font-black text-[#00004d]">I am a Fresher</span>
+                </label>
               </div>
+
+              {!isFresher && (
+                <div className="space-y-6 bg-gray-50/50 p-5 md:p-8 rounded-[30px] border border-gray-100">
+                    <div className="flex items-center gap-2 bg-[#00004d] text-white self-start px-4 py-2 rounded-xl w-fit">
+                    <Briefcase size={14} />
+                    <span className="text-xs font-black uppercase tracking-tight">Total: {calculatedTotalYears} Years Exp</span>
+                  </div>
+
+                  {experienceList.map((exp, index) => (
+                    <motion.div 
+                      initial={{ opacity: 0, x: -20 }} 
+                      animate={{ opacity: 1, x: 0 }} 
+                      key={index} 
+                      className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-4 relative"
+                    >
+                      {experienceList.length > 1 && (
+                        <button type="button" onClick={() => removeExperience(index)} className="absolute top-4 right-4 text-red-400 hover:text-red-600">
+                          <Trash2 size={18} />
+                        </button>
+                      )}
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-[9px] font-black text-gray-400 uppercase ml-1">Company Name</label>
+                          <input required placeholder="Google / Software House" value={exp.companyName} onChange={(e) => handleExperienceChange(index, 'companyName', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[9px] font-black text-gray-400 uppercase ml-1">Designation</label>
+                          <input required placeholder="Frontend Developer" value={exp.designation} onChange={(e) => handleExperienceChange(index, 'designation', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[9px] font-black text-gray-400 uppercase ml-1">Start Date</label>
+                          <input required type="date" value={exp.startDate} onChange={(e) => handleExperienceChange(index, 'startDate', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[9px] font-black text-gray-400 uppercase ml-1">End Date</label>
+                          <input required={!exp.isCurrentJob} disabled={exp.isCurrentJob} type="date" value={exp.endDate} onChange={(e) => handleExperienceChange(index, 'endDate', e.target.value)} className={`w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none ${exp.isCurrentJob ? 'opacity-50' : ''}`} />
+                          <label className="flex items-center gap-2 mt-2 ml-1 cursor-pointer">
+                            <input type="checkbox" checked={exp.isCurrentJob} onChange={(e) => handleExperienceChange(index, 'isCurrentJob', e.target.checked)} className="w-3 h-3 accent-[#0E8449]" />
+                            <span className="text-[10px] font-bold text-gray-500">Currently Working Here</span>
+                          </label>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+
+                  <button type="button" onClick={addExperience} className="w-full flex items-center justify-center gap-2 py-4 border-2 border-dashed border-gray-200 rounded-2xl text-gray-400 font-bold text-xs hover:border-[#00004d] hover:text-[#00004d] transition-all">
+                    <Plus size={16} /> Add Another Experience
+                  </button>
+
+                  <div className="space-y-2 mt-6">
+                    <label className="text-[10px] font-black text-[#00004d] ml-1 block uppercase tracking-widest">Achievements / Key Responsibilities</label>
+                    <textarea value={formData.achievements} name="achievements" onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none border border-gray-100" placeholder="Describe your main projects or achievements..." rows={3} />
+                  </div>
+                </div>
+              )}
             </section>
             <section className="space-y-6">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Skills</h2></div>
-              <input type="text" name="skills" value={formData.skills} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Your Skills (Comma Separated)" />
+              <input type="text" name="skills" value={formData.skills} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Your Skills (React, Node, Designer, etc.)" />
             </section>
             <section className="space-y-6">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-black text-lg tracking-wider">Contact Info</h2></div>
