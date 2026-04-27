@@ -112,7 +112,7 @@ export default function ApplicantDetail() {
             )}
           </div>
           <div className="min-w-0">
-            <h1 className="text-2xl md:text-4xl font-black tracking-[0.1em] leading-tight">
+            <h1 className="text-2xl md:text-4xl font-bold tracking-[0.1em] leading-tight">
               {applicant.fullName}
             </h1>
             <p className="text-sm md:text-lg opacity-80 mt-1 tracking-[0.1em]">
@@ -123,7 +123,7 @@ export default function ApplicantDetail() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white p-8 rounded-3xl shadow-sm space-y-5">
-            <h2 className="text-lg font-black text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">
+            <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">
               <User size={18} /> Basic & Contact Info
             </h2>
             <div className="grid gap-4 text-sm font-bold text-gray-600">
@@ -135,7 +135,7 @@ export default function ApplicantDetail() {
           </div>
 
           <div className="bg-white p-8 rounded-3xl shadow-sm space-y-5">
-            <h2 className="text-lg font-black text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">
+            <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">
               <GraduationCap size={18} /> Education
             </h2>
             <div className="grid gap-4 text-sm font-bold text-gray-600">
@@ -144,7 +144,7 @@ export default function ApplicantDetail() {
           </div>
 
           <div className="bg-white p-8 rounded-3xl shadow-sm space-y-5">
-            <h2 className="text-lg font-black text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">
+            <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">
               <Briefcase size={18} /> Job Category + Type
             </h2>
             <div className="grid gap-4 text-sm font-bold text-gray-600">
@@ -155,13 +155,13 @@ export default function ApplicantDetail() {
         </div>
 
         <div className="bg-white p-8 rounded-3xl shadow-sm space-y-6">
-          <h2 className="text-lg font-black text-[#00004d] tracking-wider flex items-center gap-3 border-b pb-4 ">
+          <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-3 border-b pb-4 ">
             <Wand2 size={20} /> Skills & Expertise
           </h2>
           <div className="flex flex-wrap gap-3">
             {applicant.skills?.length > 0 ? (
               applicant.skills.map((skill: string, i: number) => (
-                <span key={i} className="px-4 py-2 bg-blue-50 text-[#00004d] text-xs font-black rounded-full border border-blue-100  tracking-wider">
+                <span key={i} className="px-4 py-2 bg-blue-50 text-[#00004d] text-xs font-bold rounded-full border border-blue-100  tracking-wider">
                   {skill}
                 </span>
               ))
@@ -172,22 +172,22 @@ export default function ApplicantDetail() {
         </div>
 
         <div className="bg-white p-8 rounded-3xl shadow-sm space-y-6">
-          <h2 className="text-lg font-black text-[#00004d] tracking-wider flex items-center gap-3 border-b pb-4 ">
+          <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-3 border-b pb-4 ">
             <Briefcase size={20} /> Work History
           </h2>
           <div className="space-y-4">
             {applicant.isFresher ? (
-               <p className="text-sm text-[#00004d] font-black p-6 bg-gray-50 rounded-3xl border border-dashed border-gray-200 text-center ">
+               <p className="text-sm text-[#00004d] font-bold p-6 bg-gray-50 rounded-3xl border border-dashed border-gray-200 text-center ">
                  Fresh Candidate / Entry Level
                </p>
             ) : applicant.experience && applicant.experience.length > 0 ? (
               applicant.experience.map((exp: any, i: number) => (
                 <div key={i} className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
                   <div className="flex justify-between items-start">
-                    <p className="text-xs font-black text-gray-400  tracking-widest mb-1">{exp.companyName}</p>
+                    <p className="text-xs font-bold text-gray-400  tracking-widest mb-1">{exp.companyName}</p>
                     {exp.isCurrentJob && <span className="bg-[#00004d] text-white text-[8px] px-2 py-0.5 rounded ">Current</span>}
                   </div>
-                  <p className="font-black text-[#00004d] text-lg ">{exp.designation}</p>
+                  <p className="font-bold text-[#00004d] text-lg ">{exp.designation}</p>
                   <p className="text-[10px] font-bold text-gray-500 mt-1 ">
                     {new Date(exp.startDate).toLocaleDateString()} - {exp.isCurrentJob ? "Present" : new Date(exp.endDate).toLocaleDateString()}
                   </p>
@@ -195,26 +195,26 @@ export default function ApplicantDetail() {
               ))
             ) : (
               <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
-                <p className="text-xs font-black text-gray-400  mb-1">Total Experience</p>
-                <p className="font-black text-[#00004d] text-lg ">{applicant.yearsOfExperience} Years</p>
+                <p className="text-xs font-bold text-gray-400  mb-1">Total Experience</p>
+                <p className="font-bold text-[#00004d] text-lg ">{applicant.yearsOfExperience} Years</p>
               </div>
             )}
 
             {applicant.achievements && (
               <div className="mt-4 p-6 bg-blue-50/50 rounded-3xl border border-blue-100">
-                <p className="text-[10px] font-black text-[#00004d]  mb-2">Achievements / Responsibilities</p>
+                <p className="text-[10px] font-bold text-[#00004d]  mb-2">Achievements / Responsibilities</p>
                 <p className="text-sm font-bold text-gray-600 leading-relaxed">{applicant.achievements}</p>
               </div>
             )}
           </div>
         </div>
 
-        <div className="mt-12 flex justify-center pb-10">
+        <div className="mt-8 flex justify-center pb-2">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="min-w-[280px] h-20 rounded-full bg-[#5DBB63] text-white font-black text-xl shadow-2xl flex items-center justify-center gap-4 active:scale-95 transition-all tracking-[0.2em] "
+            className="w-40 h-10 rounded-full bg-[#5DBB63] text-white font-bold text-sm shadow-2xl flex items-center justify-center gap-2 active:scale-95 transition-all tracking-[0.2em] "
           >
-            <Send size={24} strokeWidth={3} />
+            <Send size={16} strokeWidth={3} />
             <span>Easy Hire</span>
           </button>
         </div>
@@ -222,10 +222,10 @@ export default function ApplicantDetail() {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-bold/60 backdrop-blur-md">
           <div className="bg-white w-full max-w-lg rounded-[45px] overflow-hidden shadow-2xl relative">
             <div className="bg-[#00004d] p-8 text-white flex justify-between items-center">
-              <h3 className="text-2xl font-black tracking-[0.1em] ">Submit Offer</h3>
+              <h3 className="text-2xl font-bold tracking-[0.1em] ">Submit Offer</h3>
               <button onClick={() => setIsModalOpen(false)} className="bg-white/10 p-2 rounded-full">
                 <X size={24} />
               </button>
@@ -238,11 +238,11 @@ export default function ApplicantDetail() {
                   ) : (
                     <Building className="text-gray-200" size={30} />
                   )}
-                  <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute inset-0 bg-black/40 text-white flex items-center justify-center opacity-0 hover:opacity-100">
+                  <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute inset-0 bg-bold/40 text-white flex items-center justify-center opacity-0 hover:opacity-100">
                     <Camera size={18} />
                   </button>
                 </div>
-                <button type="button" onClick={() => fileInputRef.current?.click()} className="text-[10px] font-black text-[#00004d] underline ">
+                <button type="button" onClick={() => fileInputRef.current?.click()} className="text-[10px] font-bold text-[#00004d] underline ">
                   Upload Company Logo
                 </button>
                 <input type="file" ref={fileInputRef} className="hidden" onChange={handleLogoChange} accept="image/*" />
@@ -257,10 +257,10 @@ export default function ApplicantDetail() {
                 <input required name="whatsapp" placeholder="WHATSAPP NUMBER" onChange={handleInputChange} className="w-full p-4 pl-10 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-gray-400 ml-1 ">Interview Date & Time</label>
+                <label className="text-[10px] font-bold text-gray-400 ml-1 ">Interview Date & Time</label>
                 <input type="datetime-local" name="interviewDate" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-sm" />
               </div>
-              <button type="submit" disabled={isSubmitting || isSubmitted} className="w-full py-5 rounded-[20px] font-black text-white bg-[#00004d] active:scale-95 transition-all  tracking-widest">
+              <button type="submit" disabled={isSubmitting || isSubmitted} className="w-full py-5 rounded-[20px] font-bold text-white bg-[#00004d] active:scale-95 transition-all  tracking-widest">
                 {isSubmitting ? <Loader2 className="animate-spin mx-auto" /> : isSubmitted ? "Submitted!" : "Submit Offer"}
               </button>
             </form>
