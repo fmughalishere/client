@@ -92,23 +92,23 @@ const Navbar = () => {
           </button>
         </div>
       </nav>
-      <div className="bg-[#00004d] text-white flex items-center justify-around py-2 text-[13px]">
+      <div className="bg-[#00004d] text-white flex items-center justify-around py-2 text-[10px]">
         <Link href="/" className="flex items-center gap-1 hover:opacity-80">
           <AiFillHome size={18} />
           Home
         </Link>
-        <div className="w-[1px] h-4 bg-white/40"></div>
+        <div className="w-[1px] h-4 bg-white"></div>
         <Link href={dashboardLink} className="flex items-center gap-1 hover:opacity-80">
           <FaUserGear size={18} />
-          Control Panel
+          My Control Panel
         </Link>
-        <div className="w-[1px] h-4 bg-white/40"></div>
+        <div className="w-[1px] h-4 bg-white"></div>
         <button
           onClick={handleInstallClick}
           className="flex items-center gap-1 hover:opacity-80"
         >
           <PlusCircle size={18} />
-          Install App
+          Add to Home Screen
         </button>
       </div>
       <AnimatePresence>
