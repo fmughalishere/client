@@ -20,7 +20,10 @@ const navLinks = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showInstallBox, setShowInstallBox] = useState(false);
+
   const [dashboardLink, setDashboardLink] = useState("/login");
 
   useEffect(() => {
@@ -40,6 +43,7 @@ const Navbar = () => {
     const handler = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
+      setShowInstallBox(true);
     };
 
     window.addEventListener("beforeinstallprompt", handler);
@@ -49,7 +53,21 @@ const Navbar = () => {
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) return;
+
     deferredPrompt.prompt();
+    const choiceResult = await deferredPrompt.userChoice;
+
+    if (choiceResult.outcome === "accepted") {
+      console.log("User accepted install");
+    }
+
+    setDeferredPrompt(null);
+    setShowInstallBox(false);
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    alert("Link copied!");
   };
 
   return (
@@ -70,10 +88,11 @@ const Navbar = () => {
             <Link
               key={link.href}
               href={link.href}
-              className={`px-4 py-2 rounded-full text-[14px] font-semibold transition ${pathname === link.href
-                ? "text-blue-900 bg-blue-50"
-                : "text-gray-500 hover:text-blue-800 hover:bg-gray-50"
-                }`}
+              className={`px-4 py-2 rounded-full text-[14px] font-semibold transition ${
+                pathname === link.href
+                  ? "text-blue-900 bg-blue-50"
+                  : "text-gray-500 hover:text-blue-800 hover:bg-gray-50"
+              }`}
             >
               {link.name}
             </Link>
@@ -101,15 +120,48 @@ const Navbar = () => {
           <FaUserGear size={18} style={{ color: "#5DBB63" }} />
           My Control Panel
         </Link>
-        <div className="w-[1px] h-4 bg-white"></div>
+      <div className="w-[1px] h-4 bg-white"></div>
         <button
-          onClick={handleInstallClick}
+          onClick={() => setShowInstallBox(true)}
           className="flex items-center gap-1 hover:opacity-80"
         >
           <PlusCircle size={18} style={{ color: "#5DBB63" }} />
           Add to Home Screen
         </button>
       </div>
+      {showInstallBox && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white p-5 rounded-xl w-[280px] text-center space-y-3 shadow-lg">
+
+            <h2 className="font-semibold text-gray-800">
+              Install App
+            </h2>
+
+            <button
+              onClick={handleInstallClick}
+              className="w-full bg-blue-600 text-white py-2 rounded-lg"
+            >
+              Add to Home Screen
+            </button>
+
+            <button
+              onClick={handleCopyLink}
+              className="w-full bg-gray-200 text-gray-800 py-2 rounded-lg"
+            >
+              Copy Link
+            </button>
+
+            <button
+              onClick={() => setShowInstallBox(false)}
+              className="text-sm text-gray-500"
+            >
+              Close
+            </button>
+
+          </div>
+        </div>
+      )}
+
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -141,7 +193,6 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
     </header>
   );
 };
