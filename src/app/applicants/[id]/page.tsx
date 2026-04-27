@@ -42,7 +42,7 @@ export default function ApplicantDetail() {
       try {
         const token = localStorage.getItem("token");
         const res = await fetch(`https://easyjobspk.onrender.com/api/applications/${id}`, {
-            headers: { "Authorization": `Bearer ${token}` }
+          headers: { "Authorization": `Bearer ${token}` }
         });
         const data = await res.json();
         if (data && !data.message) {
@@ -99,7 +99,7 @@ export default function ApplicantDetail() {
   return (
     <div className="min-h-screen bg-[#f4f7f9] p-4 md:p-10 pb-24 font-sans">
       <div className="max-w-5xl mx-auto space-y-6">
-          <div className="bg-[#5DBB63] text-white p-6 md:p-10 rounded-[40px] shadow-lg flex items-center gap-6 overflow-hidden">
+        <div className="bg-[#5DBB63] text-white p-6 md:p-10 rounded-[40px] shadow-lg flex items-center gap-6 overflow-hidden">
           <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white/20 overflow-hidden bg-white shadow-xl flex-shrink-0 flex items-center justify-center">
             {applicant.image === "male" ? (
               <img src={MALE_ICON} className="w-[75%] h-[75%] object-contain" style={navyBlueFilter} alt="Male" />
@@ -177,9 +177,9 @@ export default function ApplicantDetail() {
           </h2>
           <div className="space-y-4">
             {applicant.isFresher ? (
-               <p className="text-sm text-[#00004d] font-bold p-6 bg-gray-50 rounded-3xl border border-dashed border-gray-200 text-center ">
-                 Fresh Candidate / Entry Level
-               </p>
+              <p className="text-sm text-[#00004d] font-bold p-6 bg-gray-50 rounded-3xl border border-dashed border-gray-200 text-center ">
+                Fresh Candidate / Entry Level
+              </p>
             ) : applicant.experience && applicant.experience.length > 0 ? (
               applicant.experience.map((exp: any, i: number) => (
                 <div key={i} className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
@@ -224,7 +224,7 @@ export default function ApplicantDetail() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-bold/60 backdrop-blur-md">
           <div className="bg-white w-full max-w-lg rounded-[45px] overflow-hidden shadow-2xl relative">
-            <div className="bg-[#00004d] p-8 text-white flex justify-between items-center">
+            <div className="bg-[#5DBB63] p-8 text-white flex justify-between items-center">
               <h3 className="text-2xl font-bold tracking-[0.1em] ">Submit Offer</h3>
               <button onClick={() => setIsModalOpen(false)} className="bg-white/10 p-2 rounded-full">
                 <X size={24} />
@@ -247,17 +247,18 @@ export default function ApplicantDetail() {
                 </button>
                 <input type="file" ref={fileInputRef} className="hidden" onChange={handleLogoChange} accept="image/*" />
               </div>
-              <input required name="companyName" placeholder="COMPANY NAME" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
-              <input required name="cityName" placeholder="CITY NAME" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
-              <input required name="employerName" placeholder="CONTACT PERSON" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
-              <input required name="designation" placeholder="OFFERED DESIGNATION" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
-              <input type="email" required name="email" placeholder="EMAIL ADDRESS" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
+              <input required name="companyName" placeholder="Comppany Name" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
+              <input required name="address" placeholder="Address" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
+              <input required name="cityName" placeholder="City" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
+              <input required name="employerName" placeholder="Contact Person" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
+              <input required name="designation" placeholder="Offered Designation" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
+              <input type="email" required name="email" placeholder="Email Address" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
               <div className="relative">
                 <FaWhatsapp className="absolute left-3 top-4 text-green-500" size={16} />
-                <input required name="whatsapp" placeholder="WHATSAPP NUMBER" onChange={handleInputChange} className="w-full p-4 pl-10 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
+                <input required name="whatsapp" placeholder="Whatsapp Number" onChange={handleInputChange} className="w-full p-4 pl-10 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-gray-400 ml-1 ">Interview Date & Time</label>
+                <label className="text-[10px] font-bold text-gray-400 ml-1 ">Interview Date & Time <span>(Optional)</span></label>
                 <input type="datetime-local" name="interviewDate" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-sm" />
               </div>
               <button type="submit" disabled={isSubmitting || isSubmitted} className="w-full py-5 rounded-[20px] font-bold text-white bg-[#00004d] active:scale-95 transition-all  tracking-widest">
