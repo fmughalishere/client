@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, PlusCircle, Bell } from "lucide-react";
 import { AiFillHome } from "react-icons/ai";
 import { FaUserGear } from "react-icons/fa6";
+import { FaWhatsapp, FaFacebook } from "react-icons/fa";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -46,12 +47,14 @@ const Navbar = () => {
     };
 
     window.addEventListener("beforeinstallprompt", handler);
-
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, [pathname]);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
+    if (!deferredPrompt) {
+      alert("Install option not available");
+      return;
+    }
 
     deferredPrompt.prompt();
     const choiceResult = await deferredPrompt.userChoice;
@@ -67,6 +70,16 @@ const Navbar = () => {
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
     alert("Link copied!");
+  };
+
+  const handleWhatsAppShare = () => {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://wa.me/?text=${url}`, "_blank");
+  };
+
+  const handleFacebookShare = () => {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, "_blank");
   };
 
   return (
@@ -119,7 +132,9 @@ const Navbar = () => {
           <FaUserGear size={18} style={{ color: "#5DBB63" }} />
           My Control Panel
         </Link>
-      <div className="w-[1px] h-4 bg-white"></div>
+
+        <div className="w-[1px] h-4 bg-white"></div>
+
         <button
           onClick={() => setShowInstallBox(true)}
           className="flex items-center gap-1 hover:opacity-80"
@@ -128,39 +143,72 @@ const Navbar = () => {
           Add to Home Screen
         </button>
       </div>
-      {showInstallBox && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white p-5 rounded-xl w-[280px] text-center space-y-3 shadow-lg">
+      <AnimatePresence>
+        {showInstallBox && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
 
-            <h2 className="font-semibold text-gray-800">
-              Install App
-            </h2>
-
-            <button
-              onClick={handleInstallClick}
-              className="w-full bg-blue-600 text-white py-2 rounded-lg"
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0, y: 40 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 40 }}
+              transition={{ duration: 0.25 }}
+              className="bg-white/90 backdrop-blur-xl border border-gray-200 p-6 rounded-2xl w-[300px] text-center shadow-2xl"
             >
-              Add to Home Screen
-            </button>
+              <div className="flex justify-center mb-3">
+                <div className="bg-[#00004d]/10 p-3 rounded-full">
+                  <PlusCircle size={28} className="text-[#00004d]" />
+                </div>
+              </div>
+              <h2 className="font-bold text-lg text-[#00004d]">
+                Install App
+              </h2>
 
-            <button
-              onClick={handleCopyLink}
-              className="w-full bg-gray-200 text-gray-800 py-2 rounded-lg"
-            >
-              Copy Link
-            </button>
+              <p className="text-sm text-gray-500 mb-4">
+                Get quick access & better experience
+              </p>
+              <button
+                onClick={handleInstallClick}
+                className="w-full bg-[#00004d] text-white py-2.5 rounded-xl font-semibold hover:opacity-90 active:scale-95 transition"
+              >
+                Add to Home Screen
+              </button>
+              <button
+                onClick={handleCopyLink}
+                className="w-full mt-2 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-medium hover:bg-gray-200 active:scale-95 transition"
+              >
+                Copy Link
+              </button>
+              <div className="flex items-center gap-2 my-3">
+                <div className="flex-1 h-[1px] bg-gray-200"></div>
+                <span className="text-xs text-gray-400">share</span>
+                <div className="flex-1 h-[1px] bg-gray-200"></div>
+              </div>
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={handleWhatsAppShare}
+                  className="bg-green-500 hover:scale-110 transition p-3 rounded-full text-white shadow"
+                >
+                  <FaWhatsapp size={20} />
+                </button>
 
-            <button
-              onClick={() => setShowInstallBox(false)}
-              className="text-sm text-gray-500"
-            >
-              Close
-            </button>
+                <button
+                  onClick={handleFacebookShare}
+                  className="bg-blue-600 hover:scale-110 transition p-3 rounded-full text-white shadow"
+                >
+                  <FaFacebook size={20} />
+                </button>
+              </div>
+              <button
+                onClick={() => setShowInstallBox(false)}
+                className="mt-4 text-xs text-gray-400 hover:text-gray-600"
+              >
+                Cancel
+              </button>
 
+            </motion.div>
           </div>
-        </div>
-      )}
-
+        )}
+      </AnimatePresence>
       <AnimatePresence>
         {isOpen && (
           <motion.div
