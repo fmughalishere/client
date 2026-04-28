@@ -3,7 +3,8 @@
 import Image from "next/image";
 import {
   Search, PlusCircle, Briefcase, Users, ClipboardList,
-  ChevronDown, Loader2, User
+  ChevronDown, Loader2, User,
+  ChevronRight
 } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
 import { io } from "socket.io-client";
@@ -138,7 +139,7 @@ export default function HomePage() {
                 </div>
                 <div className="ml-auto flex items-center gap-2 z-10">
                   <div className="h-4 w-[1px] bg-white"></div>
-                  <span className="font-black text-[11px] uppercase">→</span>
+                  <span className="font-black text-[11px] uppercase"><ChevronRight/></span>
                 </div>
               </div>
             </button>
