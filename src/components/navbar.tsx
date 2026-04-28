@@ -99,12 +99,12 @@ const Navbar = () => {
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <button className="relative p-2 rounded-full hover:bg-gray-100 transition">
-            <Bell size={22} className="text-gray-700" />
+          <button className="relative p-3 mt-2 rounded-full hover:bg-gray-100 transition">
+            <Bell size={26} className="text-[#00004d]" />
           </button>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-blue-900"
+            className="md:hidden p-2 text-[#00004d]"
           >
             {isOpen ? <X size={26} /> : <Menu size={26} />}
           </button>

@@ -110,7 +110,7 @@ export default function HomePage() {
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               placeholder="Search jobs..."
-              className="block w-full pl-9 pr-14 py-2 bg-white border border-[#00004d] rounded-full shadow-md text-xs text-[#00004d] font-bold outline-none"
+              className="block w-full pl-9 pr-14 py-2 bg-white border border-[#00004d] rounded-2xl shadow-md text-xs text-[#00004d] font-bold outline-none"
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 gap-2">
               <div className="h-4 w-[1px] bg-[#00004d]"></div>
@@ -122,18 +122,32 @@ export default function HomePage() {
       <section className="max-w-md mx-auto px-6 -mt-6 relative z-20">
         <div className="flex flex-col gap-2 items-center justify-center w-full">
           {quickActions.map((action, i) => (
-            <button key={i} onClick={() => router.push(action.href)} className="w-full max-w-[210px] transition-transform active:scale-95">
-              <div className="flex items-center justify-center gap-2 h-[40px] bg-[#00004d] rounded-full text-white shadow-lg">
-                <span>{action.icon}</span>
-                <span className="font-normal text-[13px] whitespace-nowrap">{action.label}</span>
+            <button
+              key={i}
+              onClick={() => router.push(action.href)}
+              className="w-full max-w-[210px] transition-transform active:scale-95"
+            >
+              <div className="relative flex items-center h-[40px] bg-[#00004d] rounded-2xl text-white shadow-lg px-3">
+                <div className="shrink-0 z-10">
+                  {action.icon}
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <span className="font-normal text-[13px] whitespace-nowrap">
+                    {action.label}
+                  </span>
+                </div>
+                <div className="ml-auto flex items-center gap-2 z-10">
+                  <div className="h-4 w-[1px] bg-white/30"></div>
+                  <span className="font-black text-[11px] uppercase">Go</span>
+                </div>
               </div>
             </button>
           ))}
         </div>
       </section>
-      <section className="max-w-[360px] mx-auto px-4 mt-4 mb-4 relative z-30">
-        <div className="bg-[#5DBB63] text-[#00004d] rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm ">
-          <span className="text-[16px] font-black tracking-[0.2em] leading-none mt-3 text-center px-4 animate-bounce">I am seeking for a job</span>
+      <section className="max-w-[340px] mx-auto px-4 mt-4 mb-4 relative z-30">
+        <div className="bg-[#5DBB63] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm ">
+          <span className="text-[16px] font-black tracking-[0.1em] leading-none mt-3 text-center px-4 animate-bounce">I am seeking for a job</span>
           <div className="flex flex-col items-center mt-2 -space-y-3 animate-bounce">
             <ChevronDown size={20} strokeWidth={4} />
             <ChevronDown size={20} strokeWidth={4} className="opacity-40" />
@@ -147,7 +161,7 @@ export default function HomePage() {
           ) : applicants.length > 0 ? (
             applicants.map((app: any, idx: number) => (
               <div key={idx} className="bg-white border border-gray-100 rounded-[15px] p-3 flex items-center gap-3 relative shadow-md min-h-[90px]">
-                
+
                 <div className="w-16 h-16 rounded-full flex-shrink-0 relative bg-[#f8fafc] border border-gray-100 flex items-center justify-center overflow-hidden">
                   {app.image === "male" ? (
                     <Image src={MALE_ICON} alt="Male" fill className="object-contain p-1.5" style={navyBlueFilter} unoptimized />
