@@ -110,7 +110,7 @@ export default function HomePage() {
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               placeholder="Search jobs..."
-              className="block w-full pl-9 pr-14 py-2 bg-white border border-[#00004d] rounded-2xl shadow-md text-xs text-[#00004d] font-bold outline-none"
+              className="block w-full pl-9 pr-14 py-2 bg-white border border-[#00004d] rounded-[9px] shadow-md text-xs text-[#00004d] font-bold outline-none"
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 gap-2">
               <div className="h-4 w-[1px] bg-[#00004d]"></div>
@@ -137,8 +137,8 @@ export default function HomePage() {
                   </span>
                 </div>
                 <div className="ml-auto flex items-center gap-2 z-10">
-                  <div className="h-4 w-[1px] bg-white/30"></div>
-                  <span className="font-black text-[11px] uppercase">Go</span>
+                  <div className="h-4 w-[1px] bg-white"></div>
+                  <span className="font-black text-[11px] uppercase">→</span>
                 </div>
               </div>
             </button>
@@ -160,9 +160,9 @@ export default function HomePage() {
             <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#00004d]" /></div>
           ) : applicants.length > 0 ? (
             applicants.map((app: any, idx: number) => (
-              <div key={idx} className="bg-white border border-gray-100 rounded-[15px] p-3 flex items-center gap-3 relative shadow-md min-h-[90px]">
+              <div key={idx} className="bg-white border border-gray-100 rounded-[15px] p-3 flex items-center gap-3 relative shadow-md h-[90px]">
 
-                <div className="w-16 h-16 rounded-full flex-shrink-0 relative bg-[#f8fafc] border border-gray-100 flex items-center justify-center overflow-hidden">
+                <div className="w-14 h-14 rounded-full flex-shrink-0 relative bg-[#f8fafc] border border-gray-100 flex items-center justify-center overflow-hidden">
                   {app.image === "male" ? (
                     <Image src={MALE_ICON} alt="Male" fill className="object-contain p-1.5" style={navyBlueFilter} unoptimized />
                   ) : app.image === "female" ? (
@@ -186,13 +186,13 @@ export default function HomePage() {
                   <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">
                     {app.category || "Consultant"}
                   </p>
-                  <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] mt-1 whitespace-nowrap">
+                  <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] whitespace-nowrap">
                     <span>{app.education || "BSIT"}</span>
                   </div>
                   <p className="text-[10px] font-bold text-[#00004d] mt-0.5 tracking-[0.1em]">
                     {calculateTotalExperience(app.experience, app.isFresher)}
                   </p>
-                  <div className="flex items-center justify-between mt-2 pt-1">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1 text-[#5DBB63]">
                       <IoIosPin size={13} />
                       <span className="font-bold text-[10px]">{app.city}</span>
