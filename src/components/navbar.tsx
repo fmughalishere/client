@@ -43,7 +43,6 @@ const Navbar = () => {
     const handler = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      setShowInstallBox(true);
     };
 
     window.addEventListener("beforeinstallprompt", handler);
