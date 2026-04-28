@@ -111,7 +111,7 @@ export default function HomePage() {
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               placeholder="Search jobs..."
-              className="block w-full pl-9 pr-14 py-2 bg-white border border-[#00004d] rounded-[9px] shadow-md text-xs text-[#00004d] font-bold outline-none"
+              className="block w-full pl-9 pr-14 py-2 bg-white border border-[#00004d] rounded-[12px] shadow-md text-xs text-[#00004d] font-bold outline-none"
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 gap-2">
               <div className="h-4 w-[1px] bg-[#00004d]"></div>
