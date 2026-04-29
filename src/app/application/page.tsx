@@ -446,7 +446,8 @@ export default function MobileResponsiveJobForm() {
               </div>
             </section>
             <div className="flex flex-col items-center gap-8 pt-10 border-t">
-              <button type="button" className="w-80% md:w-auto bg-[#5DBB63] text-white px-12 py-3.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-all shadow-sm">
+              <button type="button"
+              onClick={() => router.push('/readpolicy')} className="w-80% md:w-auto bg-[#5DBB63] text-white px-12 py-3.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-all shadow-sm">
                 Read Privacy Policy
               </button>
               <label className="flex items-center gap-3 cursor-pointer">

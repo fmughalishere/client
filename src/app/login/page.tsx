@@ -71,7 +71,7 @@ function LoginContent() {
           </Link>
         </div>
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-black text-[#00004d] mb-2 tracking-tighter">
+          <h1 className="text-3xl font-black text-[#00004d] mb-2">
             Login into your Account
           </h1>
           <p className="text-gray-400 font-bold text-xs tracking-widest">Access your professional portal</p>

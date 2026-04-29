@@ -52,3 +52,77 @@ export const EDUCATION_GROUPS = [
     options: ["Other"]
   }
 ];
+
+// policyContent.ts
+
+export interface PolicyItem {
+    id: number;
+    titleEn: string;
+    descEn: string;
+    titleUr: string;
+    descUr: string;
+}
+
+export const policyData: PolicyItem[] = [
+    {
+        id: 1,
+        titleEn: "Data Visibility",
+        descEn: "The candidate agrees that their profile information (excluding sensitive contact details) may be publicly displayed on the job portal for employers.",
+        titleUr: "ڈیٹا کی نمائش",
+        descUr: "امیدوار اس بات سے متفق ہے کہ اس کی پروفائل کی معلومات (سوائے حساس رابطہ معلومات کے) جاب پورٹل پر آجران کے لیے ظاہر کی جا سکتی ہیں۔"
+    },
+    {
+        id: 2,
+        titleEn: "Contact Information Protection",
+        descEn: "The candidate’s personal contact details (phone number, email, address) will remain confidential and will not be publicly displayed.",
+        titleUr: "رابطہ کی معلومات کا تحفظ",
+        descUr: "امیدوار کی ذاتی رابطہ معلومات (فون نمبر، ای میل، پتہ) مکمل طور پر خفیہ رکھی جائیں گی اور عوامی طور پر ظاہر نہیں کی جائیں گی۔"
+    },
+    {
+        id: 3,
+        titleEn: "Profile Photo Usage",
+        descEn: "If the candidate uploads a profile picture, they consent to its public display.",
+        titleUr: "پروفائل تصویر کا استعمال",
+        descUr: "اگر امیدوار اپنی تصویر اپلوڈ کرتا ہے تو وہ اس کے عوامی طور پر ظاہر ہونے پر رضامند ہے۔"
+    },
+    {
+        id: 4,
+        titleEn: "Accuracy of Information",
+        descEn: "The candidate confirms that all provided information is accurate and up to date.",
+        titleUr: "معلومات کی درستگی",
+        descUr: "امیدوار تصدیق کرتا ہے کہ فراہم کردہ تمام معلومات درست اور تازہ ترین ہیں۔"
+    },
+    {
+        id: 5,
+        titleEn: "Data Usage for Recruitment",
+        descEn: "The candidate allows the platform to share their profile with potential employers for recruitment purposes.",
+        titleUr: "بھرتی کے لیے ڈیٹا کا استعمال",
+        descUr: "امیدوار اس بات کی اجازت دیتا ہے کہ اس کی پروفائل ممکنہ آجران کے ساتھ بھرتی کے مقصد کے لیے شیئر کی جا سکتی ہے۔"
+    },
+    {
+        id: 6,
+        titleEn: "Consent to Communication",
+        descEn: "The candidate agrees to receive calls, messages, or emails regarding job opportunities.",
+        titleUr: "رابطے کے لیے رضامندی",
+        descUr: "امیدوار اس بات سے متفق ہے کہ اسے ملازمت کے مواقع کے حوالے سے کالز، پیغامات یا ای میلز موصول ہو سکتی ہیں۔"
+    },
+    {
+        id: 7,
+        titleEn: "Right to Remove Profile",
+        descEn: "The candidate has the right to request removal or modification of their data at any time.",
+        titleUr: "پروفائل حذف کرنے کا حق",
+        descUr: "امیدوار کو یہ حق حاصل ہے کہ وہ کسی بھی وقت اپنی معلومات کو حذف یا ترمیم کرنے کی درخواست دے سکتا ہے۔"
+    },
+    {
+        id: 8,
+        titleEn: "Misuse Policy",
+        descEn: "Any misuse, false information, or fraudulent activity may result in profile suspension or permanent removal.",
+        titleUr: "غلط استعمال کی پالیسی",
+        descUr: "غلط معلومات یا کسی بھی قسم کے غلط استعمال کی صورت میں پروفائل کو معطل یا مستقل طور پر ختم کیا جا سکتا ہے۔"
+    }
+];
+
+export const consentText = {
+    en: "I have read and agree to the Privacy Policy & Terms",
+    ur: "میں نے پرائیویسی پالیسی اور شرائط کو پڑھ لیا ہے اور ان سے متفق ہوں"
+};
