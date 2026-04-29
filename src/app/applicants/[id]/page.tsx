@@ -134,11 +134,11 @@ export default function ApplicantDetail() {
             )}
           </div>
           <div className="min-w-0">
-            <h1 className="text-2xl md:text-4xl font-bold tracking-[0.1em] leading-tight">
+            <h1 className="text-2xl md:text-4xl font-bold leading-tight">
               {applicant.fullName}
             </h1>
-            <p className="text-sm md:text-lg opacity-80 mt-1 tracking-[0.1em]">
-              {applicant.category} {applicant.status === 'Offered' && <span className="ml-2 bg-blue-700 px-3 py-1 rounded-full text-xs">OFFERED</span>}
+            <p className="text-sm md:text-lg opacity-80 mt-1">
+              {applicant.category}
             </p>
           </div>
         </div>
@@ -165,6 +165,16 @@ export default function ApplicantDetail() {
             </div>
           </div>
         </div>
+
+        <div className="bg-white p-8 rounded-3xl shadow-sm space-y-5">
+            <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">
+              <Briefcase size={18} /> Job Category + Type
+            </h2>
+            <div className="grid gap-4 text-sm font-bold text-gray-600">
+              <p className="flex items-center gap-2 "><Briefcase size={16} className="text-gray-400" /> {applicant.category}</p>
+              <p className="flex items-center gap-2 "><Clock size={16} className="text-gray-400" /> Job Type: {applicant.jobtype || applicant.jobType}</p>
+            </div>
+          </div>
 
         <div className="bg-white p-8 rounded-3xl shadow-sm space-y-6">
           <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-3 border-b pb-4 ">
@@ -214,7 +224,7 @@ export default function ApplicantDetail() {
           <button
             onClick={() => setIsModalOpen(true)}
             disabled={applicant.status === "Offered"}
-            className={`w-40 h-10 rounded-full font-bold text-sm shadow-2xl flex items-center justify-center gap-2 active:scale-95 transition-all tracking-[0.2em] ${applicant.status === "Offered" ? 'bg-gray-400' : 'bg-[#5DBB63] text-white'}`}
+            className={`w-50 h-10 rounded-full font-bold text-sm shadow-2xl flex items-center justify-center gap-2 active:scale-95 transition-all tracking-[0.2em] ${applicant.status === "Offered" ? 'bg-gray-400' : 'bg-[#5DBB63] text-white'}`}
           >
             <Send size={16} strokeWidth={3} />
             <span>{applicant.status === "Offered" ? "Offered Sent" : "Easy Hire"}</span>
