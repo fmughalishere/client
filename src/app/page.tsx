@@ -97,7 +97,7 @@ export default function HomePage() {
     <main className="min-h-screen bg-[#fcfcfc] pb-8 font-sans">
       <section className="px-0 pt-0 relative">
         <div className="bg-[#5DBB63] rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
-            <div className="absolute left-[-10px] top-1 opacity-30 pointer-events-none">
+            <div className="absolute left-[-10px] top-[-10] opacity-30 pointer-events-none">
             <Image 
               src="/images/chair.png" 
               alt="chair" 
@@ -106,7 +106,7 @@ export default function HomePage() {
               className="object-contain"
             />
           </div>
-          <div className="absolute right-[-9px] top-1 opacity-30 pointer-events-none">
+          <div className="absolute right-[-9px] top-[-13] opacity-30 pointer-events-none">
             <Image 
               src="/images/need-job.png" 
               alt="need job" 
@@ -158,7 +158,6 @@ export default function HomePage() {
                   </span>
                 </div>
                 <div className="ml-auto flex items-center gap-2 z-10">
-                  <div className="h-4 w-[1px] bg-white"></div>
                   <span className="font-black text-[11px] uppercase"><ChevronRight size={18}/></span>
                 </div>
               </div>
@@ -166,9 +165,9 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-      <section className="max-w-[340px] mx-auto px-4 mt-6 mb-4 relative z-10">
+      <section className="max-w-[360px] mx-auto px-4 mt-6 mb-4 relative z-10">
         <div className="bg-[#5DBB63] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm ">
-          <span className="text-[16px] font-black tracking-[0.1em] leading-none mt-3 text-center px-4 animate-bounce">I am seeking for a job</span>
+          <span className="text-[16px] font-black leading-none mt-3 text-center px-4 animate-bounce">I am seeking for a job</span>
           <div className="flex flex-col items-center mt-2 -space-y-3 animate-bounce">
             <ChevronDown size={20} strokeWidth={4} />
             <ChevronDown size={20} strokeWidth={4} className="opacity-40" />
