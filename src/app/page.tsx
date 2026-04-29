@@ -138,8 +138,7 @@ export default function HomePage() {
                   </span>
                 </div>
                 <div className="ml-auto flex items-center gap-2 z-10">
-                  <div className="h-4 w-[1px] bg-white"></div>
-                  <span className="font-black text-[11px] uppercase"><ChevronRight/></span>
+               <span className="font-black text-[11px] uppercase"><ChevronRight/></span>
                 </div>
               </div>
             </button>

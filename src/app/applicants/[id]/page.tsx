@@ -225,7 +225,8 @@ export default function ApplicantDetail() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-bold/60 backdrop-blur-md">
           <div className="bg-white w-full max-w-lg rounded-[45px] overflow-hidden shadow-2xl relative">
             <div className="bg-[#5DBB63] p-8 text-white flex justify-between items-center">
-              <h3 className="text-2xl font-bold tracking-[0.1em] ">Submit Offer</h3>
+              <h3 className="text-2xl font-bold">  Send Job Offer
+              </h3>
               <button onClick={() => setIsModalOpen(false)} className="bg-white/10 p-2 rounded-full">
                 <X size={24} />
               </button>
