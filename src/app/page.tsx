@@ -4,7 +4,7 @@ import Image from "next/image";
 import {
   Search, PlusCircle, Briefcase, Users, ClipboardList,
   ChevronDown, Loader2, User,
-  ChevronRight, Home, LayoutDashboard, Plus
+  ChevronRight
 } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
 import { io } from "socket.io-client";
@@ -96,20 +96,33 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-8 font-sans">
       <section className="px-0 pt-0 relative">
-        <div className="bg-[#5DBB63] rounded-b-[50px] pt-12 pb-20 px-6 flex flex-col items-center shadow-lg relative overflow-hidden">
-            <div className="absolute left-[-40px] top-6 w-48 h-48 opacity-30 pointer-events-none">
-            <Image src="/images/chair.png" alt="chair" fill className="object-contain" />
+        <div className="bg-[#5DBB63] rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
+            <div className="absolute left-[-10px] top-1 opacity-30 pointer-events-none">
+            <Image 
+              src="/images/chair.png" 
+              alt="chair" 
+              width={150} 
+              height={150} 
+              className="object-contain"
+            />
           </div>
-          <div className="absolute right-[-40px] top-6 w-48 h-48 opacity-30 pointer-events-none">
-            <Image src="/images/need-job.png" alt="need job" fill className="object-contain" />
+          <div className="absolute right-[-9px] top-1 opacity-30 pointer-events-none">
+            <Image 
+              src="/images/need-job.png" 
+              alt="need job" 
+              width={150} 
+              height={150} 
+              className="object-contain"
+            />
           </div>
-
-          <div className="text-center mb-1 relative z-10">
-            <h1 className="text-[32px] font-black text-white leading-tight">Hire easy</h1>
-            <h1 className="text-[32px] font-black text-white leading-tight">Get hired easy</h1>
+          <div className="text-center mb-1 mt-0 relative z-10">
+            <h1 className="text-[26px] font-black text-white leading-none">Hire easy</h1>
+            <h1 className="text-[26px] font-black text-white leading-tight">Get hired easy</h1>
           </div>
-          <div className="relative w-full max-w-[300px] mt-10 z-10">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+        </div>
+        <div className="relative -mt-7 flex justify-center px-6 z-20">
+          <div className="relative w-full max-w-[280px]">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-[#00004d]" strokeWidth={3} />
             </div>
             <input
@@ -118,46 +131,47 @@ export default function HomePage() {
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               placeholder="Search jobs..."
-              className="block w-full pl-11 pr-16 py-4 bg-white border-2 border-[#00004d] rounded-[18px] shadow-2xl text-sm text-[#00004d] font-bold outline-none"
+              className="block w-full pl-11 pr-14 py-2.5 bg-white border-2 border-[#00004d] rounded-[15px] shadow-lg text-sm text-[#00004d] font-bold outline-none"
             />
-            <div className="absolute inset-y-0 right-0 flex items-center pr-5 gap-2">
-              <div className="h-6 w-[1px] bg-[#00004d]"></div>
-              <button onClick={handleSearch} className="text-[#00004d] font-black text-[16px]">Go</button>
+            <div className="absolute inset-y-0 right-0 flex items-center pr-4 gap-2">
+              <div className="h-5 w-[1.5px] bg-[#00004d]"></div>
+              <button onClick={handleSearch} className="text-[#00004d] font-black text-[15px] hover:opacity-70">Go</button>
             </div>
           </div>
         </div>
       </section>
-      <section className="max-w-md mx-auto px-6 -mt-10 relative z-20">
-        <div className="flex flex-col gap-3 items-center justify-center w-full">
+      <section className="max-w-md mx-auto px-6 mt-6 relative z-10">
+        <div className="flex flex-col gap-2.5 items-center justify-center w-full">
           {quickActions.map((action, i) => (
             <button
               key={i}
               onClick={() => router.push(action.href)}
-              className="w-full max-w-[250px] transition-transform active:scale-95"
+              className="w-full max-w-[220px] transition-transform active:scale-95"
             >
-              <div className="relative flex items-center h-[50px] bg-[#00004d] rounded-2xl text-white shadow-xl px-5">
+              <div className="relative flex items-center h-[42px] bg-[#00004d] rounded-2xl text-white shadow-lg px-4">
                 <div className="shrink-0 z-10">
                   {action.icon}
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="font-bold text-[15px]">
+                  <span className="font-normal text-[14px] whitespace-nowrap">
                     {action.label}
                   </span>
                 </div>
-                <div className="ml-auto z-10">
-                  <ChevronRight size={22} className="text-white/80" />
+                <div className="ml-auto flex items-center gap-2 z-10">
+                  <div className="h-4 w-[1px] bg-white"></div>
+                  <span className="font-black text-[11px] uppercase"><ChevronRight size={18}/></span>
                 </div>
               </div>
             </button>
           ))}
         </div>
       </section>
-      <section className="max-w-[340px] mx-auto px-4 mt-8 mb-4 relative z-30">
-        <div className="bg-[#5DBB63] text-white rounded-2xl flex flex-col items-center justify-center h-18 py-3 shadow-md ">
-          <span className="text-[17px] font-black tracking-[0.1em] animate-bounce">I am seeking for a job</span>
-          <div className="flex flex-col items-center mt-1 -space-y-3 animate-bounce">
-            <ChevronDown size={22} strokeWidth={4} />
-            <ChevronDown size={22} strokeWidth={4} className="opacity-40" />
+      <section className="max-w-[340px] mx-auto px-4 mt-6 mb-4 relative z-10">
+        <div className="bg-[#5DBB63] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm ">
+          <span className="text-[16px] font-black tracking-[0.1em] leading-none mt-3 text-center px-4 animate-bounce">I am seeking for a job</span>
+          <div className="flex flex-col items-center mt-2 -space-y-3 animate-bounce">
+            <ChevronDown size={20} strokeWidth={4} />
+            <ChevronDown size={20} strokeWidth={4} className="opacity-40" />
           </div>
         </div>
       </section>
@@ -167,8 +181,8 @@ export default function HomePage() {
             <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#00004d]" /></div>
           ) : applicants.length > 0 ? (
             applicants.map((app: any, idx: number) => (
-              <div key={idx} className="bg-white border border-gray-100 rounded-[15px] p-3 flex items-center gap-3 relative shadow-md h-[95px]">
-                <div className="w-16 h-16 rounded-full flex-shrink-0 relative bg-[#f8fafc] border border-gray-100 flex items-center justify-center overflow-hidden">
+              <div key={idx} className="bg-white border border-gray-100 rounded-[15px] p-3 flex items-center gap-3 relative shadow-md h-[90px]">
+                <div className="w-14 h-14 rounded-full flex-shrink-0 relative bg-[#f8fafc] border border-gray-100 flex items-center justify-center overflow-hidden">
                   {app.image === "male" ? (
                     <Image src={MALE_ICON} alt="Male" fill className="object-contain p-1.5" style={navyBlueFilter} unoptimized />
                   ) : app.image === "female" ? (
@@ -184,20 +198,30 @@ export default function HomePage() {
 
                 <div className="flex flex-col flex-1">
                   <div className="flex items-center gap-2">
-                    <h2 className="text-[15px] font-black text-[#00004d] truncate">{app.fullName}</h2>
+                    <h2 className="text-[15px] font-black text-[#00004d] leading-tight truncate">{app.fullName}</h2>
                     <span className="text-[10px] font-bold text-[#00004d] bg-gray-100 px-1.5 py-0.5 rounded-md">
                       Age {calculateAge(app.dob)}
                     </span>
                   </div>
-                  <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">{app.category || "Consultant"}</p>
-                  <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d]">{app.education || "BSIT"}</div>
-                  <p className="text-[10px] font-bold text-[#00004d] mt-0.5">{calculateTotalExperience(app.experience, app.isFresher)}</p>
+                  <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">
+                    {app.category || "Consultant"}
+                  </p>
+                  <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] whitespace-nowrap">
+                    <span>{app.education || "BSIT"}</span>
+                  </div>
+                  <p className="text-[10px] font-bold text-[#00004d] mt-0.5 tracking-[0.1em]">
+                    {calculateTotalExperience(app.experience, app.isFresher)}
+                  </p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1 text-[#5DBB63]">
                       <IoIosPin size={13} />
                       <span className="font-bold text-[10px]">{app.city}</span>
                     </div>
-                    <button onClick={() => router.push(`/applicants/${app._id}`)} className="text-[#5DBB63] font-black text-[10px] flex items-center gap-0.5">
+
+                    <button
+                      onClick={() => router.push(`/applicants/${app._id}`)}
+                      className="text-[#5DBB63] font-black text-[10px] flex items-center gap-0.5"
+                    >
                       Visit my profile <LuChevronsRight size={14} strokeWidth={3} />
                     </button>
                   </div>
