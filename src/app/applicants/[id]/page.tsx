@@ -1,18 +1,18 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   Loader2, User, Calendar, Globe, MapPin, Briefcase,
   GraduationCap, Send, X, Building, Camera, Wand2,
-  Mail, Phone, MessageCircle, CheckCircle2,
-  Clock
+  CheckCircle2, Clock
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { MALE_ICON, FEMALE_ICON } from "../../constants";
 
 export default function ApplicantDetail() {
   const { id } = useParams();
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [applicant, setApplicant] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -30,6 +30,7 @@ export default function ApplicantDetail() {
     companyName: "",
     companyLogo: "",
     cityName: "",
+    address: "",
     email: "",
     phone: "",
     whatsapp: "",
@@ -73,17 +74,38 @@ export default function ApplicantDetail() {
     }
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`https://easyjobspk.onrender.com/api/applications/${id}/offer`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(offerData)
+      });
+
+      if (res.ok) {
+        setIsSubmitted(true);
+        setTimeout(() => {
+          setIsModalOpen(false);
+          setIsSubmitted(false);
+          router.push("/dashboard/employer/applicants"); // Redirect back
+        }, 2000);
+      } else {
+        const errData = await res.json();
+        alert(errData.message || "Failed to send offer");
+      }
+    } catch (err) {
+      console.error("Offer Error:", err);
+      alert("Connection error!");
+    } finally {
       setIsSubmitting(false);
-      setIsSubmitted(true);
-      setTimeout(() => {
-        setIsModalOpen(false);
-        setIsSubmitted(false);
-      }, 2000);
-    }, 2000);
+    }
   };
 
   if (loading) return (
@@ -116,7 +138,7 @@ export default function ApplicantDetail() {
               {applicant.fullName}
             </h1>
             <p className="text-sm md:text-lg opacity-80 mt-1 tracking-[0.1em]">
-              {applicant.category}
+              {applicant.category} {applicant.status === 'Offered' && <span className="ml-2 bg-blue-700 px-3 py-1 rounded-full text-xs">OFFERED</span>}
             </p>
           </div>
         </div>
@@ -140,16 +162,6 @@ export default function ApplicantDetail() {
             </h2>
             <div className="grid gap-4 text-sm font-bold text-gray-600">
               <p className="flex items-center gap-2 "><GraduationCap size={16} className="text-gray-400" /> {applicant.education}</p>
-            </div>
-          </div>
-
-          <div className="bg-white p-8 rounded-3xl shadow-sm space-y-5">
-            <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">
-              <Briefcase size={18} /> Job Category + Type
-            </h2>
-            <div className="grid gap-4 text-sm font-bold text-gray-600">
-              <p className="flex items-center gap-2 "><Briefcase size={16} className="text-gray-400" /> {applicant.category}</p>
-              <p className="flex items-center gap-2 "><Clock size={16} className="text-gray-400" /> Job Type: {applicant.jobtype || applicant.jobType}</p>
             </div>
           </div>
         </div>
@@ -183,10 +195,7 @@ export default function ApplicantDetail() {
             ) : applicant.experience && applicant.experience.length > 0 ? (
               applicant.experience.map((exp: any, i: number) => (
                 <div key={i} className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
-                  <div className="flex justify-between items-start">
-                    <p className="text-xs font-bold text-gray-400  tracking-widest mb-1">{exp.companyName}</p>
-                    {exp.isCurrentJob && <span className="bg-[#00004d] text-white text-[8px] px-2 py-0.5 rounded ">Current</span>}
-                  </div>
+                   <p className="text-xs font-bold text-gray-400 tracking-widest mb-1">{exp.companyName}</p>
                   <p className="font-bold text-[#00004d] text-lg ">{exp.designation}</p>
                   <p className="text-[10px] font-bold text-gray-500 mt-1 ">
                     {new Date(exp.startDate).toLocaleDateString()} - {exp.isCurrentJob ? "Present" : new Date(exp.endDate).toLocaleDateString()}
@@ -195,15 +204,7 @@ export default function ApplicantDetail() {
               ))
             ) : (
               <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
-                <p className="text-xs font-bold text-gray-400  mb-1">Total Experience</p>
-                <p className="font-bold text-[#00004d] text-lg ">{applicant.yearsOfExperience} Years</p>
-              </div>
-            )}
-
-            {applicant.achievements && (
-              <div className="mt-4 p-6 bg-blue-50/50 rounded-3xl border border-blue-100">
-                <p className="text-[10px] font-bold text-[#00004d]  mb-2">Achievements / Responsibilities</p>
-                <p className="text-sm font-bold text-gray-600 leading-relaxed">{applicant.achievements}</p>
+                <p className="font-bold text-[#00004d] text-lg ">{applicant.yearsOfExperience} Years Experience</p>
               </div>
             )}
           </div>
@@ -212,10 +213,11 @@ export default function ApplicantDetail() {
         <div className="mt-8 flex justify-center pb-2">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="w-40 h-10 rounded-full bg-[#5DBB63] text-white font-bold text-sm shadow-2xl flex items-center justify-center gap-2 active:scale-95 transition-all tracking-[0.2em] "
+            disabled={applicant.status === "Offered"}
+            className={`w-40 h-10 rounded-full font-bold text-sm shadow-2xl flex items-center justify-center gap-2 active:scale-95 transition-all tracking-[0.2em] ${applicant.status === "Offered" ? 'bg-gray-400' : 'bg-[#5DBB63] text-white'}`}
           >
             <Send size={16} strokeWidth={3} />
-            <span>Easy Hire</span>
+            <span>{applicant.status === "Offered" ? "Offered Sent" : "Easy Hire"}</span>
           </button>
         </div>
 
@@ -225,8 +227,7 @@ export default function ApplicantDetail() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-bold/60 backdrop-blur-md">
           <div className="bg-white w-full max-w-lg rounded-[45px] overflow-hidden shadow-2xl relative">
             <div className="bg-[#5DBB63] p-8 text-white flex justify-between items-center">
-              <h3 className="text-2xl font-bold">  Send Job Offer
-              </h3>
+              <h3 className="text-2xl font-bold">Send Job Offer</h3>
               <button onClick={() => setIsModalOpen(false)} className="bg-white/10 p-2 rounded-full">
                 <X size={24} />
               </button>
@@ -235,7 +236,7 @@ export default function ApplicantDetail() {
               <div className="flex flex-col items-center gap-3 border-b pb-6">
                 <div className="w-20 h-20 rounded-2xl bg-gray-50 border-2 border-dashed flex items-center justify-center overflow-hidden relative">
                   {offerData.companyLogo ? (
-                    <img src={offerData.companyLogo} className="w-full h-full object-cover" />
+                    <img src={offerData.companyLogo} className="w-full h-full object-cover" alt="Logo" />
                   ) : (
                     <Building className="text-gray-200" size={30} />
                   )}
@@ -243,27 +244,26 @@ export default function ApplicantDetail() {
                     <Camera size={18} />
                   </button>
                 </div>
-                <button type="button" onClick={() => fileInputRef.current?.click()} className="text-[10px] font-bold text-[#00004d] underline ">
-                  Upload Company Logo
-                </button>
                 <input type="file" ref={fileInputRef} className="hidden" onChange={handleLogoChange} accept="image/*" />
               </div>
-              <input required name="companyName" placeholder="Comppany Name" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
-              <input required name="address" placeholder="Address" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
-              <input required name="cityName" placeholder="City" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
-              <input required name="employerName" placeholder="Contact Person" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
-              <input required name="designation" placeholder="Offered Designation" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
-              <input type="email" required name="email" placeholder="Email Address" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
+              <input required name="companyName" placeholder="Company Name" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
+              <input required name="address" placeholder="Office Address" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
+              <input required name="cityName" placeholder="City" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
+              <input required name="employerName" placeholder="Hiring Manager Name" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
+              <input required name="designation" placeholder="Job Title / Designation" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
+              <input type="email" required name="email" placeholder="Official Email" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
+              <input type="number" required name="number" placeholder="Offer Salary Range" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
               <div className="relative">
                 <FaWhatsapp className="absolute left-3 top-4 text-green-500" size={16} />
-                <input required name="whatsapp" placeholder="Whatsapp Number" onChange={handleInputChange} className="w-full p-4 pl-10 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs " />
+                <input required name="whatsapp" placeholder="WhatsApp Number" onChange={handleInputChange} className="w-full p-4 pl-10 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
               </div>
+              <textarea name="message" placeholder="Message to candidate..." onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" rows={3} />
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-gray-400 ml-1 ">Interview Date & Time <span>(Optional)</span></label>
                 <input type="datetime-local" name="interviewDate" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-sm" />
               </div>
-              <button type="submit" disabled={isSubmitting || isSubmitted} className="w-full py-5 rounded-[20px] font-bold text-white bg-[#00004d] active:scale-95 transition-all  tracking-widest">
-                {isSubmitting ? <Loader2 className="animate-spin mx-auto" /> : isSubmitted ? "Submitted!" : "Submit Offer"}
+              <button type="submit" disabled={isSubmitting || isSubmitted} className="w-full py-5 rounded-[20px] font-bold text-white bg-[#00004d] active:scale-95 transition-all tracking-widest">
+                {isSubmitting ? <Loader2 className="animate-spin mx-auto" /> : isSubmitted ? "OFFER SENT!" : "SUBMIT OFFER"}
               </button>
             </form>
           </div>
