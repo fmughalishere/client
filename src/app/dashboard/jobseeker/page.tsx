@@ -49,7 +49,6 @@ export default function JobSeekerDashboard() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col md:flex-row">
-      {/* Sidebar - Same as before */}
       <aside className="w-full md:w-72 bg-white border-r p-8 flex flex-col gap-8 md:min-h-screen">
           <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-[#1e3a8a] rounded-xl flex items-center justify-center text-white font-black">{data?.user?.name?.substring(0,2)}</div>

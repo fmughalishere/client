@@ -195,7 +195,7 @@ export default function ApplicantDetail() {
 
         <div className="bg-white p-8 rounded-3xl shadow-sm space-y-6">
           <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-3 border-b pb-4 ">
-            <Briefcase size={20} /> Work History
+            <Briefcase size={20} /> Work Experience
           </h2>
           <div className="space-y-4">
             {applicant.isFresher ? (
