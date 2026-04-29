@@ -78,7 +78,7 @@ export default function RegisterPage() {
         </div>
         <div className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-black text-[#00004d] mb-3 tracking-tighter">
-          Join EasyJobs
+          Create Your Account
           </h1>
           <p className="text-gray-400 font-bold text-sm  tracking-wide">Start your journey with us</p>
         </div>
