@@ -99,7 +99,7 @@ export default function HomePage() {
         <div className="bg-[#5DBB63] rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
             <div className="absolute left-[-10px] top-[-10] opacity-30 pointer-events-none">
             <Image 
-              src="/images/chair.png" 
+              src="/images/chair_job.png" 
               alt="chair" 
               width={150} 
               height={150} 
@@ -108,7 +108,7 @@ export default function HomePage() {
           </div>
           <div className="absolute right-[-9px] top-[-13] opacity-30 pointer-events-none">
             <Image 
-              src="/images/need-job.png" 
+              src="/images/need_job.png" 
               alt="need job" 
               width={150} 
               height={150} 
