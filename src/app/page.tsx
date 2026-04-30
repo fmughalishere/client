@@ -130,7 +130,7 @@ export default function HomePage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              placeholder="Search jobs..."
+              placeholder="Search jobs/employees"
               className="block w-full pl-11 pr-14 py-2.5 bg-white border border-[#00004d] rounded-[15px] shadow-lg text-sm text-[#00004d] font-bold outline-none"
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-4 gap-2">
@@ -212,7 +212,7 @@ export default function HomePage() {
                     {calculateTotalExperience(app.experience, app.isFresher)}
                   </p>
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1 text-[#5DBB63]">
+                    <div className="flex items-center gap-1 text-[#5DBB63] ml-[-4px]">
                       <IoIosPin size={13} />
                       <span className="font-bold text-[10px]">{app.city}</span>
                     </div>
