@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 import {
-  MALE_ICON, FEMALE_ICON, CITIES, JOB_TYPES, JOB_CATEGORIES, EDUCATION_GROUPS
+  MALE_ICON, FEMALE_ICON, CITIES, JOB_TYPES, JOB_CATEGORIES, EDUCATION_OPTIONS
 } from "../constants";
 
 const createImage = (url: string): Promise<HTMLImageElement> =>
@@ -94,7 +94,7 @@ function SuccessModal({ isOpen, onClose, onAction }: SuccessModalProps) {
             <p className="text-sm md:text-base text-gray-600 mb-4 text-center">
               Your profile has been received successfully.
             </p>
-            <div className="text-sm md:text-base text-gray-700 space-y-4 leading-relaxed">      
+            <div className="text-sm md:text-base text-gray-700 space-y-4 leading-relaxed">
               <div>
                 <p className="font-semibold">1. Your profile will be published after admin approval.</p>
                 <p className="text-gray-500">
@@ -464,23 +464,10 @@ export default function MobileResponsiveJobForm() {
                 className="w-full bg-[#f8fafc] border border-gray-100 rounded-lg p-2 text-xs font-semibold outline-none"
               >
                 <option value="">Select Your Qualification</option>
-                {EDUCATION_GROUPS.map((group, idx) => (
-                  <optgroup key={idx} label={group.label}>
-                    {group.options ? (
-                      group.options.map((opt) => (
-                        <option key={opt} value={opt}>{opt}</option>
-                      ))
-                    ) : (
-                      group.subGroups?.map((sub, sIdx) => (
-                        <React.Fragment key={sIdx}>
-                          <option disabled className="text-gray-400 font-semibold">-- {sub.title} --</option>
-                          {sub.options.map((opt) => (
-                            <option key={opt} value={opt}>{opt}</option>
-                          ))}
-                        </React.Fragment>
-                      ))
-                    )}
-                  </optgroup>
+                {EDUCATION_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
                 ))}
               </select>
             </section>
@@ -497,7 +484,7 @@ export default function MobileResponsiveJobForm() {
                 <div className="space-y-6 bg-gray-50/50 p-5 md:p-8 rounded-[30px] border border-gray-100">
                   <div className="flex items-center gap-2 bg-[#00004d] text-white self-start px-4 py-2 rounded-xl w-fit">
                     <Briefcase size={14} />
-                    <span className="text-xs font-bold uppercase tracking-tight">Total: {calculatedTotalYears} Years Exp</span>
+                    <span className="text-xs font-bold tracking-tight">Total: {calculatedTotalYears} Years Exp</span>
                   </div>
 
                   {experienceList.map((exp, index) => (
@@ -515,19 +502,19 @@ export default function MobileResponsiveJobForm() {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1">
-                          <label className="text-[9px] font-bold text-gray-400 uppercase ml-1">Company Name</label>
-                          <input required placeholder="Google / Software House" value={exp.companyName} onChange={(e) => handleExperienceChange(index, 'companyName', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
+                          <label className="text-[9px] font-bold text-gray-400 ml-1">Company/Organization Name</label>
+                          <input required value={exp.companyName} onChange={(e) => handleExperienceChange(index, 'companyName', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[9px] font-bold text-gray-400 uppercase ml-1">Designation</label>
-                          <input required placeholder="Frontend Developer" value={exp.designation} onChange={(e) => handleExperienceChange(index, 'designation', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
+                          <label className="text-[9px] font-bold text-gray-400 ml-1">Designation</label>
+                          <input required value={exp.designation} onChange={(e) => handleExperienceChange(index, 'designation', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[9px] font-bold text-gray-400 uppercase ml-1">Start Date</label>
+                          <label className="text-[9px] font-bold text-gray-400 ml-1">Start Date</label>
                           <input required type="date" value={exp.startDate} onChange={(e) => handleExperienceChange(index, 'startDate', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[9px] font-bold text-gray-400 uppercase ml-1">End Date</label>
+                          <label className="text-[9px] font-bold text-gray-400 ml-1">End Date</label>
                           <input required={!exp.isCurrentJob} disabled={exp.isCurrentJob} type="date" value={exp.endDate} onChange={(e) => handleExperienceChange(index, 'endDate', e.target.value)} className={`w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none ${exp.isCurrentJob ? 'opacity-50' : ''}`} />
                           <label className="flex items-center gap-2 mt-2 ml-1 cursor-pointer">
                             <input type="checkbox" checked={exp.isCurrentJob} onChange={(e) => handleExperienceChange(index, 'isCurrentJob', e.target.checked)} className="w-3 h-3 accent-[#0E8449]" />
@@ -543,7 +530,7 @@ export default function MobileResponsiveJobForm() {
                   </button>
 
                   <div className="space-y-2 mt-6">
-                    <label className="text-[10px] font-bold text-[#00004d] ml-1 block uppercase tracking-widest">Achievements / Key Responsibilities</label>
+                    <label className="text-[10px] font-bold text-[#00004d] ml-1 block tracking-widest">Achievements / Key Responsibilities</label>
                     <textarea value={formData.achievements} name="achievements" onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none border border-gray-100" placeholder="Describe your main projects or achievements..." rows={3} />
                   </div>
                 </div>
@@ -551,7 +538,7 @@ export default function MobileResponsiveJobForm() {
             </section>
             <section className="space-y-6">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Skills</h2></div>
-              <input type="text" name="skills" value={formData.skills} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Your Skills (React, Node, Designer, etc.)" />
+              <input type="text" name="skills" value={formData.skills} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Your Skills" />
             </section>
             <section className="space-y-6">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Contact Info</h2></div>
