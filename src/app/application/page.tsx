@@ -456,23 +456,10 @@ export default function MobileResponsiveJobForm() {
             </div>
             <section className="space-y-3">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Education</h2></div>
-              <select
-                required
-                name="education"
-                value={formData.education}
-                onChange={handleChange}
-                className="w-full bg-[#f8fafc] border border-gray-100 rounded-lg p-2 text-xs font-semibold outline-none"
-              >
-                <option value="" style={{ fontSize: "12px" }}>
-                  Select Your Qualification
-                </option>
-
-                {EDUCATION_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt} style={{ fontSize: "6px" }}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
+              <select required name="education" value={formData.education} onChange={handleChange} className="w-full bg-[#f8fafc] p-4 rounded-xl font-bold text-[#00004d] text-sm border border-gray-100 outline-none">
+                  <option value="">Select Your Qualification</option>
+                  {EDUCATION_OPTIONS.map(opt => (<option key={opt} value={opt}>{opt}</option>))}
+                </select>
             </section>
             <section className="space-y-6">
               <div className="flex items-center justify-between border-l-4 border-[#00004d] pl-3">
