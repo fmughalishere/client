@@ -468,7 +468,7 @@ export default function MobileResponsiveJobForm() {
                 </option>
 
                 {EDUCATION_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt} style={{ fontSize: "12px" }}>
+                  <option key={opt} value={opt} style={{ fontSize: "6px" }}>
                     {opt}
                   </option>
                 ))}
