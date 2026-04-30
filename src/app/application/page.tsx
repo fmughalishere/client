@@ -1,16 +1,50 @@
 "use client";
 
-import React, { useState, useRef, ChangeEvent, FormEvent, useMemo, useEffect } from "react";
+import React, { useState, useRef, ChangeEvent, FormEvent, useMemo, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import Cropper from "react-easy-crop";
 import {
-  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, Mail, Phone, MessageCircle, Plus, Trash2
+  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, Mail, Phone, MessageCircle, Plus, Trash2, X, Scissors
 } from "lucide-react";
 
 import {
   MALE_ICON, FEMALE_ICON, CITIES, JOB_TYPES, JOB_CATEGORIES, EDUCATION_GROUPS
 } from "../constants";
 
+const createImage = (url: string): Promise<HTMLImageElement> =>
+  new Promise((resolve, reject) => {
+    const image = new Image();
+    image.addEventListener("load", () => resolve(image));
+    image.addEventListener("error", (error) => reject(error));
+    image.setAttribute("crossOrigin", "anonymous");
+    image.src = url;
+  });
+
+async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> {
+  const image = await createImage(imageSrc);
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  if (!ctx) return "";
+
+  canvas.width = pixelCrop.width;
+  canvas.height = pixelCrop.height;
+
+  ctx.drawImage(
+    image,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height
+  );
+
+  return canvas.toDataURL("image/jpeg");
+}
 const navyBlueFilter = {
   filter: "invert(7%) sepia(76%) saturate(5793%) hue-rotate(241deg) brightness(91%) contrast(108%)"
 };
@@ -79,6 +113,12 @@ export default function MobileResponsiveJobForm() {
   const [isFresher, setIsFresher] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [isCropping, setIsCropping] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
@@ -174,8 +214,28 @@ export default function MobileResponsiveJobForm() {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onloadend = () => setFormData({ ...formData, image: reader.result as string });
+    reader.onload = () => {
+      setImageToCrop(reader.result as string);
+      setIsCropping(true);
+    };
     reader.readAsDataURL(file);
+  };
+
+  const onCropComplete = useCallback((_croppedArea: any, croppedAreaPixels: any) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  const saveCroppedImage = async () => {
+    try {
+      if (imageToCrop && croppedAreaPixels) {
+        const croppedImage = await getCroppedImg(imageToCrop, croppedAreaPixels);
+        setFormData({ ...formData, image: croppedImage });
+        setIsCropping(false);
+        setImageToCrop(null);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -241,6 +301,45 @@ export default function MobileResponsiveJobForm() {
 
   return (
     <div className="min-h-screen bg-[#f4f7f9] pb-10 font-sans">
+      <AnimatePresence>
+        {isCropping && (
+          <div className="fixed inset-0 z-[110] flex flex-col items-center justify-center bg-black p-4">
+            <div className="relative w-full h-[60vh] md:w-[500px] md:h-[500px] bg-gray-900 rounded-2xl overflow-hidden">
+              <Cropper
+                image={imageToCrop!}
+                crop={crop}
+                zoom={zoom}
+                aspect={1}
+                cropShape="round"
+                showGrid={false}
+                onCropChange={setCrop}
+                onCropComplete={onCropComplete}
+                onZoomChange={setZoom}
+              />
+            </div>
+
+            <div className="mt-8 w-full max-w-[400px] space-y-6 px-4">
+              <input
+                type="range"
+                value={zoom}
+                min={1}
+                max={3}
+                step={0.1}
+                onChange={(e) => setZoom(Number(e.target.value))}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#5DBB63]"
+              />
+              <div className="flex gap-4">
+                <button onClick={() => setIsCropping(false)} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold flex items-center justify-center gap-2 border border-white/20">
+                  <X size={18} /> Cancel
+                </button>
+                <button onClick={saveCroppedImage} className="flex-1 py-4 bg-[#5DBB63] text-white rounded-2xl font-bold flex items-center justify-center gap-2">
+                  <Check size={18} /> Done
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
       <SuccessModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -248,31 +347,31 @@ export default function MobileResponsiveJobForm() {
         message={modalContent.message}
         onAction={handleRedirect}
       />
-
       <div className="bg-[#5DBB63] pt-12 pb-20 md:pt-16 md:pb-24 rounded-b-[40px] md:rounded-b-[60px] text-center border-b border-blue-100 px-4">
         <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-white text-3xl md:text-5xl font-bold tracking-tight">Apply for a Job</motion.h1>
         <p className="text-white/60 font-bold text-[10px] md:text-xs mt-3 tracking-[0.2em] md:tracking-[0.4em] uppercase">Create your professional profile</p>
       </div>
-
       <div className="max-w-4xl mx-auto -mt-12 md:-mt-16 px-4">
         <div className="bg-white rounded-[35px] md:rounded-[45px] shadow-xl overflow-hidden border border-white">
           <form onSubmit={handleSubmit} className="p-6 md:p-14 space-y-12 md:space-y-20">
-              <section className="flex flex-col items-center gap-6">
-              <div className="relative">
-                <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-4 md:border-8 border-[#f8fcfd] shadow-lg bg-gray-50 flex items-center justify-center overflow-hidden">
+            <section className="flex flex-col items-center gap-6">
+              <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-4 border-[#f8fcfd] shadow-lg bg-gray-50 flex items-center justify-center overflow-hidden">
                   {formData.image.length > 20 ? (
                     <img src={formData.image} className="w-full h-full object-cover" alt="Profile" />
                   ) : formData.image === "male" ? (
-                    <img src={MALE_ICON} className="w-[80%] h-[80%] object-contain" style={navyBlueFilter} alt="Male Icon" />
+                    <img src={MALE_ICON} className="w-[80%] h-[80%] object-contain" style={navyBlueFilter} alt="Male" />
                   ) : formData.image === "female" ? (
-                    <img src={FEMALE_ICON} className="w-[80%] h-[80%] object-contain" style={navyBlueFilter} alt="Female Icon" />
+                    <img src={FEMALE_ICON} className="w-[80%] h-[80%] object-contain" style={navyBlueFilter} alt="Female" />
                   ) : (
-                    <div className="bg-[#00004d] w-full h-full flex items-center justify-center">
-                      <User className="w-16 h-16 text-white" />
-                    </div>
+                    <div className="bg-[#00004d] w-full h-full flex items-center justify-center"><User className="w-16 h-16 text-white" /></div>
                   )}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <Scissors className="text-white" size={24} />
+                    <span className="text-white text-[10px] font-bold ml-2">EDIT</span>
+                  </div>
                 </div>
-                <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute bottom-1 right-1 bg-[#00004d] text-white p-2.5 rounded-full shadow-lg"><Camera size={18} /></button>
+                <div className="absolute bottom-1 right-1 bg-[#00004d] text-white p-2.5 rounded-full shadow-lg"><Camera size={18} /></div>
               </div>
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Optional</span>
               <div className="flex items-center gap-4 w-full max-w-xs">
@@ -290,7 +389,7 @@ export default function MobileResponsiveJobForm() {
                 </button>
               </div>
             </section>
-              <section className="space-y-6">
+            <section className="space-y-6">
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Personal Details</h2></div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
                 <div className="space-y-1.5">
@@ -363,23 +462,23 @@ export default function MobileResponsiveJobForm() {
               <div className="flex items-center justify-between border-l-4 border-[#00004d] pl-3">
                 <h2 className="text-[#00004d] font-bold text-lg tracking-wider">Experience</h2>
                 <label className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-full cursor-pointer border border-gray-100">
-                    <input type="checkbox" checked={isFresher} onChange={(e) => setIsFresher(e.target.checked)} className="accent-[#00004d] w-4 h-4" />
-                    <span className="text-[10px] font-bold text-[#00004d]">I am a Fresher</span>
+                  <input type="checkbox" checked={isFresher} onChange={(e) => setIsFresher(e.target.checked)} className="accent-[#00004d] w-4 h-4" />
+                  <span className="text-[10px] font-bold text-[#00004d]">I am a Fresher</span>
                 </label>
               </div>
 
               {!isFresher && (
                 <div className="space-y-6 bg-gray-50/50 p-5 md:p-8 rounded-[30px] border border-gray-100">
-                    <div className="flex items-center gap-2 bg-[#00004d] text-white self-start px-4 py-2 rounded-xl w-fit">
+                  <div className="flex items-center gap-2 bg-[#00004d] text-white self-start px-4 py-2 rounded-xl w-fit">
                     <Briefcase size={14} />
                     <span className="text-xs font-bold uppercase tracking-tight">Total: {calculatedTotalYears} Years Exp</span>
                   </div>
 
                   {experienceList.map((exp, index) => (
-                    <motion.div 
-                      initial={{ opacity: 0, x: -20 }} 
-                      animate={{ opacity: 1, x: 0 }} 
-                      key={index} 
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      key={index}
                       className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-4 relative"
                     >
                       {experienceList.length > 1 && (
@@ -387,7 +486,7 @@ export default function MobileResponsiveJobForm() {
                           <Trash2 size={18} />
                         </button>
                       )}
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1">
                           <label className="text-[9px] font-bold text-gray-400 uppercase ml-1">Company Name</label>
@@ -447,7 +546,7 @@ export default function MobileResponsiveJobForm() {
             </section>
             <div className="flex flex-col items-center gap-8 pt-10 border-t">
               <button type="button"
-              onClick={() => router.push('/readpolicy')} className="w-80% md:w-auto bg-[#5DBB63] text-white px-12 py-3.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-all shadow-sm">
+                onClick={() => router.push('/readpolicy')} className="w-80% md:w-auto bg-[#5DBB63] text-white px-12 py-3.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-all shadow-sm">
                 Read Privacy Policy
               </button>
               <label className="flex items-center gap-3 cursor-pointer">
