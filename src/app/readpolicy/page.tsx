@@ -47,7 +47,7 @@ const PrivacyPolicy: React.FC = () => {
                         <label className="flex items-center space-x-3 cursor-pointer group">
                             <input 
                                 type="checkbox" 
-                                className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                className="w-5 h-5 text-[#00004d] border-gray-300 rounded focus:ring-blue-500"
                                 checked={agreed}
                                 onChange={(e) => setAgreed(e.target.checked)}
                             />
