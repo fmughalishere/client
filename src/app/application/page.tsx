@@ -463,9 +463,12 @@ export default function MobileResponsiveJobForm() {
                 onChange={handleChange}
                 className="w-full bg-[#f8fafc] border border-gray-100 rounded-lg p-2 text-xs font-semibold outline-none"
               >
-                <option value="">Select Your Qualification</option>
+                <option value="" style={{ fontSize: "12px" }}>
+                  Select Your Qualification
+                </option>
+
                 {EDUCATION_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt}>
+                  <option key={opt} value={opt} style={{ fontSize: "12px" }}>
                     {opt}
                   </option>
                 ))}
