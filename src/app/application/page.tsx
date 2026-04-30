@@ -43,7 +43,7 @@ async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> 
     pixelCrop.height
   );
 
-  return canvas.toDataURL("image/jpeg");
+  return canvas.toDataURL("image/jpeg", 0.7);
 }
 const navyBlueFilter = {
   filter: "invert(7%) sepia(76%) saturate(5793%) hue-rotate(241deg) brightness(91%) contrast(108%)"
@@ -65,7 +65,7 @@ interface SuccessModalProps {
   onAction: () => void;
 }
 
-function SuccessModal({ isOpen, onClose, title, message, onAction }: SuccessModalProps) {
+function SuccessModal({ isOpen, onClose, onAction }: SuccessModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -77,25 +77,52 @@ function SuccessModal({ isOpen, onClose, title, message, onAction }: SuccessModa
             onClick={onClose}
             className="absolute inset-0 bg-bold/60 backdrop-blur-sm"
           />
-
           <motion.div
             initial={{ scale: 0.9, opacity: 0, y: 50 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 50 }}
-            className="relative w-full max-w-[340px] md:max-w-sm bg-white rounded-[30px] p-6 md:p-8 text-center shadow-2xl"
+            className="relative w-full max-w-[360px] md:max-w-md bg-white rounded-[30px] p-6 md:p-8 text-left shadow-2xl overflow-y-auto max-h-[90vh]"
           >
             <div className="flex justify-center mb-4">
               <div className="bg-green-100 p-3 rounded-full">
                 <CheckCircle2 size={40} className="text-green-500 md:w-12 md:h-12" />
               </div>
             </div>
-
-            <h3 className="text-xl md:text-2xl font-bold text-[#00004d] mb-2">{title}</h3>
-            <p className="text-sm md:text-base text-gray-500 mb-6 md:mb-8 leading-relaxed">{message}</p>
-
+            <h3 className="text-xl md:text-2xl font-bold text-[#00004d] mb-3 text-center">
+              Thank You for Submitting Your Profile
+            </h3>
+            <p className="text-sm md:text-base text-gray-600 mb-4 text-center">
+              Your profile has been received successfully.
+            </p>
+            <div className="text-sm md:text-base text-gray-700 space-y-4 leading-relaxed">      
+              <div>
+                <p className="font-semibold">1. Your profile will be published after admin approval.</p>
+                <p className="text-gray-500">
+                  آپ کی پروفائل مین پیج پر صرف ایڈمن کی منظوری کے بعد لگائی جائے گی۔
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold">2. Your contact information will remain confidential.</p>
+                <p className="text-gray-500">
+                  آپ کی کانٹیکٹ انفارمیشن مکمل طور پر خفیہ رکھی جائے گی۔
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold">3. Employers will contact you directly.</p>
+                <p className="text-gray-500">
+                  ایمپلائر خود آپ سے براہِ راست رابطہ کریں گے اور آپ کو جاب آفر دیں گے۔
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold">4. Your profile will be deleted after 45 days.</p>
+                <p className="text-gray-500">
+                  آپ کا پروفائل 45 دن بعد خود بخود ڈیلیٹ ہو جائے گا۔
+                </p>
+              </div>
+            </div>
             <button
               onClick={onAction}
-              className="w-full bg-[#00004d] text-white py-4 rounded-full font-bold text-sm md:text-base active:scale-95 transition-transform"
+              className="w-full mt-6 bg-[#00004d] text-white py-4 rounded-full font-bold text-sm md:text-base active:scale-95 transition-transform"
             >
               Go to Dashboard
             </button>
@@ -105,7 +132,6 @@ function SuccessModal({ isOpen, onClose, title, message, onAction }: SuccessModa
     </AnimatePresence>
   );
 }
-
 export default function MobileResponsiveJobForm() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -550,7 +576,7 @@ export default function MobileResponsiveJobForm() {
                 Read Privacy Policy
               </button>
               <label className="flex items-center gap-3 cursor-pointer">
-                <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${formData.agreeTerms ? 'bg-[#00004d] border-[#00004d]' : 'bg-white border-gray-200'}`}>
+                <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${formData.agreeTerms ? 'bg-[#00004d] border-white' : 'bg-white border-gray-200'}`}>
                   <input type="checkbox" className="hidden" checked={formData.agreeTerms} onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })} />
                   {formData.agreeTerms && <Check size={14} className="text-white" />}
                 </div>
