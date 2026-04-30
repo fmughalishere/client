@@ -6,7 +6,7 @@ import {
   ChevronDown, Loader2, User,
   ChevronRight
 } from "lucide-react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { io } from "socket.io-client";
 import { useRouter } from "next/navigation";
 import { IoIosPin } from "react-icons/io";
@@ -17,8 +17,11 @@ export default function HomePage() {
   const [applicants, setApplicants] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const router = useRouter();
   const [visitorCount, setVisitorCount] = useState(0);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const navyBlueFilter = {
     filter: "invert(7%) sepia(76%) saturate(5793%) hue-rotate(241deg) brightness(91%) contrast(108%)"
@@ -50,11 +53,47 @@ export default function HomePage() {
     const socket = io("https://easyjobspk.onrender.com/");
     socket.on("visitorCount", (count: number) => setVisitorCount(count));
     fetchApplicants();
-    return () => { socket.disconnect(); };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => { 
+      socket.disconnect(); 
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [fetchApplicants]);
 
-  const handleSearch = () => {
-    if (searchQuery.trim()) router.push(`/jobs?search=${searchQuery}`);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    if (value.trim().length > 0) {
+      const filtered = applicants
+        .filter((app) => 
+          app.fullName.toLowerCase().includes(value.toLowerCase()) || 
+          (app.category && app.category.toLowerCase().includes(value.toLowerCase()))
+        )
+        .map((app) => (app.category && app.category.toLowerCase().includes(value.toLowerCase()) ? app.category : app.fullName));
+
+      const uniqueSuggestions = Array.from(new Set(filtered)).slice(0, 5);
+      setSuggestions(uniqueSuggestions);
+      setShowSuggestions(true);
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSearch = (selectedQuery?: string) => {
+    const finalQuery = selectedQuery || searchQuery;
+    if (finalQuery.trim()) {
+      setShowSuggestions(false);
+      router.push(`/jobs?search=${finalQuery}`);
+    }
   };
 
   const calculateAge = (dob: string) => {
@@ -120,7 +159,7 @@ export default function HomePage() {
             <h1 className="text-[26px] font-black text-white leading-tight">Get hired easy</h1>
           </div>
         </div>
-        <div className="relative -mt-7 flex justify-center px-6 z-20">
+          <div className="relative -mt-7 flex justify-center px-6 z-30" ref={searchRef}>
           <div className="relative w-full max-w-[280px]">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-[#00004d]" strokeWidth={3} />
@@ -128,15 +167,33 @@ export default function HomePage() {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleInputChange}
+              onFocus={() => searchQuery.length > 0 && setShowSuggestions(true)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               placeholder="Search jobs/employees"
               className="block w-full pl-11 pr-14 py-2.5 bg-white border border-[#00004d] rounded-[15px] shadow-lg text-sm text-[#00004d] font-bold outline-none"
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-4 gap-2">
               <div className="h-5 w-[1.5px] bg-[#00004d]"></div>
-              <button onClick={handleSearch} className="text-[#00004d] font-black text-[15px] hover:opacity-70">Go</button>
+              <button onClick={() => handleSearch()} className="text-[#00004d] font-black text-[15px] hover:opacity-70">Go</button>
             </div>
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                {suggestions.map((item, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => {
+                      setSearchQuery(item);
+                      handleSearch(item);
+                    }}
+                    className="px-4 py-3 flex items-center gap-3 hover:bg-gray-100 cursor-pointer border-b last:border-none border-gray-50 transition-colors"
+                  >
+                    <Search className="h-3 w-3 text-gray-400" />
+                    <span className="text-sm font-semibold text-[#00004d]">{item}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -194,7 +251,6 @@ export default function HomePage() {
                     </div>
                   )}
                 </div>
-
                 <div className="flex flex-col flex-1">
                   <div className="flex items-center gap-2">
                     <h2 className="text-[15px] font-black text-[#00004d] leading-tight truncate">{app.fullName}</h2>
