@@ -458,17 +458,16 @@ export default function MobileResponsiveJobForm() {
               <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3">
                 <h2 className="text-[#00004d] font-bold text-lg tracking-wider">Education</h2>
               </div>
-
               <select
                 required
                 name="education"
                 value={formData.education}
                 onChange={handleChange}
-                className="w-full bg-[#f8fafc] p-3 md:p-4 rounded-xl font-medium md:font-bold text-[#00004d] text-xs sm:text-sm border border-gray-100 outline-none appearance-none"
+                className="w-full bg-[#f8fafc] p-2 h-10 rounded-lg font-medium text-[#00004d] text-[11px] sm:text-sm border border-gray-100 outline-none appearance-none"
               >
                 <option value="">Select Your Qualification</option>
                 {EDUCATION_OPTIONS.map(opt => (
-                  <option key={opt} value={opt} className="text-xs">
+                  <option key={opt} value={opt} className="text-[11px]">
                     {opt}
                   </option>
                 ))}

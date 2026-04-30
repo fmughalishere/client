@@ -5,6 +5,17 @@
   --foreground: #171717;
 }
 
+select, option {
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+}
+
+select {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
