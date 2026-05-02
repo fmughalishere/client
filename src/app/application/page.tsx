@@ -65,24 +65,25 @@ interface SuccessModalProps {
   onAction: () => void;
 }
 
-function AuthRequiredModal({ isOpen, onClose, onLogin }: { isOpen: boolean; onClose: () => void; onLogin: () => void }) {
+// Updated Auth Modal with Dynamic Logic
+function AuthRequiredModal({ isOpen, onClose, onAction }: { isOpen: boolean; onClose: () => void; onAction: () => void }) {
   return (
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-sm bg-white rounded-[30px] p-8 text-center shadow-2xl">
-            <div className="bg-amber-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Lock className="text-amber-600" size={30} />
+            <div className="bg-[#5DBB63] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Lock className="text-[#00004d]" size={30} />
             </div>
-            <h3 className="text-xl font-bold text-[#00004d] mb-2">Login Required</h3>
+            <h3 className="text-xl font-bold text-[#00004d] mb-2">Authentication Required</h3>
             <p className="text-gray-600 text-sm mb-6 leading-relaxed">
               Please login or create your account first to submit your job application.
               <br /><span className="text-[12px] text-gray-400 mt-2 block">اپنا اکاؤنٹ لاگ ان کریں یا نیا اکاؤنٹ بنائیں۔</span>
             </p>
             <div className="space-y-3">
-              <button onClick={onLogin} className="w-full bg-[#00004d] text-white py-4 rounded-xl font-bold text-sm active:scale-95 transition-transform">
-                Login / Create Account
+              <button onClick={onAction} className="w-full bg-[#00004d] text-white py-4 rounded-xl font-bold text-sm active:scale-95 transition-transform">
+                Continue to Account
               </button>
               <button onClick={onClose} className="w-full bg-gray-100 text-gray-500 py-3 rounded-xl font-bold text-sm">
                 Cancel
@@ -162,6 +163,7 @@ function SuccessModal({ isOpen, onClose, onAction }: SuccessModalProps) {
     </AnimatePresence>
   );
 }
+
 export default function MobileResponsiveJobForm() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -182,6 +184,37 @@ export default function MobileResponsiveJobForm() {
   const eduRef = useRef<HTMLDivElement>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
+  const [formData, setFormData] = useState({
+    fullName: "", dob: "", gender: "Male", city: "", image: "",
+    jobtype: "Full-Time", category: "", education: "",
+    yearsOfExperience: "0", skills: "", achievements: "",
+    email: "", phone: "+92 ", whatsapp: "+92 ", agreeTerms: false
+  });
+
+  const [experienceList, setExperienceList] = useState<ExperienceEntry[]>([
+    { companyName: "", designation: "", startDate: "", endDate: "", isCurrentJob: false }
+  ]);
+
+  // Logic to handle Smart Navigation (Login vs Register)
+  const handleAuthNavigation = () => {
+    // 1. Save progress so user doesn't lose data
+    const appData = {
+      formData,
+      isFresher,
+      experienceList
+    };
+    localStorage.setItem("pendingJobApplication", JSON.stringify(appData));
+
+    // 2. Check if they have registered before
+    const isRegistered = localStorage.getItem("isRegistered");
+
+    if (isRegistered === "true") {
+      router.push("/login");
+    } else {
+      router.push("/register");
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (eduRef.current && !eduRef.current.contains(event.target as Node)) {
@@ -197,17 +230,6 @@ export default function MobileResponsiveJobForm() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
-
-  const [formData, setFormData] = useState({
-    fullName: "", dob: "", gender: "Male", city: "", image: "",
-    jobtype: "Full-Time", category: "", education: "",
-    yearsOfExperience: "0", skills: "", achievements: "",
-    email: "", phone: "+92 ", whatsapp: "+92 ", agreeTerms: false
-  });
-
-  const [experienceList, setExperienceList] = useState<ExperienceEntry[]>([
-    { companyName: "", designation: "", startDate: "", endDate: "", isCurrentJob: false }
-  ]);
 
   const calculatedTotalYears = useMemo(() => {
     if (isFresher) return 0;
@@ -243,9 +265,6 @@ export default function MobileResponsiveJobForm() {
       router.push("/");
     }
   };
-  const goToLogin = () => {
-  router.push("/login");
-};
 
   const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>, field: string) => {
     let value = e.target.value;
@@ -331,6 +350,7 @@ export default function MobileResponsiveJobForm() {
    const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
+    
     if (!token) {
       setIsAuthModalOpen(true);
       return;
@@ -376,7 +396,7 @@ export default function MobileResponsiveJobForm() {
       <AuthRequiredModal 
         isOpen={isAuthModalOpen} 
         onClose={() => setIsAuthModalOpen(false)} 
-        onLogin={goToLogin} 
+        onAction={handleAuthNavigation} 
       />
       <AnimatePresence>
         {isCropping && (

@@ -94,7 +94,7 @@ export default function ApplicantDetail() {
         setTimeout(() => {
           setIsModalOpen(false);
           setIsSubmitted(false);
-          router.push("/dashboard/employer/applicants"); // Redirect back
+          router.push("/dashboard/employer/applicants");
         }, 2000);
       } else {
         const errData = await res.json();
@@ -146,7 +146,7 @@ export default function ApplicantDetail() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white p-8 rounded-3xl shadow-sm space-y-5">
             <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">
-              <User size={18} /> Basic & Contact Info
+              <User size={18} /> Basic Info
             </h2>
             <div className="grid gap-4 text-sm font-bold text-gray-600">
               <p className="flex items-center gap-2 "><User size={16} className="text-gray-400" /> Gender: {applicant.gender}</p>
