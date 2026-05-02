@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Cropper from "react-easy-crop";
 import {
-  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, Mail, Phone, MessageCircle, Plus, Trash2, X, Scissors
+  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, Mail, Phone, MessageCircle, Plus, Trash2, X, Scissors, Lock
 } from "lucide-react";
 
 import {
@@ -63,6 +63,36 @@ interface SuccessModalProps {
   title: string;
   message: string;
   onAction: () => void;
+}
+
+function AuthRequiredModal({ isOpen, onClose, onLogin }: { isOpen: boolean; onClose: () => void; onLogin: () => void }) {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-sm bg-white rounded-[30px] p-8 text-center shadow-2xl">
+            <div className="bg-amber-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Lock className="text-amber-600" size={30} />
+            </div>
+            <h3 className="text-xl font-bold text-[#00004d] mb-2">Login Required</h3>
+            <p className="text-gray-600 text-sm mb-6 leading-relaxed">
+              Please login or create your account first to submit your job application.
+              <br /><span className="text-[12px] text-gray-400 mt-2 block">اپنا اکاؤنٹ لاگ ان کریں یا نیا اکاؤنٹ بنائیں۔</span>
+            </p>
+            <div className="space-y-3">
+              <button onClick={onLogin} className="w-full bg-[#00004d] text-white py-4 rounded-xl font-bold text-sm active:scale-95 transition-transform">
+                Login / Create Account
+              </button>
+              <button onClick={onClose} className="w-full bg-gray-100 text-gray-500 py-3 rounded-xl font-bold text-sm">
+                Cancel
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
 }
 
 function SuccessModal({ isOpen, onClose, onAction }: SuccessModalProps) {
@@ -150,6 +180,7 @@ export default function MobileResponsiveJobForm() {
   const [isEduOpen, setIsEduOpen] = useState(false);
   const [eduSearch, setEduSearch] = useState("");
   const eduRef = useRef<HTMLDivElement>(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -212,6 +243,9 @@ export default function MobileResponsiveJobForm() {
       router.push("/");
     }
   };
+  const goToLogin = () => {
+  router.push("/login");
+};
 
   const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>, field: string) => {
     let value = e.target.value;
@@ -294,19 +328,16 @@ export default function MobileResponsiveJobForm() {
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-
     if (!token) {
-      localStorage.setItem("pendingJobApplication", JSON.stringify({ formData, isFresher, experienceList }));
-      router.push("/login");
+      setIsAuthModalOpen(true);
       return;
     }
 
     if (!formData.agreeTerms) {
-      setModalContent({ title: "Agreement Required", message: "Please agree to the privacy policy." });
-      setIsModalOpen(true);
+      alert("Please agree to the privacy policy.");
       return;
     }
 
@@ -322,34 +353,19 @@ export default function MobileResponsiveJobForm() {
     try {
       const res = await fetch("https://easyjobspk.onrender.com/api/applications", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(finalPayload)
       });
 
       if (res.ok) {
         setSubmitted(true);
-        setModalContent({
-          title: "Application Received!",
-          message: "Submitted successfully."
-        });
+        setIsModalOpen(true);
       } else {
         const data = await res.json();
-        setModalContent({
-          title: "Error",
-          message: data.message || "Something went wrong"
-        });
+        alert(data.message || "Error submitting application");
       }
-
-      setIsModalOpen(true);
     } catch {
-      setModalContent({
-        title: "Server Error",
-        message: "Try again later"
-      });
-      setIsModalOpen(true);
+      alert("Server error. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -357,6 +373,11 @@ export default function MobileResponsiveJobForm() {
 
   return (
     <div className="min-h-screen bg-[#f4f7f9] pb-10 font-sans">
+      <AuthRequiredModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+        onLogin={goToLogin} 
+      />
       <AnimatePresence>
         {isCropping && (
           <div className="fixed inset-0 z-[110] flex flex-col items-center justify-center bg-black p-4">
