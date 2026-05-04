@@ -12,7 +12,6 @@ import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [role, setRole] = useState("jobseeker");
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
@@ -41,7 +40,6 @@ export default function RegisterPage() {
       name: `${formData.firstName} ${formData.lastName}`,
       email: formData.email,
       password: formData.password,
-      role: role
     };
 
     try {
@@ -82,25 +80,6 @@ export default function RegisterPage() {
           </h1>
           <p className="text-gray-400 font-bold text-sm  tracking-wide">Start your journey with us</p>
         </div>
-        <div className="flex p-1.5 bg-gray-100 rounded-full mb-10 gap-1">
-          <button 
-            type="button"
-            onClick={() => setRole("jobseeker")}
-            className={`flex-1 py-4 rounded-full flex items-center justify-center gap-3 transition-all duration-300 font-black  text-[10px] tracking-widest
-              ${role === "jobseeker" ? 'bg-white text-[#00004d] shadow-md' : 'text-gray-400 hover:text-gray-600'}`}
-          >
-            <User size={18} /> Jobseeker
-          </button>
-          <button 
-            type="button"
-            onClick={() => setRole("employer")}
-            className={`flex-1 py-4 rounded-full flex items-center justify-center gap-3 transition-all duration-300 font-black  text-[10px] tracking-widest
-              ${role === "employer" ? 'bg-white text-[#00004d] shadow-md' : 'text-gray-400 hover:text-gray-600'}`}
-          >
-            <Briefcase size={18} /> Employer
-          </button>
-        </div>
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="relative">
