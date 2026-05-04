@@ -2,13 +2,58 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Loader2, User, Calendar, Globe, MapPin, Briefcase,
   GraduationCap, Send, X, Building, Camera, Wand2,
-  CheckCircle2, Clock
+  CheckCircle2, Clock, CheckCircle
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { MALE_ICON, FEMALE_ICON } from "../../constants";
+
+function OfferSuccessModal({ isOpen, onClose, onAction }: { isOpen: boolean; onClose: () => void; onAction: () => void }) {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+          />
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0, y: 50 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 50 }}
+            className="relative w-full max-w-[380px] bg-white rounded-[35px] p-8 text-center shadow-2xl"
+          >
+            <div className="flex justify-center mb-6">
+              <div className="bg-green-100 p-4 rounded-full">
+                <CheckCircle2 size={50} className="text-green-500" />
+              </div>
+            </div>
+            <h3 className="text-2xl font-bold text-[#00004d] mb-3">
+              Offer Sent Successfully!
+            </h3>
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              Your job offer has been delivered to the candidate. They will review your proposal and get in touch with you directly.
+              <br />
+              <span className="text-[12px] text-gray-400 mt-2 block">آپ کی آفر امیدوار کو بھیج دی گئی ہے۔ وہ آپ سے جلد رابطہ کریں گے۔</span>
+            </p>
+            <button
+              onClick={onAction}
+              className="w-full bg-[#00004d] text-white py-4 rounded-2xl font-bold text-sm active:scale-95 transition-transform shadow-lg shadow-blue-900/20"
+            >
+              Back to Applicants
+            </button>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}
 
 export default function ApplicantDetail() {
   const { id } = useParams();
@@ -19,6 +64,7 @@ export default function ApplicantDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const navyBlueFilter = {
     filter: "invert(7%) sepia(76%) saturate(5793%) hue-rotate(241deg) brightness(91%) contrast(108%)"
@@ -91,11 +137,8 @@ export default function ApplicantDetail() {
 
       if (res.ok) {
         setIsSubmitted(true);
-        setTimeout(() => {
-          setIsModalOpen(false);
-          setIsSubmitted(false);
-          router.push("/dashboard/employer/applicants");
-        }, 2000);
+        setIsModalOpen(false);
+        setShowSuccessModal(true);
       } else {
         const errData = await res.json();
         alert(errData.message || "Failed to send offer");
@@ -120,6 +163,12 @@ export default function ApplicantDetail() {
 
   return (
     <div className="min-h-screen bg-[#f4f7f9] p-4 md:p-10 pb-24 font-sans">
+      <OfferSuccessModal 
+        isOpen={showSuccessModal} 
+        onClose={() => setShowSuccessModal(false)}
+        onAction={() => router.push("/dashboard/employer/applicants")}
+      />
+
       <div className="max-w-5xl mx-auto space-y-6">
         <div className="bg-[#5DBB63] text-white p-6 md:p-10 rounded-[40px] shadow-lg flex items-center gap-6 overflow-hidden">
           <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white/20 overflow-hidden bg-white shadow-xl flex-shrink-0 flex items-center justify-center">
@@ -244,7 +293,7 @@ export default function ApplicantDetail() {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-bold/60 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
           <div className="bg-white w-full max-w-lg rounded-[45px] overflow-hidden shadow-2xl relative">
             <div className="bg-[#5DBB63] p-8 text-white flex justify-between items-center">
               <h3 className="text-2xl font-bold">Send Job Offer</h3>
@@ -260,7 +309,7 @@ export default function ApplicantDetail() {
                   ) : (
                     <Building className="text-gray-200" size={30} />
                   )}
-                  <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute inset-0 bg-bold/40 text-white flex items-center justify-center opacity-0 hover:opacity-100">
+                  <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute inset-0 bg-black/40 text-white flex items-center justify-center opacity-0 hover:opacity-100">
                     <Camera size={18} />
                   </button>
                 </div>
@@ -282,8 +331,8 @@ export default function ApplicantDetail() {
                 <label className="text-[10px] font-bold text-gray-400 ml-1 ">Interview Date & Time <span>(Optional)</span></label>
                 <input type="datetime-local" name="interviewDate" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-sm" />
               </div>
-              <button type="submit" disabled={isSubmitting || isSubmitted} className="w-full py-5 rounded-[20px] font-bold text-white bg-[#00004d] active:scale-95 transition-all tracking-widest">
-                {isSubmitting ? <Loader2 className="animate-spin mx-auto" /> : isSubmitted ? "OFFER SENT!" : "SUBMIT OFFER"}
+              <button type="submit" disabled={isSubmitting} className="w-full py-5 rounded-[20px] font-bold text-white bg-[#00004d] active:scale-95 transition-all tracking-widest">
+                {isSubmitting ? <Loader2 className="animate-spin mx-auto" /> : "SUBMIT OFFER"}
               </button>
             </form>
           </div>
