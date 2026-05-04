@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, Suspense } from "react"; // useEffect add kiya
+import { useState, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Mail, Lock, ArrowRight, Check, ArrowLeft, Eye, EyeOff, Phone } from "lucide-react";
@@ -18,28 +18,22 @@ function LoginContent() {
   
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  // --- GOOGLE AUTH REDIRECT LOGIC ---
   useEffect(() => {
     const token = searchParams.get("token");
     const userStr = searchParams.get("user");
 
     if (token && userStr) {
       try {
-        // 1. Save to LocalStorage
         localStorage.setItem("token", token);
-        localStorage.setItem("user", userStr); // Backend se stringified aata hai toh seedha save karein
+        localStorage.setItem("user", userStr);
         
         const userData = JSON.parse(decodeURIComponent(userStr));
         toast.success(`Welcome back, ${userData.name || 'User'}!`);
-
-        // 2. Redirect Logic
         setTimeout(() => {
           const pendingForm = localStorage.getItem("pendingJobApplication");
           if (pendingForm) {
             router.push("/application"); 
           } else {
-            // Role check karein
             router.push(userData.role === "employer" ? "/dashboard/employer" : "/dashboard/jobseeker");
           }
         }, 1000);
@@ -50,7 +44,6 @@ function LoginContent() {
     }
   }, [searchParams, router]);
 
-  // --- MANUAL LOGIN (EMAIL/PHONE) ---
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!agreed) {
@@ -84,19 +77,15 @@ function LoginContent() {
     }
   };
 
-  // --- GOOGLE LOGIN REDIRECT ---
   const handleGoogleLogin = () => {
     toast.loading("Redirecting to Google...");
-    // Aapke backend ka URL (e.g. http://localhost:5000/api/auth/google)
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#fcfcfc] relative overflow-hidden">
       <Toaster position="top-center" />
-      
-      {/* Background Orbs */}
-      <div className="absolute top-[-10%] right-[-5%] w-[300px] h-[300px] bg-[#e2f2f5] rounded-full blur-[100px] opacity-60"></div>
+            <div className="absolute top-[-10%] right-[-5%] w-[300px] h-[300px] bg-[#e2f2f5] rounded-full blur-[100px] opacity-60"></div>
       <div className="absolute bottom-[-10%] left-[-5%] w-[300px] h-[300px] bg-[#f0fdf4] rounded-full blur-[100px] opacity-60"></div>
 
       <motion.div 
@@ -118,8 +107,6 @@ function LoginContent() {
           Login to Your Account
           </h1>
         </div>
-
-        {/* Method Switcher Tabs */}
         <div className="flex bg-slate-50 p-1.5 rounded-full mb-8">
           <button 
             onClick={() => setLoginMethod("email")}
@@ -224,8 +211,6 @@ function LoginContent() {
             {!loading && <ArrowRight size={18} />}
           </button>
         </form>
-
-        {/* Divider */}
         <div className="relative my-8">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-100"></div>
@@ -234,8 +219,6 @@ function LoginContent() {
             <span className="bg-white px-4 text-gray-300 tracking-[0.3em]">Or continue with</span>
           </div>
         </div>
-
-        {/* Google Login Button */}
         <button 
           onClick={handleGoogleLogin}
           type="button"
