@@ -65,7 +65,6 @@ interface SuccessModalProps {
   onAction: () => void;
 }
 
-// Updated Auth Modal with Dynamic Logic
 function AuthRequiredModal({ isOpen, onClose, onAction }: { isOpen: boolean; onClose: () => void; onAction: () => void }) {
   return (
     <AnimatePresence>
@@ -188,24 +187,20 @@ export default function MobileResponsiveJobForm() {
     fullName: "", dob: "", gender: "Male", city: "", image: "",
     jobtype: "Full-Time", category: "", education: "",
     yearsOfExperience: "0", skills: "", achievements: "",
-    email: "", phone: "+92 ", whatsapp: "+92 ", agreeTerms: false
+    email: "", phone: "+92 ", whatsapp: "+92 ", salaryDemand: "", agreeTerms: false
   });
 
   const [experienceList, setExperienceList] = useState<ExperienceEntry[]>([
     { companyName: "", designation: "", startDate: "", endDate: "", isCurrentJob: false }
   ]);
 
-  // Logic to handle Smart Navigation (Login vs Register)
   const handleAuthNavigation = () => {
-    // 1. Save progress so user doesn't lose data
     const appData = {
       formData,
       isFresher,
       experienceList
     };
     localStorage.setItem("pendingJobApplication", JSON.stringify(appData));
-
-    // 2. Check if they have registered before
     const isRegistered = localStorage.getItem("isRegistered");
 
     if (isRegistered === "true") {
@@ -719,6 +714,10 @@ export default function MobileResponsiveJobForm() {
               <input required name="whatsapp" value={formData.whatsapp} onChange={(e) => handlePhoneChange(e, "whatsapp")} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="+92 300 0000000" />
             </div>
           </div>
+        </section>
+         <section className="space-y-6">
+          <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Salary Demand</h2></div>
+          <input type="text" name="salaryDemand" value={formData.salaryDemand} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Mention your desired salary range" />
         </section>
         <div className="flex flex-col items-center gap-8 pt-10 border-t">
           <button type="button"

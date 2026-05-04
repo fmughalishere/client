@@ -167,14 +167,14 @@ export default function ApplicantDetail() {
         </div>
 
         <div className="bg-white p-8 rounded-3xl shadow-sm space-y-5">
-            <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">
-              <Briefcase size={18} /> Job Category + Type
-            </h2>
-            <div className="grid gap-4 text-sm font-bold text-gray-600">
-              <p className="flex items-center gap-2 "><Briefcase size={16} className="text-gray-400" /> {applicant.category}</p>
-              <p className="flex items-center gap-2 "><Clock size={16} className="text-gray-400" /> Job Type: {applicant.jobtype || applicant.jobType}</p>
-            </div>
+          <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">
+            <Briefcase size={18} /> Job Category + Type
+          </h2>
+          <div className="grid gap-4 text-sm font-bold text-gray-600">
+            <p className="flex items-center gap-2 "><Briefcase size={16} className="text-gray-400" /> {applicant.category}</p>
+            <p className="flex items-center gap-2 "><Clock size={16} className="text-gray-400" /> Job Type: {applicant.jobtype || applicant.jobType}</p>
           </div>
+        </div>
 
         <div className="bg-white p-8 rounded-3xl shadow-sm space-y-6">
           <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-3 border-b pb-4 ">
@@ -205,7 +205,7 @@ export default function ApplicantDetail() {
             ) : applicant.experience && applicant.experience.length > 0 ? (
               applicant.experience.map((exp: any, i: number) => (
                 <div key={i} className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
-                   <p className="text-xs font-bold text-gray-400 tracking-widest mb-1">{exp.companyName}</p>
+                  <p className="text-xs font-bold text-gray-400 tracking-widest mb-1">{exp.companyName}</p>
                   <p className="font-bold text-[#00004d] text-lg ">{exp.designation}</p>
                   <p className="text-[10px] font-bold text-gray-500 mt-1 ">
                     {new Date(exp.startDate).toLocaleDateString()} - {exp.isCurrentJob ? "Present" : new Date(exp.endDate).toLocaleDateString()}
@@ -219,7 +219,17 @@ export default function ApplicantDetail() {
             )}
           </div>
         </div>
+        <div className="bg-white p-8 rounded-3xl shadow-sm space-y-5">
+          <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">
+            💰 Salary Expectation
+          </h2>
 
+          <p className="text-sm font-bold text-gray-600">
+            {applicant.salaryDemand
+              ? `${applicant.salaryDemand}`
+              : "Not mentioned"}
+          </p>
+        </div>
         <div className="mt-8 flex justify-center pb-2">
           <button
             onClick={() => setIsModalOpen(true)}
@@ -262,7 +272,7 @@ export default function ApplicantDetail() {
               <input required name="employerName" placeholder="Hiring Manager Name" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
               <input required name="designation" placeholder="Job Title / Designation" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
               <input type="email" required name="email" placeholder="Official Email" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
-              <input type="number" required name="number" placeholder="Offer Salary Range" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
+              <input type="number" required name="number" placeholder="Offered Salary Range" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
               <div className="relative">
                 <FaWhatsapp className="absolute left-3 top-4 text-green-500" size={16} />
                 <input required name="whatsapp" placeholder="WhatsApp Number" onChange={handleInputChange} className="w-full p-4 pl-10 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-xs" />
