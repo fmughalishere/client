@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, PlusCircle, Bell } from "lucide-react";
+import { Menu, X, PlusCircle, Bell, LogOut } from "lucide-react";
 import { AiFillHome } from "react-icons/ai";
 import { FaUserGear } from "react-icons/fa6";
 import { FaWhatsapp, FaFacebook } from "react-icons/fa";
@@ -12,8 +12,6 @@ import { FaWhatsapp, FaFacebook } from "react-icons/fa";
 const navLinks = [
   { name: "Home", href: "/" },
   { name: "Find Jobs", href: "/jobs" },
-  { name: "Overseas Jobs", href: "/jobs/foreign" },
-  { name: "Blogs", href: "/blogs" },
   { name: "About Us", href: "/about" },
   { name: "Contact Us", href: "/contact" },
 ];
@@ -21,16 +19,19 @@ const navLinks = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showInstallBox, setShowInstallBox] = useState(false);
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [dashboardLink, setDashboardLink] = useState("/login");
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
 
-    if (userData) {
+    if (userData && token) {
+      setIsLoggedIn(true);
       try {
         const user = JSON.parse(userData);
         if (user.role === "employer") setDashboardLink("/dashboard/employer");
@@ -39,6 +40,9 @@ const Navbar = () => {
       } catch {
         setDashboardLink("/login");
       }
+    } else {
+      setIsLoggedIn(false);
+      setDashboardLink("/login");
     }
 
     const handler = (e: any) => {
@@ -50,19 +54,25 @@ const Navbar = () => {
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, [pathname]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    setIsOpen(false);
+    router.push("/login");
+    window.location.reload();
+  };
+
   const handleInstallClick = async () => {
     if (!deferredPrompt) {
       alert("Install option not available");
       return;
     }
-
     deferredPrompt.prompt();
     const choiceResult = await deferredPrompt.userChoice;
-
     if (choiceResult.outcome === "accepted") {
       console.log("User accepted install");
     }
-
     setDeferredPrompt(null);
     setShowInstallBox(false);
   };
@@ -140,18 +150,16 @@ const Navbar = () => {
           className="flex items-center gap-1 hover:opacity-80"
         >
           <PlusCircle size={18} style={{ color: "#5DBB63" }} />
-          Add to Home Screen
+          Add to Home
         </button>
       </div>
       <AnimatePresence>
         {showInstallBox && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[60]">
             <motion.div
               initial={{ scale: 0.8, opacity: 0, y: 40 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.8, opacity: 0, y: 40 }}
-              transition={{ duration: 0.25 }}
               className="bg-white/90 backdrop-blur-xl border border-gray-200 p-6 rounded-2xl w-[300px] text-center shadow-2xl"
             >
               <div className="flex justify-center mb-3">
@@ -159,23 +167,12 @@ const Navbar = () => {
                   <PlusCircle size={28} className="text-[#00004d]" />
                 </div>
               </div>
-              <h2 className="font-bold text-lg text-[#00004d]">
-                Install App
-              </h2>
-
-              <p className="text-sm text-gray-500 mb-4">
-                Get quick access & better experience
-              </p>
-              <button
-                onClick={handleInstallClick}
-                className="w-full bg-[#00004d] text-white py-2.5 rounded-xl font-semibold hover:opacity-90 active:scale-95 transition"
-              >
+              <h2 className="font-bold text-lg text-[#00004d]">Install App</h2>
+              <p className="text-sm text-gray-500 mb-4">Get quick access & better experience</p>
+              <button onClick={handleInstallClick} className="w-full bg-[#00004d] text-white py-2.5 rounded-xl font-semibold active:scale-95 transition">
                 Add to Home Screen
               </button>
-              <button
-                onClick={handleCopyLink}
-                className="w-full mt-2 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-medium hover:bg-gray-200 active:scale-95 transition"
-              >
+              <button onClick={handleCopyLink} className="w-full mt-2 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-medium active:scale-95 transition">
                 Copy Link
               </button>
               <div className="flex items-center gap-2 my-3">
@@ -184,27 +181,10 @@ const Navbar = () => {
                 <div className="flex-1 h-[1px] bg-gray-200"></div>
               </div>
               <div className="flex justify-center gap-4">
-                <button
-                  onClick={handleWhatsAppShare}
-                  className="bg-green-500 hover:scale-110 transition p-3 rounded-full text-white shadow"
-                >
-                  <FaWhatsapp size={20} />
-                </button>
-
-                <button
-                  onClick={handleFacebookShare}
-                  className="bg-blue-600 hover:scale-110 transition p-3 rounded-full text-white shadow"
-                >
-                  <FaFacebook size={20} />
-                </button>
+                <button onClick={handleWhatsAppShare} className="bg-green-500 hover:scale-110 transition p-3 rounded-full text-white shadow"><FaWhatsapp size={20} /></button>
+                <button onClick={handleFacebookShare} className="bg-blue-600 hover:scale-110 transition p-3 rounded-full text-white shadow"><FaFacebook size={20} /></button>
               </div>
-              <button
-                onClick={() => setShowInstallBox(false)}
-                className="mt-4 text-xs text-gray-400 hover:text-gray-600"
-              >
-                Cancel
-              </button>
-
+              <button onClick={() => setShowInstallBox(false)} className="mt-4 text-xs text-gray-400 hover:text-gray-600">Cancel</button>
             </motion.div>
           </div>
         )}
@@ -215,7 +195,7 @@ const Navbar = () => {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="md:hidden bg-white shadow-lg absolute w-full"
+            className="md:hidden bg-white shadow-lg absolute w-full left-0 border-t"
           >
             <div className="px-4 py-4 space-y-2">
               {navLinks.map((link) => (
@@ -223,7 +203,7 @@ const Navbar = () => {
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100"
+                  className="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 font-medium"
                 >
                   {link.name}
                 </Link>
@@ -232,10 +212,19 @@ const Navbar = () => {
               <Link
                 href={dashboardLink}
                 onClick={() => setIsOpen(false)}
-                className="block px-3 py-2 rounded-lg bg-blue-50 text-blue-900 font-semibold"
+                className="block px-3 py-2 rounded-lg bg-blue-50 text-[#00004d] font-bold"
               >
                 Control Panel
               </Link>
+
+              {isLoggedIn && (
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 font-bold flex items-center gap-2"
+                >
+                  <LogOut size={18} /> Logout
+                </button>
+              )}
             </div>
           </motion.div>
         )}

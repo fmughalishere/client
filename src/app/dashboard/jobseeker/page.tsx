@@ -25,6 +25,7 @@ export default function JobSeekerDashboard() {
       } catch (err: any) {
         if (err.response?.status === 401) {
           localStorage.removeItem("token");
+          localStorage.removeItem("user");
           router.push("/login");
         }
       } finally {
@@ -36,7 +37,9 @@ export default function JobSeekerDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     router.push("/login");
+    window.location.reload();
   };
 
   if (loading) return (
@@ -49,29 +52,51 @@ export default function JobSeekerDashboard() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col md:flex-row">
-      <aside className="w-full md:w-72 bg-white border-r p-8 flex flex-col gap-8 md:min-h-screen">
-          <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#1e3a8a] rounded-xl flex items-center justify-center text-white font-black">{data?.user?.name?.substring(0,2)}</div>
-              <div><div className="font-black text-[#1e3a8a]">{data?.user?.name}</div><div className="text-[10px] font-bold text-[#00d26a]">Active Talent</div></div>
-          </div>
-          <nav className="flex md:flex-col gap-2">
-            {[
-                { name: 'Overview', path: '/dashboard/jobseeker', icon: LayoutDashboard },
-                { name: 'My Applications', path: '/dashboard/jobseeker/my-applications', icon: Briefcase },
-                { name: 'Saved Jobs', path: '/dashboard/jobseeker/saved-jobs', icon: Bookmark },
-                { name: 'Settings', path: '/dashboard/jobseeker/settings', icon: Settings },
-            ].map(item => (
-                <Link key={item.name} href={item.path} className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-sm ${pathname === item.path ? 'bg-[#1e3a8a] text-white' : 'text-gray-400'}`}>
-                    <item.icon size={18} /> {item.name}
-                </Link>
-            ))}
-          </nav>
-      </aside>
+      <aside className="w-full md:w-72 bg-white border-r p-8 flex flex-col justify-between md:min-h-screen">
+          <div className="flex flex-col gap-8">
+            <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-[#1e3a8a] rounded-xl flex items-center justify-center text-white font-black">
+                  {data?.user?.name?.substring(0,2)}
+                </div>
+                <div>
+                  <div className="font-black text-[#1e3a8a]">{data?.user?.name}</div>
+                  <div className="text-[10px] font-bold text-[#00d26a]">Active Talent</div>
+                </div>
+            </div>
 
+            <nav className="flex flex-col gap-2">
+              {[
+                  { name: 'Overview', path: '/dashboard/jobseeker', icon: LayoutDashboard },
+                  { name: 'My Applications', path: '/dashboard/jobseeker/my-applications', icon: Briefcase },
+                  { name: 'Saved Jobs', path: '/dashboard/jobseeker/saved-jobs', icon: Bookmark },
+                  { name: 'Settings', path: '/dashboard/jobseeker/settings', icon: Settings },
+              ].map(item => (
+                  <Link 
+                    key={item.name} 
+                    href={item.path} 
+                    className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-sm transition-all ${pathname === item.path ? 'bg-[#1e3a8a] text-white shadow-lg' : 'text-gray-400 hover:bg-gray-50'}`}
+                  >
+                      <item.icon size={18} /> {item.name}
+                  </Link>
+              ))}
+            </nav>
+          </div>
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-sm text-red-500 hover:bg-red-50 transition-all mt-10"
+          >
+            <LogOut size={18} /> Logout
+          </button>
+      </aside>
       <main className="flex-1 p-5 md:p-12 overflow-y-auto">
         <div className="flex justify-between items-center mb-12">
-            <div><h1 className="text-3xl font-black text-[#1e3a8a]">Talent Dashboard</h1><p className="text-gray-400 font-bold">Hello, {data?.user?.name?.split(' ')[0]}! 👋</p></div>
-            <Link href="/jobs" className="bg-[#00d26a] text-white px-8 py-4 rounded-2xl font-black flex items-center gap-2 shadow-xl shadow-green-100 text-sm"><Search size={18} /> Find Jobs</Link>
+            <div>
+              <h1 className="text-3xl font-black text-[#1e3a8a]">Talent Dashboard</h1>
+              <p className="text-gray-400 font-bold">Hello, {data?.user?.name?.split(' ')[0]}! 👋</p>
+            </div>
+            <Link href="/jobs" className="bg-[#00d26a] text-white px-8 py-4 rounded-2xl font-black flex items-center gap-2 shadow-xl shadow-green-100 text-sm active:scale-95 transition-transform">
+              <Search size={18} /> Find Jobs
+            </Link>
         </div>
 
         <AnimatePresence>
@@ -82,7 +107,9 @@ export default function JobSeekerDashboard() {
                   <div className="relative z-10">
                     <h2 className="text-2xl font-black mb-2 tracking-tighter">YOU HAVE JOB OFFERS! 🎉</h2>
                     <p className="font-bold opacity-90 mb-8 text-sm">Check details and contact recruiters now.</p>
-                    <Link href="/dashboard/jobseeker/my-applications" className="bg-white text-green-600 px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest">View Offers</Link>
+                    <Link href="/dashboard/jobseeker/my-applications" className="bg-white text-green-600 px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest active:scale-95 transition-transform inline-block">
+                      View Offers
+                    </Link>
                   </div>
                </div>
             </motion.div>
@@ -106,23 +133,29 @@ export default function JobSeekerDashboard() {
         <section className="space-y-6">
             <h2 className="text-xl font-black text-[#1e3a8a]">Recent Applications</h2>
             <div className="grid gap-4">
-                {data?.recentApplications?.map((app: any) => (
-                    <div key={app._id} className="bg-white p-6 rounded-[2rem] border border-slate-100 flex items-center justify-between group transition-all">
-                        <div className="flex items-center gap-4">
-                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg ${app.status === 'Offered' ? 'bg-green-50 text-green-600' : 'bg-slate-50 text-[#1e3a8a]'}`}><Briefcase size={20} /></div>
-                            <div>
-                                <h4 className="font-black text-[#1e3a8a] text-base leading-tight">{app.job?.title || "Job Application"}</h4>
-                                <p className="text-xs font-bold text-gray-400 mt-1">Status Updated: {new Date(app.updatedAt || app.createdAt).toLocaleDateString()}</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <span className={`text-[10px] font-black px-4 py-1.5 rounded-full tracking-wider ${app.status === 'Offered' ? 'bg-green-600 text-white shadow-md' : 'bg-blue-50 text-blue-600'}`}>
-                                {app.status?.toUpperCase()}
-                            </span>
-                            <ChevronRight className="text-gray-300" size={20} />
-                        </div>
-                    </div>
-                ))}
+                {data?.recentApplications?.length > 0 ? (
+                  data?.recentApplications?.map((app: any) => (
+                      <div key={app._id} className="bg-white p-6 rounded-[2rem] border border-slate-100 flex items-center justify-between group hover:shadow-md transition-all">
+                          <div className="flex items-center gap-4">
+                              <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg ${app.status === 'Offered' ? 'bg-green-50 text-green-600' : 'bg-slate-50 text-[#1e3a8a]'}`}>
+                                <Briefcase size={20} />
+                              </div>
+                              <div>
+                                  <h4 className="font-black text-[#1e3a8a] text-base leading-tight">{app.job?.title || "Job Application"}</h4>
+                                  <p className="text-xs font-bold text-gray-400 mt-1">Status Updated: {new Date(app.updatedAt || app.createdAt).toLocaleDateString()}</p>
+                              </div>
+                          </div>
+                          <div className="flex items-center gap-4">
+                              <span className={`text-[10px] font-black px-4 py-1.5 rounded-full tracking-wider ${app.status === 'Offered' ? 'bg-green-600 text-white shadow-md' : 'bg-blue-50 text-blue-600'}`}>
+                                  {app.status?.toUpperCase()}
+                              </span>
+                              <ChevronRight className="text-gray-300" size={20} />
+                          </div>
+                      </div>
+                  ))
+                ) : (
+                  <p className="text-center py-10 font-bold text-gray-400">No applications yet.</p>
+                )}
             </div>
         </section>
       </main>
