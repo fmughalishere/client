@@ -217,6 +217,14 @@ const Navbar = () => {
                 Control Panel
               </Link>
 
+              <Link
+                href="/login"
+                onClick={() => setIsOpen(false)}
+                className="block px-3 py-2 rounded-lg bg-blue-50 text-[#00004d] font-bold"
+              >
+                Login
+              </Link>
+
               {isLoggedIn && (
                 <button
                   onClick={handleLogout}
