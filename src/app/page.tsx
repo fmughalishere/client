@@ -29,7 +29,7 @@ export default function HomePage() {
 
   const quickActions = [
     { label: "Apply for a Job", icon: <Briefcase size={18} style={{ color: "#5DBB63" }} />, href: "/application" },
-    { label: "Post a Job", icon: <PlusCircle size={18} style={{ color: "#5DBB63" }} />, href: "/dashboard/employer/post-job" },
+    { label: "Post a Job", icon: <PlusCircle size={18} style={{ color: "#5DBB63" }} />, href: "/post-job" },
     { label: "Job Seekers", icon: <Users size={18} style={{ color: "#5DBB63" }} />, href: "/dashboard/jobseeker" },
     { label: "Job Offers", icon: <ClipboardList size={18} style={{ color: "#5DBB63" }} />, href: "/jobs" },
   ];
