@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { 
-  MapPin, Briefcase, DollarSign, Clock, ChevronLeft, 
-  Share2, Send, ShieldCheck, CheckCircle2, Loader2, 
+import {
+  MapPin, Briefcase, DollarSign, Clock, ChevronLeft,
+  Share2, Send, ShieldCheck, CheckCircle2, Loader2,
   Building2, AlignLeft, Layers
 } from "lucide-react";
 
@@ -17,7 +17,7 @@ export default function JobDetailPage() {
   useEffect(() => {
     const fetchJobDetail = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/jobs/${id}`);
+        const res = await fetch(`https://easyjobspk.onrender.com/api/jobs/${id}`);
         const data = await res.json();
         setJob(data);
       } catch (error) {
@@ -67,14 +67,14 @@ export default function JobDetailPage() {
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-16 font-sans">
       <div className="flex items-center justify-between px-6 py-6 bg-[#e2f2f5]">
-        <button 
+        <button
           onClick={() => router.back()}
           className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-[#00004d] active:scale-90 transition-all border border-[#00004d]/5"
         >
           <ChevronLeft size={24} strokeWidth={3} />
         </button>
         <h1 className="font-black text-[#00004d]  tracking-tighter">Job Details</h1>
-        <button 
+        <button
           onClick={handleShare}
           className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-[#00004d] active:scale-90 transition-all border border-[#00004d]/5"
         >
@@ -90,7 +90,7 @@ export default function JobDetailPage() {
           <Building2 size={16} className="text-[#00004d]" />
           <span className="text-sm font-bold text-[#00004d]  tracking-wider">Hiring Company</span>
         </div>
-        
+
         <div className="flex flex-wrap justify-center gap-2 mt-6">
           <span className="bg-[#00004d] text-white text-[10px] font-black px-4 py-2 rounded-full  tracking-widest shadow-md">
             {job.type}
@@ -117,7 +117,7 @@ export default function JobDetailPage() {
         </div>
       </section>
       <section className="max-w-xl mx-auto px-6 mt-8 space-y-8">
-                <div>
+        <div>
           <div className="flex items-center gap-2 mb-4">
             <Layers size={18} className="text-[#00004d]" />
             <h3 className="text-sm font-black text-[#00004d]  tracking-widest">Required Skills</h3>
@@ -156,11 +156,11 @@ export default function JobDetailPage() {
           </ul>
         </div>
         <div className="pt-6 pb-10">
-          <button 
-             onClick={() => router.push(`/application?jobId=${job._id}`)}
-             className="w-full bg-[#00004d] text-white py-5 rounded-[2rem] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(0,0,77,0.2)] active:scale-95 hover:bg-black transition-all"
+          <button
+            onClick={() => router.push(`/application?jobId=${job._id}`)}
+            className="w-full bg-[#00004d] text-white py-5 rounded-[2rem] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(0,0,77,0.2)] active:scale-95 hover:bg-black transition-all"
           >
-            <Send size={18} strokeWidth={3} /> 
+            <Send size={18} strokeWidth={3} />
             <span>APPLY FOR THIS JOB</span>
           </button>
           <p className="text-center text-[10px] text-gray-400 font-bold mt-4  tracking-widest">

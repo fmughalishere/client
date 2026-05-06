@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Search, MapPin, Briefcase, DollarSign, Clock, ChevronRight, Loader2, Sparkles } from "lucide-react";
+import { Search, MapPin, Briefcase, Loader2, Sparkles } from "lucide-react";
+import { LuChevronsRight } from "react-icons/lu";
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<any[]>([]);
@@ -34,14 +35,14 @@ export default function JobsPage() {
 
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-20 font-sans">
-      <section className="bg-[#e2f2f5] rounded-b-[35px] pt-10 pb-12 px-6 shadow-sm">
+      <section className="bg-[#5DBB63] rounded-b-[35px] pt-10 pb-12 px-6 shadow-sm">
         <div className="max-w-2xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full mb-3 shadow-sm border border-[#00004d]/10">
             <Sparkles size={12} className="text-[#00004d]" />
             <span className="text-[9px] font-black text-[#00004d] tracking-widest uppercase">Explore Jobs</span>
           </div>
-          <h1 className="text-2xl font-black text-[#00004d] leading-tight mb-5">
-            Find Your Dream <br /> <span className="opacity-60">Career Today</span>
+          <h1 className="text-2xl font-black text-white leading-tight mb-5">
+            Find Your Dream <br /> Career Today
           </h1>
           <div className="relative max-w-md mx-auto">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -68,42 +69,52 @@ export default function JobsPage() {
               <div
                 key={job._id}
                 onClick={() => router.push(`/jobs/${job._id}`)}
-                className="bg-[#e2f2f5] border border-gray-100 rounded-3xl p-3 flex items-center gap-4 relative shadow-sm h-28 cursor-pointer active:scale-95 transition-transform"
+                className="bg-white border border-gray-100 rounded-[15px] p-3 flex items-center gap-3 relative shadow-md h-[90px] cursor-pointer active:scale-95 transition-transform"
               >
-                <div className="w-16 h-16 rounded-full border-2 border-[#00004d] overflow-hidden relative bg-white flex items-center justify-center shrink-0 shadow-sm">
-                  <Briefcase size={30} className="text-[#00004d]" />
+                <div className="w-14 h-14 rounded-full flex-shrink-0 bg-[#f8fafc] border border-gray-100 flex items-center justify-center overflow-hidden">
+                  <Briefcase size={26} className="text-[#00004d]" />
                 </div>
-                <div className="flex flex-col overflow-hidden flex-1">
-                  <h2 className="text-base font-black text-[#00004d] truncate leading-tight">
+                <div className="flex flex-col flex-1 overflow-hidden">
+                  <h2 className="text-[15px] font-black text-[#00004d] leading-tight truncate">
                     {job.title}
                   </h2>
-                  <p className="text-[12px] font-bold text-gray-700 truncate mt-0.5">
+
+                  <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">
                     {job.company || job.category}
                   </p>
-                  <div className="flex items-center gap-1 mt-1">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
-                      {job.type || "Full Time"} • {job.salary || "Negotiable"}
-                    </span>
+
+                  <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] whitespace-nowrap">
+                    <span>{job.type || "Full Time"}</span>
+                  </div>
+
+                  <p className="text-[10px] font-bold text-[#00004d] mt-0.5 tracking-[0.1em]">
+                    {job.salary || "Negotiable"}
+                  </p>
+                  <div className="flex items-center justify-between mt-1">
+                    <div className="flex items-center gap-1 text-[#5DBB63] ml-[-2px]">
+                      <MapPin size={13} />
+                      <span className="font-bold text-[10px]">
+                        {job.city}
+                      </span>
+                    </div>
+
+                    <button className="text-[#5DBB63] font-black text-[10px] flex items-center gap-0.5">
+                      View Detail <LuChevronsRight size={14} strokeWidth={3} />
+                    </button>
                   </div>
                 </div>
-                <div className="absolute top-3 right-4 flex flex-col items-center">
-                  <MapPin size={14} className="text-[#00004d]" strokeWidth={4} />
-                  <span className="font-bold text-[#00004d] text-[9px] uppercase tracking-tighter">{job.city}</span>
-                </div>
-                <button 
-                  className="absolute bottom-3 right-4 bg-[#00004d] text-white px-3 py-1 rounded-full text-[10px] font-black shadow-sm uppercase tracking-tight"
-                >
-                  View Detail
-                </button>
               </div>
             ))
           ) : (
             <div className="text-center py-16">
-              <p className="text-gray-400 font-bold text-sm uppercase tracking-widest">No Jobs Found</p>
+              <p className="text-gray-400 font-bold text-sm uppercase tracking-widest">
+                No Jobs Found
+              </p>
             </div>
           )}
         </div>
       </section>
+
     </main>
   );
 }
