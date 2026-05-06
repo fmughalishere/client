@@ -24,7 +24,6 @@ export default function JobDetailPage() {
         setJob(data);
       } catch (error) {
         console.error("Error fetching job details:", error);
-        toast.error("Could not fetch job details");
       } finally {
         setLoading(false);
       }
@@ -35,15 +34,16 @@ export default function JobDetailPage() {
   const handleApplyAction = async () => {
     const token = localStorage.getItem("token");
     const userStr = localStorage.getItem("user");
+
     if (!token || !userStr) {
-      toast.error("Please login/register to apply for this job");
+      toast.error("Please login to apply");
       router.push("/login");
       return;
     }
 
     const user = JSON.parse(userStr);
     if (user.role === "employer") {
-      toast.error("Employers cannot apply for jobs. Use a Job Seeker account.");
+      toast.error("Employers cannot apply for jobs!");
       return;
     }
 
@@ -54,32 +54,49 @@ export default function JobDetailPage() {
         headers: { Authorization: `Bearer ${token}` }
       });
       const statsData = await statsRes.json();
-      if (!statsData.user?.profileComplete && statsData.totalApplications === 0) {
+      if (!statsData.recentApplications || statsData.recentApplications.length === 0) {
         toast.error("Please complete your professional profile first");
-        router.push(`/application?jobId=${id}`); 
+        router.push(`/application?jobId=${id}`);
         return;
       }
+      const profile = statsData.recentApplications[0];
+      const applicationData = {
+        jobId: id,
+        fullName: profile.fullName,
+        email: profile.email || user.email,
+        phone: profile.phone,
+        city: profile.city,
+        category: profile.category,
+        gender: profile.gender,
+        education: profile.education,
+        experience: profile.experience,
+        skills: profile.skills,
+        salaryDemand: profile.salaryDemand,
+        resume: profile.resume,
+        image: profile.image
+      };
+
       const applyRes = await fetch("https://easyjobspk.onrender.com/api/applications", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ jobId: id })
+        body: JSON.stringify(applicationData)
       });
 
-      const applyData = await applyRes.json();
+      const applyResult = await applyRes.json();
 
       if (applyRes.ok) {
-        toast.success("Application sent successfully!");
+        toast.success("Applied successfully using your existing profile!");
         router.push("/dashboard/jobseeker/my-applications");
       } else {
-        toast.error(applyData.message || "You have already applied for this job");
+        toast.error(applyResult.message || "Already applied or error occurred");
       }
 
-    } catch (error) {
-      console.error("Apply Error:", error);
-      toast.error("Something went wrong. Please try again.");
+    } catch (err) {
+      console.error("Apply Error:", err);
+      toast.error("Connection error. Please try again.");
     } finally {
       setIsApplying(false);
     }
@@ -90,13 +107,13 @@ export default function JobDetailPage() {
       try {
         await navigator.share({
           title: job?.title,
-          text: `Check out this job: ${job?.title} at EasyJobsPK`,
+          text: `Job Opening: ${job?.title} in ${job?.city}`,
           url: window.location.href,
         });
       } catch (err) { console.log(err); }
     } else {
       navigator.clipboard.writeText(window.location.href);
-      toast.success("Link copied to clipboard!");
+      toast.success("Link copied!");
     }
   };
 
@@ -109,30 +126,17 @@ export default function JobDetailPage() {
     );
   }
 
-  if (!job) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
-        <h2 className="text-2xl font-black text-[#00004d]">Job Not Found</h2>
-        <button onClick={() => router.push("/jobs")} className="mt-4 text-[#00004d] font-bold underline">Back to all jobs</button>
-      </div>
-    );
-  }
+  if (!job) return <div className="p-10 text-center font-bold">Job Not Found</div>;
 
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-16 font-sans">
-      <Toaster position="top-center" reverseOrder={false} />
-            <div className="flex items-center justify-between px-6 py-6 bg-[#e2f2f5]">
-        <button
-          onClick={() => router.back()}
-          className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-[#00004d] active:scale-90 transition-all border border-[#00004d]/5"
-        >
+      <Toaster position="top-center" />
+      <div className="flex items-center justify-between px-6 py-6 bg-[#e2f2f5]">
+        <button onClick={() => router.back()} className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-[#00004d] border border-[#00004d]/5">
           <ChevronLeft size={24} strokeWidth={3} />
         </button>
         <h1 className="font-black text-[#00004d] tracking-tighter">Job Details</h1>
-        <button
-          onClick={handleShare}
-          className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-[#00004d] active:scale-90 transition-all border border-[#00004d]/5"
-        >
+        <button onClick={handleShare} className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-[#00004d]">
           <Share2 size={20} />
         </button>
       </div>
@@ -140,19 +144,14 @@ export default function JobDetailPage() {
         <div className="w-20 h-20 bg-white rounded-[2rem] flex items-center justify-center mx-auto mb-4 shadow-xl border-4 border-white">
           <Briefcase size={40} className="text-[#00004d]" />
         </div>
-        <h2 className="text-2xl font-black text-[#00004d] leading-tight px-4 uppercase">{job.title}</h2>
+        <h2 className="text-2xl font-black text-[#00004d] leading-tight px-4">{job.title}</h2>
         <div className="flex items-center justify-center gap-2 mt-2 opacity-70">
           <Building2 size={16} className="text-[#00004d]" />
-          <span className="text-sm font-bold text-[#00004d] tracking-wider">Hiring Company</span>
+          <span className="text-sm font-bold text-[#00004d] tracking-wider uppercase">Verified Opportunity</span>
         </div>
-
         <div className="flex flex-wrap justify-center gap-2 mt-6">
-          <span className="bg-[#00004d] text-white text-[10px] font-black px-4 py-2 rounded-full tracking-widest shadow-md">
-            {job.type}
-          </span>
-          <span className="bg-white text-[#00004d] text-[10px] font-black px-4 py-2 rounded-full tracking-widest border border-[#00004d]/10 shadow-sm">
-            {job.category}
-          </span>
+          <span className="bg-[#00004d] text-white text-[10px] font-black px-4 py-2 rounded-full tracking-widest shadow-md uppercase">{job.type}</span>
+          <span className="bg-white text-[#00004d] text-[10px] font-black px-4 py-2 rounded-full tracking-widest border border-[#00004d]/10 shadow-sm uppercase">{job.category}</span>
         </div>
       </section>
       <section className="max-w-xl mx-auto px-6 -mt-8 grid grid-cols-2 gap-4">
@@ -173,42 +172,25 @@ export default function JobDetailPage() {
       </section>
       <section className="max-w-xl mx-auto px-6 mt-8 space-y-8">
         <div>
-          <div className="flex items-center gap-2 mb-4">
-            <Layers size={18} className="text-[#00004d]" />
-            <h3 className="text-sm font-black text-[#00004d] tracking-widest uppercase">Skills Required</h3>
-          </div>
+          <div className="flex items-center gap-2 mb-4"><Layers size={18} className="text-[#00004d]" /><h3 className="text-sm font-black text-[#00004d] tracking-widest uppercase">Required Skills</h3></div>
           <div className="flex flex-wrap gap-2">
             {job.skills?.map((skill: string, i: number) => (
-              <span key={i} className="bg-white text-[#00004d] px-4 py-2 rounded-xl text-xs font-bold border-2 border-[#e2f2f5] shadow-sm">
-                {skill}
-              </span>
+              <span key={i} className="bg-white text-[#00004d] px-4 py-2 rounded-xl text-xs font-bold border-2 border-[#e2f2f5] shadow-sm">{skill}</span>
             ))}
           </div>
         </div>
 
         <div>
-          <div className="flex items-center gap-2 mb-4">
-            <AlignLeft size={18} className="text-[#00004d]" />
-            <h3 className="text-sm font-black text-[#00004d] tracking-widest uppercase">Job Description</h3>
-          </div>
+          <div className="flex items-center gap-2 mb-4"><AlignLeft size={18} className="text-[#00004d]" /><h3 className="text-sm font-black text-[#00004d] tracking-widest uppercase">Description</h3></div>
           <div className="bg-[#e2f2f5]/30 p-6 rounded-[2.5rem] border border-[#e2f2f5] shadow-inner">
-            <p className="text-sm text-gray-700 font-bold leading-relaxed whitespace-pre-line">
-              {job.description}
-            </p>
+            <p className="text-sm text-gray-700 font-bold leading-relaxed whitespace-pre-line">{job.description}</p>
           </div>
         </div>
-
         <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100">
-          <div className="flex items-center gap-2 mb-4">
-            <ShieldCheck size={18} className="text-[#00004d]" />
-            <h3 className="text-sm font-black text-[#00004d] tracking-widest uppercase">Our Promise</h3>
-          </div>
+          <div className="flex items-center gap-2 mb-4"><ShieldCheck size={18} className="text-[#00004d]" /><h3 className="text-sm font-black text-[#00004d] tracking-widest uppercase">Our Promise</h3></div>
           <ul className="space-y-3">
-            {["Verified Employer", "Direct Communication", "Fast Response"].map((text, i) => (
-              <li key={i} className="flex items-center gap-2 text-xs font-bold text-gray-600">
-                <CheckCircle2 size={16} className="text-green-500" />
-                {text}
-              </li>
+            {["Verified Employer", "Direct Communication", "Fast Response Guaranteed"].map((text, i) => (
+              <li key={i} className="flex items-center gap-2 text-xs font-bold text-gray-600"><CheckCircle2 size={16} className="text-green-500" />{text}</li>
             ))}
           </ul>
         </div>
@@ -218,16 +200,10 @@ export default function JobDetailPage() {
             disabled={isApplying}
             className="w-full bg-[#00004d] text-white py-5 rounded-[2rem] font-black flex items-center justify-center gap-3 shadow-xl active:scale-95 disabled:bg-gray-400 transition-all uppercase"
           >
-            {isApplying ? (
-              <Loader2 className="animate-spin" size={20} />
-            ) : (
-              <Send size={18} strokeWidth={3} />
-            )}
-            <span>{isApplying ? "Applying..." : "Apply For This Job"}</span>
+            {isApplying ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} strokeWidth={3} />}
+            <span>{isApplying ? "Processing..." : "Apply For This Job"}</span>
           </button>
-          <p className="text-center text-[10px] text-gray-400 font-bold mt-4 tracking-widest uppercase">
-            Your profile will be shared with the employer
-          </p>
+          <p className="text-center text-[10px] text-gray-400 font-bold mt-4 tracking-widest uppercase">Your profile will be shared with the recruiter</p>
         </div>
       </section>
     </main>
