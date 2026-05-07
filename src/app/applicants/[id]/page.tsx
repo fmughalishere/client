@@ -418,7 +418,7 @@ export default function ApplicantDetail() {
                 <input type="datetime-local" name="interviewDate" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-sm" />
               </div>
               
-              <button type="submit" disabled={isSubmitting} className="w-full py-3 rounded-2x1 font-bold text-white bg-[#5DBB63] active:scale-95 transition-all tracking-widest flex justify-center items-center gap-2 shadow-xl">
+              <button type="submit" disabled={isSubmitting} className="w-[30px] py-5 rounded-[20px] font-bold text-white bg-[#5DBB63] active:scale-95 transition-all tracking-widest flex justify-center items-center gap-2 shadow-xl">
                 {isSubmitting ? <Loader2 className="animate-spin" /> : "SUBMIT OFFER"}
               </button>
             </form>
