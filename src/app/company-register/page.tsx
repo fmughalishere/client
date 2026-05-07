@@ -1,25 +1,63 @@
 "use client";
-import { useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Cropper from "react-easy-crop";
 import {
   Building2, Mail, Lock, User, Phone,
   Globe, MapPin, FileText, ShieldCheck, Eye, EyeOff,
-  ArrowLeft, Check, Briefcase, Users, LayoutDashboard, Camera, Trash2
+  ArrowLeft, Check, Briefcase, Users, LayoutDashboard, Camera, Trash2, X, Scissors
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
+const createImage = (url: string): Promise<HTMLImageElement> =>
+  new Promise((resolve, reject) => {
+    const image = new Image();
+    image.addEventListener("load", () => resolve(image));
+    image.addEventListener("error", (error) => reject(error));
+    image.setAttribute("crossOrigin", "anonymous");
+    image.src = url;
+  });
+
+async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> {
+  const image = await createImage(imageSrc);
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  if (!ctx) return "";
+
+  canvas.width = pixelCrop.width;
+  canvas.height = pixelCrop.height;
+
+  ctx.drawImage(
+    image,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height
+  );
+
+  return canvas.toDataURL("image/jpeg", 0.7);
+}
+
 export default function CompanyRegister() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const [loading, setLoading] = useState(false);
   const [agreed, setAgreed] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
-  
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [isCropping, setIsCropping] = useState(false);
 
   const [formData, setFormData] = useState({
     companyName: "",
@@ -39,12 +77,31 @@ export default function CompanyRegister() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 1000000) {
-        return toast.error("Logo size should be less than 1MB");
-      }
       const reader = new FileReader();
-      reader.onloadend = () => setLogoPreview(reader.result as string);
+      reader.onload = () => {
+        setImageToCrop(reader.result as string);
+        setIsCropping(true);
+      };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const onCropComplete = useCallback((_croppedArea: any, croppedAreaPixels: any) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  const saveCroppedImage = async () => {
+    try {
+      if (imageToCrop && croppedAreaPixels) {
+        const croppedImage = await getCroppedImg(imageToCrop, croppedAreaPixels);
+        setLogoPreview(croppedImage);
+        setIsCropping(false);
+        setImageToCrop(null);
+        toast.success("Logo cropped successfully!");
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to crop image");
     }
   };
 
@@ -86,7 +143,46 @@ export default function CompanyRegister() {
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center px-4 py-8 md:p-12 relative overflow-hidden">
       <Toaster position="top-center" />
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+      <AnimatePresence>
+        {isCropping && (
+          <div className="fixed inset-0 z-[110] flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-sm">
+            <div className="relative w-full h-[60vh] md:w-[500px] md:h-[500px] bg-gray-900 rounded-[2rem] overflow-hidden shadow-2xl">
+              <Cropper
+                image={imageToCrop!}
+                crop={crop}
+                zoom={zoom}
+                aspect={1}
+                onCropChange={setCrop}
+                onCropComplete={onCropComplete}
+                onZoomChange={setZoom}
+              />
+            </div>
+
+            <div className="mt-8 w-full max-w-[400px] space-y-6 px-4 text-center">
+              <p className="text-white/60 text-xs font-bold tracking-widest uppercase">Zoom to adjust logo</p>
+              <input
+                type="range"
+                value={zoom}
+                min={1}
+                max={3}
+                step={0.1}
+                onChange={(e) => setZoom(Number(e.target.value))}
+                className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-white"
+              />
+              <div className="flex gap-4">
+                <button onClick={() => setIsCropping(false)} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold flex items-center justify-center gap-2 border border-white/20">
+                  <X size={18} /> CANCEL
+                </button>
+                <button onClick={saveCroppedImage} className="flex-1 py-4 bg-white text-[#00004d] rounded-2xl font-bold flex items-center justify-center gap-2 shadow-xl">
+                  <Check size={18} /> APPLY LOGO
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
         <div className="absolute top-[-10%] right-[-5%] w-[300px] h-[300px] bg-[#e2f2f5] rounded-full blur-[80px] opacity-60"></div>
         <div className="absolute bottom-[-10%] left-[-5%] w-[300px] h-[300px] bg-[#f0fdf4] rounded-full blur-[80px] opacity-60"></div>
       </div>
@@ -110,11 +206,16 @@ export default function CompanyRegister() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="flex flex-col items-center mb-6">
-            <div className="relative group">
+          <div className="flex flex-col items-center mb-6">
+            <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
               <div className="w-24 h-24 md:w-28 md:h-28 rounded-3xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden transition-all group-hover:border-[#00004d]">
                 {logoPreview ? (
-                  <img src={logoPreview} alt="Company Logo" className="w-full h-full object-cover" />
+                  <div className="relative w-full h-full">
+                    <img src={logoPreview} alt="Company Logo" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                       <Scissors size={20} className="text-white" />
+                    </div>
+                  </div>
                 ) : (
                   <div className="text-center p-4">
                     <Camera className="mx-auto text-gray-300 mb-1" size={24} />
@@ -128,13 +229,18 @@ export default function CompanyRegister() {
               />
               <button 
                 type="button" 
-                onClick={() => logoPreview ? setLogoPreview(null) : fileInputRef.current?.click()}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    logoPreview ? setLogoPreview(null) : fileInputRef.current?.click();
+                }}
                 className={`absolute -bottom-2 -right-2 p-2 rounded-xl shadow-lg transition-all ${logoPreview ? 'bg-red-500 text-white' : 'bg-[#00004d] text-white'}`}
               >
                 {logoPreview ? <Trash2 size={16} /> : <Camera size={16} />}
               </button>
             </div>
+            <span className="mt-3 text-[9px] font-bold text-gray-400 uppercase tracking-widest">Click icon to upload/edit</span>
           </div>
+
           <div className="space-y-4">
             <h3 className="text-[10px] font-black text-gray-300 tracking-[0.2em] uppercase px-2">Company Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -185,6 +291,7 @@ export default function CompanyRegister() {
               />
             </div>
           </div>
+
           <div className="space-y-4">
             <h3 className="text-[10px] font-black text-gray-300 tracking-[0.2em] uppercase px-2">Contact Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -237,6 +344,7 @@ export default function CompanyRegister() {
               className="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-2xl outline-none border-2 border-transparent focus:border-[#00004d] focus:bg-white font-bold text-[#00004d] transition-all resize-none text-sm" 
             />
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="relative">
               <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
@@ -265,6 +373,7 @@ export default function CompanyRegister() {
               </button>
             </div>
           </div>
+
           <div 
             className={`flex items-center gap-3 p-4 rounded-2xl border-2 cursor-pointer transition-all ${agreed ? 'bg-[#00004d]/5 border-[#00004d]' : 'bg-gray-50 border-transparent'}`} 
             onClick={() => setAgreed(!agreed)}
