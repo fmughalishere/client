@@ -355,7 +355,7 @@ export default function ApplicantDetail() {
           <button
             onClick={() => setIsModalOpen(true)}
             disabled={applicant.status === "Offered"}
-            className={`w-50 h-10 px-8 rounded-[9px] font-bold text-sm shadow-2xl flex items-center justify-center gap-2 active:scale-95 transition-all tracking-[0.2em] ${applicant.status === "Offered" ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#5DBB63] text-white hover:bg-[#4ea854]'}`}
+            className={`w-50 h-10 px-8 rounded-full font-bold text-sm shadow-2xl flex items-center justify-center gap-2 active:scale-95 transition-all tracking-[0.2em] ${applicant.status === "Offered" ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#5DBB63] text-white hover:bg-[#4ea854]'}`}
           >
             <Send size={16} strokeWidth={3} />
             <span>{applicant.status === "Offered" ? "Offer Sent" : "Easy Hire"}</span>
@@ -418,7 +418,7 @@ export default function ApplicantDetail() {
                 <input type="datetime-local" name="interviewDate" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-sm" />
               </div>
               
-              <button type="submit" disabled={isSubmitting} className="w-50 h-10 py-8 bg-[#5DBB63] text-white rounded-[9px] font-bold text-sm shadow-2xl flex items-center justify-center gap-2 active:scale-95 transition-all tracking-[0.2em]">
+              <button type="submit" disabled={isSubmitting} className="w-50 h-10 py-5 rounded-[9px] font-bold text-white bg-[#5DBB63] active:scale-95 transition-all tracking-widest flex justify-center items-center gap-2 shadow-xl">
                 {isSubmitting ? <Loader2 className="animate-spin" /> : "SUBMIT OFFER"}
               </button>
             </form>
