@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import Cropper from "react-easy-crop"; // Import Cropper
+import Cropper from "react-easy-crop";
 import {
   Loader2, User, Calendar, Globe, MapPin, Briefcase,
   GraduationCap, Send, X, Building, Camera, Wand2,
@@ -12,7 +12,6 @@ import {
 import { FaWhatsapp } from "react-icons/fa";
 import { MALE_ICON, FEMALE_ICON } from "../../constants";
 
-// --- IMAGE CROPPING UTILITIES ---
 const createImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
     const image = new Image();
@@ -44,7 +43,6 @@ async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> 
     pixelCrop.height
   );
 
-  // Quality 0.7 to avoid "Payload Too Large"
   return canvas.toDataURL("image/jpeg", 0.7);
 }
 
@@ -102,8 +100,6 @@ export default function ApplicantDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-
-  // --- CROPPING STATES ---
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -118,7 +114,7 @@ export default function ApplicantDetail() {
     cityName: "",
     address: "",
     email: "",
-    salaryRange: "", // Changed from number to handle string/range
+    salaryRange: "",
     whatsapp: "",
     interviewDate: "",
     message: ""
@@ -153,7 +149,6 @@ export default function ApplicantDetail() {
     setOfferData({ ...offerData, [e.target.name]: e.target.value });
   };
 
-  // --- LOGO CROP HANDLERS ---
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -225,9 +220,7 @@ export default function ApplicantDetail() {
 
   return (
     <div className="min-h-screen bg-[#f4f7f9] p-4 md:p-10 pb-24 font-sans">
-      
-      {/* --- CROPPER MODAL (Logo) --- */}
-      <AnimatePresence>
+            <AnimatePresence>
         {isCropping && (
           <div className="fixed inset-0 z-[120] flex flex-col items-center justify-center bg-black/90 p-4">
             <div className="relative w-full h-[50vh] md:w-[450px] md:h-[450px] bg-gray-900 rounded-3xl overflow-hidden">
@@ -271,7 +264,6 @@ export default function ApplicantDetail() {
       />
 
       <div className="max-w-5xl mx-auto space-y-6">
-        {/* PROFILE HEADER */}
         <div className="bg-[#5DBB63] text-white p-6 md:p-10 rounded-[40px] shadow-lg flex items-center gap-6 overflow-hidden">
           <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white/20 overflow-hidden bg-white shadow-xl flex-shrink-0 flex items-center justify-center">
             {applicant.image === "male" ? (
@@ -289,8 +281,6 @@ export default function ApplicantDetail() {
             <p className="text-sm md:text-lg opacity-80 mt-1">{applicant.category}</p>
           </div>
         </div>
-
-        {/* INFO GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white p-8 rounded-3xl shadow-sm space-y-5">
             <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">
@@ -313,8 +303,6 @@ export default function ApplicantDetail() {
             </div>
           </div>
         </div>
-
-        {/* EXPERIENCE & SKILLS */}
         <div className="bg-white p-8 rounded-3xl shadow-sm space-y-5">
           <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">
             <Briefcase size={18} /> Work Experience
