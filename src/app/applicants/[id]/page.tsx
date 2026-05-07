@@ -343,14 +343,10 @@ export default function ApplicantDetail() {
             ))}
           </div>
         </div>
-
-        {/* SALARY DEMAND */}
         <div className="bg-white p-8 rounded-3xl shadow-sm space-y-5">
           <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-2 border-b pb-3">💰 Salary Expectation</h2>
           <p className="text-sm font-bold text-gray-600">{applicant.salaryDemand || "Not mentioned"}</p>
         </div>
-
-        {/* ACTION BUTTON */}
         <div className="mt-8 flex justify-center pb-2">
           <button
             onClick={() => setIsModalOpen(true)}
@@ -374,7 +370,7 @@ export default function ApplicantDetail() {
             </div>
             
             <form onSubmit={handleFormSubmit} className="p-8 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar">
-                            <div className="flex flex-col items-center gap-3 border-b pb-6">
+                <div className="flex flex-col items-center gap-3 border-b pb-6">
                 <div 
                    onClick={() => fileInputRef.current?.click()}
                    className="w-20 h-20 rounded-2xl bg-gray-50 border-2 border-dashed flex items-center justify-center overflow-hidden relative cursor-pointer group"
@@ -417,8 +413,8 @@ export default function ApplicantDetail() {
                 <input type="datetime-local" name="interviewDate" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:border-[#00004d] font-bold text-sm" />
               </div>
               
-              <button type="submit" disabled={isSubmitting} className="w-50 h-10 py-5 rounded-[9px] font-bold text-white bg-[#5DBB63] active:scale-95 transition-all tracking-widest flex justify-center items-center gap-2 shadow-xl">
-                {isSubmitting ? <Loader2 className="animate-spin" /> : "SUBMIT OFFER"}
+              <button type="submit" disabled={isSubmitting} className="w-45 h-10 py-5 rounded-[9px] font-bold text-white bg-[#5DBB63] active:scale-95 transition-all flex justify-center items-center gap-2 shadow-xl">
+                {isSubmitting ? <Loader2 className="animate-spin" /> : "Submit Offer"}
               </button>
             </form>
           </div>

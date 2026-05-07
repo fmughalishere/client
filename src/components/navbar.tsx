@@ -150,7 +150,7 @@ const Navbar = () => {
           className="flex items-center gap-1 hover:opacity-80"
         >
           <PlusCircle size={18} style={{ color: "#5DBB63" }} />
-          Add to Home
+          Add to Home Screen
         </button>
       </div>
       <AnimatePresence>
