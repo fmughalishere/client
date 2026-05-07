@@ -355,7 +355,7 @@ export default function ApplicantDetail() {
           <button
             onClick={() => setIsModalOpen(true)}
             disabled={applicant.status === "Offered"}
-            className={`w-50 h-10 px-8 rounded-full font-bold text-sm shadow-2xl flex items-center justify-center gap-2 active:scale-95 transition-all tracking-[0.2em] ${applicant.status === "Offered" ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#5DBB63] text-white hover:bg-[#4ea854]'}`}
+            className={`w-50 h-10 px-8 rounded-[9px] font-bold text-sm shadow-2xl flex items-center justify-center gap-2 active:scale-95 transition-all tracking-[0.2em] ${applicant.status === "Offered" ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#5DBB63] text-white hover:bg-[#4ea854]'}`}
           >
             <Send size={16} strokeWidth={3} />
             <span>{applicant.status === "Offered" ? "Offer Sent" : "Easy Hire"}</span>
@@ -363,7 +363,6 @@ export default function ApplicantDetail() {
         </div>
       </div>
 
-      {/* --- SEND JOB OFFER MODAL --- */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
           <div className="bg-white w-full max-w-lg rounded-[45px] overflow-hidden shadow-2xl relative">
