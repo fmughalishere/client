@@ -15,7 +15,6 @@ export default function PostJobPage() {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    title: "",
     category: "",
     city: "",
     salary: "",
@@ -266,7 +265,7 @@ export default function PostJobPage() {
           {userStatus === "guest" && (
             <div className="flex items-center justify-center gap-2 mt-4 text-red-500 animate-pulse">
               <Lock size={12} strokeWidth={3} />
-              <p className="text-[10px] font-black uppercase tracking-widest">Login required to publish</p>
+              <p className="text-[10px] font-black  tracking-widest">Login required to publish</p>
             </div>
           )}
         </form>

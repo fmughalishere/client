@@ -28,7 +28,6 @@ export default function JobsPage() {
   };
 
   const filteredJobs = jobs.filter((job) =>
-    job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     job.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
     job.category?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -39,7 +38,7 @@ export default function JobsPage() {
         <div className="max-w-2xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full mb-3 shadow-sm border border-[#00004d]/10">
             <Sparkles size={12} className="text-[#00004d]" />
-            <span className="text-[9px] font-black text-[#00004d] tracking-widest uppercase">Explore Jobs</span>
+            <span className="text-[9px] font-black text-[#00004d] tracking-widest ">Explore Jobs</span>
           </div>
           <h1 className="text-2xl font-black text-white leading-tight mb-5">
             Find Your Dream <br /> Career Today
@@ -75,12 +74,8 @@ export default function JobsPage() {
                   <Briefcase size={26} className="text-[#00004d]" />
                 </div>
                 <div className="flex flex-col flex-1 overflow-hidden">
-                  <h2 className="text-[15px] font-black text-[#00004d] leading-tight truncate">
-                    {job.title}
-                  </h2>
-
                   <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">
-                    {job.company || job.category}
+                    { job.category}
                   </p>
 
                   <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] whitespace-nowrap">
@@ -107,7 +102,7 @@ export default function JobsPage() {
             ))
           ) : (
             <div className="text-center py-16">
-              <p className="text-gray-400 font-bold text-sm uppercase tracking-widest">
+              <p className="text-gray-400 font-bold text-sm  tracking-widest">
                 No Jobs Found
               </p>
             </div>

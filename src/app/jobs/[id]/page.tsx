@@ -2,11 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import {
-  MapPin, Briefcase, DollarSign, ChevronLeft,
-  Share2, Send, ShieldCheck, CheckCircle2, Loader2,
-  Building2, AlignLeft, Layers
-} from "lucide-react";
+import { Loader2, Send, Share2 } from "lucide-react";
 import { toast, Toaster } from "react-hot-toast";
 
 export default function JobDetailPage() {
@@ -23,7 +19,7 @@ export default function JobDetailPage() {
         const data = await res.json();
         setJob(data);
       } catch (error) {
-        console.error("Error fetching job details:", error);
+        console.error("Error fetching job:", error);
       } finally {
         setLoading(false);
       }
@@ -33,205 +29,111 @@ export default function JobDetailPage() {
 
   const handleApplyAction = async () => {
     const token = localStorage.getItem("token");
-    const userStr = localStorage.getItem("user");
-
-    if (!token || !userStr) {
-      toast.error("Please login or register to apply");
+    if (!token) {
+      toast.error("Please login to apply");
       router.push("/login");
       return;
     }
-
-    const user = JSON.parse(userStr);
-    if (user.role === "employer") {
-      toast.error("Employers cannot apply for jobs!");
-      return;
-    }
-
     setIsApplying(true);
-
     try {
-      const statsRes = await fetch("https://easyjobspk.onrender.com/api/applications/jobseeker-stats", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const statsData = await statsRes.json();
-      if (!statsData.recentApplications || statsData.recentApplications.length === 0) {
-        toast.error("Redirecting to complete your application profile...");
-        router.push(`/application?jobId=${id}`);
-        return;
-      }
-
-      const profile = statsData.recentApplications[0];
-
-      const applicationData = {
-        jobId: id,
-        fullName: profile.fullName,
-        email: profile.email || user.email,
-        phone: profile.phone,
-        city: profile.city,
-        category: profile.category,
-        gender: profile.gender,
-        education: profile.education,
-        experience: profile.experience,
-        skills: profile.skills,
-        salaryDemand: profile.salaryDemand,
-        resume: profile.resume,
-        image: profile.image
-      };
-
-      const applyRes = await fetch("https://easyjobspk.onrender.com/api/applications", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(applicationData)
-      });
-
-      const applyResult = await applyRes.json();
-
-      if (applyRes.ok) {
-        toast.success("Applied successfully! Your profile is sent to the employer.");
-        router.push("/dashboard/jobseeker/my-applications");
-      } else {
-        toast.error(applyResult.message || "Already applied for this job");
-      }
-
-    } catch (err) {
-      console.error("Apply Error:", err);
-      toast.error("Connection error. Please try again.");
-    } finally {
-      setIsApplying(false);
-    }
+        const applyRes = await fetch("https://easyjobspk.onrender.com/api/applications", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            body: JSON.stringify({ jobId: id })
+          });
+          if (applyRes.ok) {
+            toast.success("Applied successfully!");
+            router.push("/dashboard/jobseeker/my-applications");
+          } else { toast.error("Already applied"); }
+    } catch (e) { toast.error("Error"); }
+    finally { setIsApplying(false); }
   };
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: job?.title,
-          text: `Check out this job: ${job?.title} in ${job?.city}`,
-          url: window.location.href,
-        });
-      } catch (err) { console.log(err); }
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      toast.success("Job link copied!");
-    }
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success("Job link copied!");
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#fcfcfc]">
-        <Loader2 className="animate-spin text-[#00004d] mb-4" size={40} />
-        <p className="text-[#00004d] font-black tracking-widest text-sm">Fetching Details...</p>
-      </div>
-    );
-  }
-
-  if (!job) return <div className="p-10 text-center font-bold">Job Not Found</div>;
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <Loader2 className="animate-spin text-[#5DBB63]" size={40} />
+    </div>
+  );
 
   return (
-    <main className="min-h-screen bg-[#fcfcfc] pb-16 font-sans">
+    <main className="min-h-screen bg-[#fcfcfc] pb-20 font-sans text-[#00004d]">
       <Toaster position="top-center" />
-      <div className="flex items-center justify-between px-6 py-6 bg-[#e2f2f5]">
-        <button onClick={() => router.back()} className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-[#00004d] border border-[#00004d]/5 active:scale-90 transition-all">
-          <ChevronLeft size={24} strokeWidth={3} />
-        </button>
-        <h1 className="font-black text-[#00004d] tracking-tighter">Job Details</h1>
-        <button onClick={handleShare} className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-[#00004d] active:scale-90 transition-all">
+      <section className="bg-[#5DBB63] px-6 pt-12 pb-24 rounded-b-[50px] relative text-center">
+        <button onClick={handleShare} className="absolute top-6 right-6 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white backdrop-blur-sm transition-all active:scale-90">
           <Share2 size={20} />
         </button>
-      </div>
-      <section className="bg-[#e2f2f5] px-6 pb-12 rounded-b-[50px] text-center shadow-sm border-b border-[#00004d]/5">
-        <div className="w-20 h-20 bg-white rounded-[2rem] flex items-center justify-center mx-auto mb-4 shadow-xl border-4 border-white">
-          <Briefcase size={40} className="text-[#00004d]" />
-        </div>
-        <h2 className="text-2xl font-black text-[#00004d] leading-tight px-4 uppercase">{job.title}</h2>
-        <div className="flex items-center justify-center gap-2 mt-2 opacity-70">
-          <Building2 size={16} className="text-[#00004d]" />
-          <span className="text-sm font-bold text-[#00004d] tracking-wider uppercase">Hiring Company</span>
+        
+        <div className="mb-3 flex justify-center items-center gap-2">
+            <p className="text-white text-[11px] font-bold  tracking-[0.3em]">Elevate Your Career in</p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-2 mt-6">
-          <span className="bg-[#00004d] text-white text-[10px] font-black px-4 py-2 rounded-full tracking-widest shadow-md uppercase">
-            {job.type}
-          </span>
-          <span className="bg-white text-[#00004d] text-[10px] font-black px-4 py-2 rounded-full tracking-widest border border-[#00004d]/10 shadow-sm uppercase">
-            {job.category}
-          </span>
-        </div>
+        <h2 className="text-3xl font-black text-white leading-tight px-2">
+          {job.category}
+        </h2>
+        
+        <p className="mt-4 text-white text-sm font-medium opacity-80">
+          Unlock your potential with this {job.type} role
+        </p>
       </section>
-      <section className="max-w-xl mx-auto px-6 -mt-8 grid grid-cols-2 gap-4">
-        <div className="bg-white p-4 rounded-3xl shadow-sm border border-[#e2f2f5] flex items-center gap-3">
-          <div className="p-2 bg-[#e2f2f5] rounded-xl text-[#00004d]"><MapPin size={18} /></div>
-          <div>
-            <p className="text-[9px] font-black text-gray-400 tracking-widest uppercase">Location</p>
-            <p className="text-xs font-black text-[#00004d]">{job.city}</p>
+      <section className="max-w-xl mx-auto px-6 -mt-10 space-y-4 relative z-10">
+                {[
+          { label: "🏢 HIRING COMPANY", value: job.postedBy?.name || job.company || "Company Name" },
+          { label: "📍 WORK LOCATION", value: job.city },
+          { label: "💰 MONTHLY SALARY", value: job.salary || "Negotiable" },
+          { label: "🎓 EDUCATION REQUIRED", value: job.education || "Not Specified" },
+          { label: "💼 EXPERIENCE LEVEL", value: job.experience || "Fresh / Entry Level" },
+          { label: "📁 JOB CATEGORY", value: job.category },
+          { label: "⏱️ EMPLOYMENT TYPE", value: job.type }
+        ].map((item, idx) => (
+          <div key={idx} className="bg-white p-5 rounded-2xl shadow-lg shadow-black/5 flex flex-col gap-1">
+            <h4 className="text-[10px] font-black text-[#5DBB63] tracking-widest  mb-1">{item.label}</h4>
+            <p className="text-base font-black text-[#00004d] leading-none">{item.value}</p>
           </div>
-        </div>
-        <div className="bg-white p-4 rounded-3xl shadow-sm border border-[#e2f2f5] flex items-center gap-3">
-          <div className="p-2 bg-[#e2f2f5] rounded-xl text-[#00004d]"><DollarSign size={18} /></div>
-          <div>
-            <p className="text-[9px] font-black text-gray-400 tracking-widest uppercase">Monthly Salary</p>
-            <p className="text-xs font-black text-[#00004d]">{job.salary || "Negotiable"}</p>
-          </div>
-        </div>
-      </section>
-      <section className="max-w-xl mx-auto px-6 mt-8 space-y-8">
-        <div>
-          <div className="flex items-center gap-2 mb-4">
-            <Layers size={18} className="text-[#00004d]" />
-            <h3 className="text-sm font-black text-[#00004d] tracking-widest uppercase">Required Skills</h3>
-          </div>
+        ))}
+        <div className="pt-6 border-t border-gray-100">
+          <h3 className="text-sm font-black text-[#00004d]  tracking-widest mb-4 inline-block border-b-2 border-[#5DBB63] pb-1">
+            Technical Skills
+          </h3>
           <div className="flex flex-wrap gap-2">
-            {job.skills?.map((skill: string, i: number) => (
-              <span key={i} className="bg-white text-[#00004d] px-4 py-2 rounded-xl text-xs font-bold border-2 border-[#e2f2f5] shadow-sm uppercase">
-                {skill}
+            {(typeof job.skills === 'string' ? job.skills.split(',') : job.skills)?.map((skill: string, i: number) => (
+              <span key={i} className="bg-[#00004d] text-white px-4 py-2 rounded-xl text-[10px] font-black  tracking-widest shadow-md">
+                {skill.trim()}
               </span>
             ))}
           </div>
         </div>
-
-        <div>
-          <div className="flex items-center gap-2 mb-4">
-            <AlignLeft size={18} className="text-[#00004d]" />
-            <h3 className="text-sm font-black text-[#00004d] tracking-widest uppercase">Description</h3>
-          </div>
-          <div className="bg-[#e2f2f5]/30 p-6 rounded-[2.5rem] border border-[#e2f2f5] shadow-inner">
-            <p className="text-sm text-gray-700 font-bold leading-relaxed whitespace-pre-line">
+        <div className="pt-6">
+          <h3 className="text-sm font-black text-[#00004d]  tracking-widest mb-4 inline-block border-b-2 border-[#5DBB63] pb-1">
+            Job Description
+          </h3>
+          <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+            <p className="text-[15px] text-gray-700 font-medium leading-relaxed whitespace-pre-line">
               {job.description}
             </p>
           </div>
         </div>
-
-        <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100">
-          <div className="flex items-center gap-2 mb-4">
-            <ShieldCheck size={18} className="text-[#00004d]" />
-            <h3 className="text-sm font-black text-[#00004d] tracking-widest uppercase">Our Promise</h3>
-          </div>
-          <ul className="space-y-3">
-            {["Verified Employer", "Direct Communication", "Fast Response Guaranteed"].map((text, i) => (
-              <li key={i} className="flex items-center gap-2 text-xs font-bold text-gray-600">
-                <CheckCircle2 size={16} className="text-green-500" />
-                {text}
-              </li>
-            ))}
-          </ul>
+        <div className="bg-blue-50/50 p-6 rounded-3xl border border-blue-100 flex flex-col items-center text-center mt-8">
+           <div className="text-[10px] font-black text-[#00004d]  tracking-widest mb-2">Verified Posting</div>
+           <p className="text-xs text-gray-500 font-bold max-w-xs">
+             Your application will be sent directly to the employer's dashboard for review.
+           </p>
         </div>
-
-        <div className="pt-6 pb-10">
+        <div className="pt-12 flex flex-col items-center">
           <button
             onClick={handleApplyAction}
             disabled={isApplying}
-            className="w-full bg-[#00004d] text-white py-5 rounded-[2rem] font-black flex items-center justify-center gap-3 shadow-xl active:scale-95 disabled:bg-gray-400 transition-all uppercase"
+            className="w-full max-w-[220px] bg-[#5DBB63] text-white py-4 rounded-[13px] font-black flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 disabled:bg-gray-400 transition-all  tracking-[0.2em] text-[11px]"
           >
-            {isApplying ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} strokeWidth={3} />}
-            <span>{isApplying ? "Applying..." : "Apply For This Job"}</span>
+            {isApplying ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
+            <span>{isApplying ? "Wait..." : "Apply Now"}</span>
           </button>
-          <p className="text-center text-[10px] text-gray-400 font-bold mt-4 tracking-widest uppercase">
-            Your professional profile will be shared with the employer
-          </p>
-        </div>
+                  </div>
+
       </section>
     </main>
   );
