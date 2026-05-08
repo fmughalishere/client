@@ -1,30 +1,70 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Search, MapPin, Briefcase, Loader2, Sparkles } from "lucide-react";
 import { LuChevronsRight } from "react-icons/lu";
+import Pagination from "../../components/Pagination";
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const router = useRouter();
+  const searchRef = useRef<HTMLDivElement>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
-  useEffect(() => {
-    fetchJobs();
-  }, []);
-
-  const fetchJobs = async () => {
+  const fetchJobs = useCallback(async () => {
     try {
       const res = await fetch("https://easyjobspk.onrender.com/api/jobs");
       const data = await res.json();
-      setJobs(data);
+      setJobs(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching jobs:", error);
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  useEffect(() => {
+    fetchJobs();
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [fetchJobs]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    setCurrentPage(1);
+
+    if (value.trim().length > 0) {
+      const filtered = jobs
+        .filter((job) => 
+          job.category?.toLowerCase().includes(value.toLowerCase()) || 
+          job.city?.toLowerCase().includes(value.toLowerCase())
+        )
+        .map((job) => (job.category?.toLowerCase().includes(value.toLowerCase()) ? job.category : job.city));
+
+      const uniqueSuggestions = Array.from(new Set(filtered)).slice(0, 5);
+      setSuggestions(uniqueSuggestions as string[]);
+      setShowSuggestions(true);
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSelectSuggestion = (item: string) => {
+    setSearchQuery(item);
+    setShowSuggestions(false);
   };
 
   const filteredJobs = jobs.filter((job) =>
@@ -32,9 +72,14 @@ export default function JobsPage() {
     job.category?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredJobs.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
+
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-20 font-sans">
-      <section className="bg-[#5DBB63] rounded-b-[35px] pt-10 pb-12 px-6 shadow-sm">
+      <section className="bg-[#5DBB63] rounded-b-[35px] pt-10 pb-12 px-6 shadow-sm relative z-30">
         <div className="max-w-2xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full mb-3 shadow-sm border border-[#00004d]/10">
             <Sparkles size={12} className="text-[#00004d]" />
@@ -43,7 +88,7 @@ export default function JobsPage() {
           <h1 className="text-2xl font-black text-white leading-tight mb-5">
             Find Your Dream <br /> Career Today
           </h1>
-          <div className="relative max-w-md mx-auto">
+          <div className="relative max-w-md mx-auto" ref={searchRef}>
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
               <Search className="h-4 w-4 text-[#00004d]" strokeWidth={3} />
             </div>
@@ -52,19 +97,36 @@ export default function JobsPage() {
               placeholder="Search jobs, cities..."
               className="block w-full pl-10 pr-4 py-2 bg-white border border-[#00004d] rounded-full shadow-md text-xs text-[#00004d] font-bold outline-none"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleInputChange}
+              onFocus={() => searchQuery.length > 0 && setShowSuggestions(true)}
             />
+
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden text-left z-50">
+                {suggestions.map((item, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => handleSelectSuggestion(item)}
+                    className="px-4 py-3 flex items-center gap-3 hover:bg-gray-50 cursor-pointer border-b last:border-none border-gray-50 transition-colors"
+                  >
+                    <Search size={12} className="text-gray-400" />
+                    <span className="text-[11px] font-bold text-[#00004d]">{item}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
+
       <section className="max-w-[360px] mx-auto px-4 mt-6 relative z-20">
         <div className="flex flex-col gap-3">
           {loading ? (
             <div className="flex justify-center p-10">
               <Loader2 className="animate-spin text-[#00004d]" />
             </div>
-          ) : filteredJobs.length > 0 ? (
-            filteredJobs.map((job) => (
+          ) : currentItems.length > 0 ? (
+            currentItems.map((job) => (
               <div
                 key={job._id}
                 onClick={() => router.push(`/jobs/${job._id}`)}
@@ -107,9 +169,15 @@ export default function JobsPage() {
               </p>
             </div>
           )}
+          {!loading && filteredJobs.length > 0 && (
+            <Pagination 
+              currentPage={currentPage} 
+              totalPages={totalPages} 
+              onPageChange={(page: number) => setCurrentPage(page)} 
+            />
+          )}
         </div>
       </section>
-
     </main>
   );
 }

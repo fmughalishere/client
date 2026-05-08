@@ -7,7 +7,7 @@ import Cropper from "react-easy-crop";
 import {
   Loader2, User, Calendar, Globe, MapPin, Briefcase,
   GraduationCap, Send, X, Building, Camera, Wand2,
-  CheckCircle2, Clock, CheckCircle, Scissors
+  CheckCircle2, Scissors
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { MALE_ICON, FEMALE_ICON } from "../../constants";

@@ -275,7 +275,7 @@ export default function PostJobPage() {
           isOpen={showSuccess}
           onClose={() => router.push("/dashboard/employer/my-jobs")}
           title="JOB PUBLISHED!"
-          message="Your job listing is now live and visible to candidates."
+          message="Your job listing is live and visible to candidates after admin approval."
         />
       )}
     </div>

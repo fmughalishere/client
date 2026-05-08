@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { IoIosPin } from "react-icons/io";
 import { LuChevronsRight } from "react-icons/lu";
 import { MALE_ICON, FEMALE_ICON } from "./constants";
+import Pagination from "../components/Pagination";
 
 export default function HomePage() {
   const [applicants, setApplicants] = useState<any[]>([]);
@@ -22,6 +23,13 @@ export default function HomePage() {
   const router = useRouter();
   const [visitorCount, setVisitorCount] = useState(0);
   const searchRef = useRef<HTMLDivElement>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = applicants.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(applicants.length / itemsPerPage);
 
   const navyBlueFilter = {
     filter: "invert(7%) sepia(76%) saturate(5793%) hue-rotate(241deg) brightness(91%) contrast(108%)"
@@ -80,7 +88,7 @@ export default function HomePage() {
         .map((app) => (app.category && app.category.toLowerCase().includes(value.toLowerCase()) ? app.category : app.fullName));
 
       const uniqueSuggestions = Array.from(new Set(filtered)).slice(0, 5);
-      setSuggestions(uniqueSuggestions);
+      setSuggestions(uniqueSuggestions as string[]);
       setShowSuggestions(true);
     } else {
       setSuggestions([]);
@@ -110,7 +118,6 @@ export default function HomePage() {
     if (isFresher || !experienceArray || experienceArray.length === 0) {
       return "Fresher";
     }
-
     let totalMonths = 0;
     experienceArray.forEach((exp) => {
       const start = new Date(exp.startDate);
@@ -120,11 +127,9 @@ export default function HomePage() {
         if (diffInMonths > 0) totalMonths += diffInMonths;
       }
     });
-
     if (totalMonths === 0) return "Fresher";
     const years = Math.floor(totalMonths / 12);
     const months = totalMonths % 12;
-
     if (years > 0) {
       return `Exp ${years}${months > 0 ? `.${Math.round(months / 1.2)}` : ""} ${years === 1 && months === 0 ? "Year" : "Years"}`;
     } else {
@@ -137,22 +142,10 @@ export default function HomePage() {
       <section className="px-0 pt-0 relative">
         <div className="bg-[#5DBB63] rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
             <div className="absolute left-[-10px] top-[-10] opacity-30 pointer-events-none">
-            <Image 
-              src="/images/chair_job.png" 
-              alt="chair" 
-              width={150} 
-              height={150} 
-              className="object-contain"
-            />
+            <Image src="/images/chair_job.png" alt="chair" width={150} height={150} className="object-contain" />
           </div>
           <div className="absolute right-[-9px] top-[-13] opacity-30 pointer-events-none">
-            <Image 
-              src="/images/need_job.png" 
-              alt="need job" 
-              width={150} 
-              height={150} 
-              className="object-contain"
-            />
+            <Image src="/images/need_job.png" alt="need job" width={150} height={150} className="object-contain" />
           </div>
           <div className="text-center mb-1 mt-0 relative z-10">
             <h1 className="text-[26px] font-black text-white leading-none">Hire easy</h1>
@@ -178,7 +171,7 @@ export default function HomePage() {
               <button onClick={() => handleSearch()} className="text-[#00004d] font-black text-[15px] hover:opacity-70">Go</button>
             </div>
             {showSuggestions && suggestions.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden text-left">
                 {suggestions.map((item, idx) => (
                   <div
                     key={idx}
@@ -197,22 +190,15 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
       <section className="max-w-md mx-auto px-6 mt-6 relative z-10">
         <div className="flex flex-col gap-2.5 items-center justify-center w-full">
           {quickActions.map((action, i) => (
-            <button
-              key={i}
-              onClick={() => router.push(action.href)}
-              className="w-full max-w-[220px] transition-transform active:scale-95"
-            >
+            <button key={i} onClick={() => router.push(action.href)} className="w-full max-w-[220px] transition-transform active:scale-95">
               <div className="relative flex items-center h-[42px] bg-[#00004d] rounded-2xl text-white shadow-lg px-4">
-                <div className="shrink-0 z-10">
-                  {action.icon}
-                </div>
+                <div className="shrink-0 z-10">{action.icon}</div>
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="font-normal text-[14px] whitespace-nowrap">
-                    {action.label}
-                  </span>
+                  <span className="font-normal text-[14px] whitespace-nowrap">{action.label}</span>
                 </div>
                 <div className="ml-auto flex items-center gap-2 z-10">
                   <span className="font-black text-[11px] uppercase"><ChevronRight size={18}/></span>
@@ -222,6 +208,7 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
       <section className="max-w-[360px] mx-auto px-4 mt-6 mb-4 relative z-10">
         <div className="bg-[#5DBB63] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm ">
           <span className="text-[16px] font-black leading-none mt-3 text-center px-4 animate-bounce">I am seeking for a job</span>
@@ -231,12 +218,13 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
       <section className="max-w-[360px] mx-auto px-4 mt-2 mb-10">
         <div className="flex flex-col gap-3">
           {loading ? (
             <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#00004d]" /></div>
-          ) : applicants.length > 0 ? (
-            applicants.map((app: any, idx: number) => (
+          ) : currentItems.length > 0 ? (
+            currentItems.map((app: any, idx: number) => (
               <div key={idx} className="bg-white border border-gray-100 rounded-[15px] p-3 flex items-center gap-3 relative shadow-md h-[90px]">
                 <div className="w-14 h-14 rounded-full flex-shrink-0 relative bg-[#f8fafc] border border-gray-100 flex items-center justify-center overflow-hidden">
                   {app.image === "male" ? (
@@ -272,7 +260,6 @@ export default function HomePage() {
                       <IoIosPin size={13} />
                       <span className="font-bold text-[10px]">{app.city}</span>
                     </div>
-
                     <button
                       onClick={() => router.push(`/applicants/${app._id}`)}
                       className="text-[#5DBB63] font-black text-[10px] flex items-center gap-0.5"
@@ -285,6 +272,13 @@ export default function HomePage() {
             ))
           ) : (
             <p className="text-center text-gray-400 font-bold py-10">No applicants found yet.</p>
+          )}
+          {!loading && applicants.length > 0 && (
+            <Pagination 
+              currentPage={currentPage} 
+              totalPages={totalPages} 
+              onPageChange={(page: number) => setCurrentPage(page)} 
+            />
           )}
         </div>
       </section>
