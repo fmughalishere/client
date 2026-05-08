@@ -30,14 +30,14 @@ export default function HomePage() {
   const quickActions = [
     { label: "Apply for a Job", icon: <Briefcase size={18} style={{ color: "#5DBB63" }} />, href: "/application" },
     { label: "Post a Job", icon: <PlusCircle size={18} style={{ color: "#5DBB63" }} />, href: "/post-job" },
-    { label: "Job Seekers", icon: <Users size={18} style={{ color: "#5DBB63" }} />, href: "/dashboard/jobseeker" },
+    { label: "Job Seekers", icon: <Users size={18} style={{ color: "#5DBB63" }} />, href: "/applicants" },
     { label: "Job Offers", icon: <ClipboardList size={18} style={{ color: "#5DBB63" }} />, href: "/jobs" },
   ];
 
   const fetchApplicants = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("https://easyjobspk.onrender.com/api/applications/employer/all-applicants", {
+      const res = await fetch("https://easyjobspk.onrender.com/api/applications/all-applicants", {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();
