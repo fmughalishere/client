@@ -70,7 +70,7 @@ export default function PostJobPage() {
     return JOB_CATEGORIES.filter(opt => opt.toLowerCase().includes(catSearch.toLowerCase()));
   }, [catSearch]);
 
-    const filteredEducation = useMemo(() => {
+  const filteredEducation = useMemo(() => {
     return EDUCATION_OPTIONS.filter(opt => opt.toLowerCase().includes(eduSearch.toLowerCase()));
   }, [eduSearch]);
 
@@ -148,6 +148,32 @@ export default function PostJobPage() {
         <form onSubmit={handleSubmit} className="bg-white p-6 md:p-12 rounded-[3.5rem] shadow-[0_20px_50px_rgba(0,0,77,0.1)] border border-gray-50 space-y-7">
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="relative" ref={cityRef}>
+                <label className={labelStyle}><MapPin size={14} strokeWidth={3} /> City</label>
+                <div onClick={() => setIsCityOpen(!isCityOpen)} className={`${inputStyle} flex justify-between items-center cursor-pointer`}>
+                  <span className={formData.city ? "text-[#00004d]" : "text-gray-300"}>
+                    {formData.city || "Select City"}
+                  </span>
+                  <ChevronDown size={18} className={`transition-transform ${isCityOpen ? "rotate-180" : ""}`} />
+                </div>
+                <AnimatePresence>
+                  {isCityOpen && (
+                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-2xl overflow-hidden">
+                      <div className="p-3 bg-gray-50 border-b border-gray-100 flex items-center gap-2">
+                        <Search size={14} className="text-gray-400" />
+                        <input type="text" placeholder="Search city..." className="bg-transparent text-xs font-bold outline-none w-full" value={citySearch} onChange={(e) => setCatSearch(e.target.value)} onClick={(e) => e.stopPropagation()} />
+                      </div>
+                      <div className="max-h-60 overflow-y-auto">
+                        {filteredCities.map((city) => (
+                          <div key={city} onClick={() => { setFormData({ ...formData, city: city }); setIsCityOpen(false); setCitySearch(""); }} className="px-5 py-3.5 text-xs font-bold text-[#00004d] hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-0">
+                            {city}
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
               <div className="relative" ref={catRef}>
                 <label className={labelStyle}><List size={14} strokeWidth={3} />Job Title</label>
                 <div onClick={() => setIsCatOpen(!isCatOpen)} className={`${inputStyle} flex justify-between items-center cursor-pointer`}>
@@ -178,7 +204,7 @@ export default function PostJobPage() {
                 <label className={labelStyle}><GraduationCap size={14} strokeWidth={3} />Education</label>
                 <div onClick={() => setIsEduOpen(!isEduOpen)} className={`${inputStyle} flex justify-between items-center cursor-pointer`}>
                   <span className={formData.education ? "text-[#00004d]" : "text-gray-300"}>
-                    {formData.education|| "Select Education"}
+                    {formData.education || "Select Education"}
                   </span>
                   <ChevronDown size={18} className={`transition-transform ${isEduOpen ? "rotate-180" : ""}`} />
                 </div>
@@ -193,32 +219,6 @@ export default function PostJobPage() {
                         {filteredEducation.map((edu) => (
                           <div key={edu} onClick={() => { setFormData({ ...formData, education: edu }); setIsEduOpen(false); setEduSearch(""); }} className="px-5 py-3.5 text-xs font-bold text-[#00004d] hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-0">
                             {edu}
-                          </div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-              <div className="relative" ref={cityRef}>
-                <label className={labelStyle}><MapPin size={14} strokeWidth={3} /> City</label>
-                <div onClick={() => setIsCityOpen(!isCityOpen)} className={`${inputStyle} flex justify-between items-center cursor-pointer`}>
-                  <span className={formData.city ? "text-[#00004d]" : "text-gray-300"}>
-                    {formData.city || "Select City"}
-                  </span>
-                  <ChevronDown size={18} className={`transition-transform ${isCityOpen ? "rotate-180" : ""}`} />
-                </div>
-                <AnimatePresence>
-                  {isCityOpen && (
-                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-2xl overflow-hidden">
-                      <div className="p-3 bg-gray-50 border-b border-gray-100 flex items-center gap-2">
-                        <Search size={14} className="text-gray-400" />
-                        <input type="text" placeholder="Search city..." className="bg-transparent text-xs font-bold outline-none w-full" value={citySearch} onChange={(e) => setCatSearch(e.target.value)} onClick={(e) => e.stopPropagation()} />
-                      </div>
-                      <div className="max-h-60 overflow-y-auto">
-                        {filteredCities.map((city) => (
-                          <div key={city} onClick={() => { setFormData({ ...formData, city: city }); setIsCityOpen(false); setCitySearch(""); }} className="px-5 py-3.5 text-xs font-bold text-[#00004d] hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-0">
-                            {city}
                           </div>
                         ))}
                       </div>
@@ -256,12 +256,21 @@ export default function PostJobPage() {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}></textarea>
             </div>
           </div>
-          <button
-            disabled={loading}
-            className="w-50 h-15 bg-[#5DBB63] text-white py-5 rounded-[13px] font-black text-base flex items-center justify-center gap-3 hover:bg-black transition-all active:scale-95 shadow-xl"
-          >
-            {loading ? <Loader2 className="animate-spin" /> : <><Send size={20} strokeWidth={3} /> Publish Vacancy</>}
-          </button>
+          <div className="flex justify-center">
+            <button
+              disabled={loading}
+              className="w-50 h-15 bg-[#5DBB63] text-white py-5 rounded-[13px] font-black text-base flex items-center justify-center gap-3 hover:bg-black transition-all active:scale-95 shadow-xl"
+            >
+              {loading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <>
+                  <Send size={20} strokeWidth={3} />
+                  Publish Vacancy
+                </>
+              )}
+            </button>
+          </div>
           {userStatus === "guest" && (
             <div className="flex items-center justify-center gap-2 mt-4 text-red-500 animate-pulse">
               <Lock size={12} strokeWidth={3} />
