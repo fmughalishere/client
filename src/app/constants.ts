@@ -4,6 +4,7 @@ export const FEMALE_ICON = "https://uxwing.com/wp-content/themes/uxwing/download
 
 // Dropdown Options
 export const CITIES = ["Karachi", "Lahore", "RWP/ISB", "Peshawar", "Quetta", "Multan", "Faisalabad"];
+export const EMPLOYEES = ["1-10", "1-20", "1-30", "1-40", "1-50", "Above 50"];
 export const JOB_TYPES = ["Full-Time", "Part-Time", "One-Day Task", "Remote-Job", "Home-Based", "Contract-Based"];
 
 export const JOB_CATEGORIES = [

@@ -110,7 +110,7 @@ export default function EmployerDashboard() {
             <h1 className="text-2xl md:text-3xl font-black text-[#1e3a8a]">Employer Dashboard</h1>
             <p className="text-gray-400 font-bold text-sm">Manage your talent pool 💼</p>
           </div>
-          <Link href="/dashboard/employer/post-job" className="bg-[#00d26a] text-white px-8 py-4 rounded-2xl font-black flex items-center gap-2 shadow-xl active:scale-95 transition-transform text-sm">
+          <Link href="/post-job" className="bg-[#00d26a] text-white px-8 py-4 rounded-2xl font-black flex items-center gap-2 shadow-xl active:scale-95 transition-transform text-sm">
             <Plus size={18} strokeWidth={3} /> Post New Job
           </Link>
         </div>
