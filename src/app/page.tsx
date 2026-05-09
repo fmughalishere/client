@@ -189,7 +189,7 @@ export default function HomePage() {
         <div className="flex flex-col gap-2.5 items-center justify-center w-full">
           {quickActions.map((action, i) => (
             <button key={i} onClick={() => router.push(action.href)} className="w-full max-w-[220px] transition-transform active:scale-95">
-              <div className="relative flex items-center h-[42px] bg-[#00004d] rounded-2xl text-white shadow-lg px-4">
+              <div className="relative flex items-center h-[42px] bg-white rounded-2xl text-[#00004d] shadow-lg px-4">
                 <div className="shrink-0 z-10">{action.icon}</div>
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <span className="font-normal text-[14px] whitespace-nowrap">{action.label}</span>
