@@ -158,7 +158,7 @@ export default function HomePage() {
               onFocus={() => searchQuery.length > 0 && setShowSuggestions(true)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               placeholder="Search jobs/employees"
-              className="block w-full pl-11 pr-14 py-2.5 bg-white border border-[#00004d] rounded-[15px] shadow-lg text-sm text-[#00004d] font-bold outline-none"
+              className="block w-full pl-11 pr-14 py-2.5 bg-white rounded-[15px] shadow-lg text-sm text-[#00004d] font-bold outline-none"
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-4 gap-2">
               <div className="h-5 w-[1.5px] bg-[#00004d]"></div>
