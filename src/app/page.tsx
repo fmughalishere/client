@@ -204,7 +204,7 @@ export default function HomePage() {
       </section>
 
       <section className="max-w-[360px] mx-auto px-4 mt-6 mb-4 relative z-10">
-        <div className="bg-[#5DBB63] text-white rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm ">
+        <div className="bg-white text-[#5DBB63] rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm ">
           <span className="text-[16px] font-black leading-none mt-3 text-center px-4 animate-bounce">I am seeking for a job</span>
           <div className="flex flex-col items-center mt-2 -space-y-3 animate-bounce">
             <ChevronDown size={20} strokeWidth={4} />
