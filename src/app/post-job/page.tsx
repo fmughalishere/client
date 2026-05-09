@@ -247,12 +247,12 @@ export default function PostJobPage() {
             </div>
             <div>
               <label className={labelStyle}><Award size={14} strokeWidth={3} /> Key Skills</label>
-              <input type="text" value={formData.skills} placeholder="Skills (comma separated)" className={inputStyle}
+              <input type="text" value={formData.skills} placeholder="Skills_Comma separated (Optional)" className={inputStyle}
                 onChange={(e) => setFormData({ ...formData, skills: e.target.value })} />
             </div>
             <div>
               <label className={labelStyle}><FileText size={14} strokeWidth={3} /> Description</label>
-              <textarea required rows={5} value={formData.description} placeholder="Job description..." className={`${inputStyle} resize-none`}
+              <textarea required rows={5} value={formData.description} placeholder="Job description (Optional)" className={`${inputStyle} resize-none`}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}></textarea>
             </div>
           </div>
