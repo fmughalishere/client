@@ -131,7 +131,7 @@ export default function HomePage() {
     const years = Math.floor(totalMonths / 12);
     const months = totalMonths % 12;
     if (years > 0) {
-      return `Exp ${years}${months > 0 ? `.${Math.round(months / 1.2)}` : ""} ${years === 1 && months === 0 ? "Year" : "Years"}`;
+      return `Exp. ${years}${months > 0 ? `.${Math.round(months / 1.2)}` : ""} ${years === 1 && months === 0 ? "Year" : "Years"}`;
     } else {
       return `Exp ${months} Months`;
     }
@@ -241,10 +241,10 @@ export default function HomePage() {
                     </span>
                   </div>
                   <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">
-                    {app.category || "Consultant"}
+                    Profession:{app.category || "Consultant"}
                   </p>
                   <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] whitespace-nowrap">
-                    <span>{app.education || "BSIT"}</span>
+                    <span>Edu.{app.education || "BSIT"}</span>
                   </div>
                   <p className="text-[10px] font-bold text-[#00004d] mt-0.5 tracking-[0.1em]">
                     {calculateTotalExperience(app.experience, app.isFresher)}
