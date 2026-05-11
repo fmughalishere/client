@@ -93,45 +93,44 @@ const Navbar = () => {
   };
 
   return (
-    <header className="relative z-50 w-full bg-white border-b shadow-sm">
+    <header className="sticky top-0 z-50 w-full bg-white border-b shadow-sm">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        <Link href="/">
-          <Image
-            src="/images/nav-logo.png"
-            alt="Logo"
-            width={170}
-            height={50}
-            className="object-contain"
-            priority
-          />
-        </Link>
-        <div className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`px-4 py-2 rounded-full text-[14px] font-semibold transition ${
-                pathname === link.href
-                  ? "text-blue-900 bg-blue-50"
-                  : "text-gray-500 hover:text-blue-800 hover:bg-gray-50"
+      <Link href="/">
+        <Image
+          src="/images/nav-logo.png"
+          alt="Logo"
+          width={170}
+          height={50}
+          className="object-contain"
+          priority
+        />
+      </Link>
+      <div className="hidden md:flex items-center gap-1">
+        {navLinks.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className={`px-4 py-2 rounded-full text-[14px] font-semibold transition ${pathname === link.href
+                ? "text-blue-900 bg-blue-50"
+                : "text-gray-500 hover:text-blue-800 hover:bg-gray-50"
               }`}
-            >
-              {link.name}
-            </Link>
-          ))}
-        </div>
-        <div className="flex items-center gap-2">
-          <button className="relative p-3 mt-2 rounded-full hover:bg-gray-100 transition">
-            <Bell size={26} className="text-[#00004d]" />
-          </button>
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-[#00004d]"
           >
-            {isOpen ? <X size={26} /> : <Menu size={26} />}
-          </button>
-        </div>
-      </nav>
+            {link.name}
+          </Link>
+        ))}
+      </div>
+      <div className="flex items-center gap-2">
+        <button className="relative p-3 mt-2 rounded-full hover:bg-gray-100 transition">
+          <Bell size={26} className="text-[#00004d]" />
+        </button>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="md:hidden p-2 text-[#00004d]"
+        >
+          {isOpen ? <X size={26} /> : <Menu size={26} />}
+        </button>
+      </div>
+    </nav>
       <div className="bg-[#00004d] text-white flex items-center justify-around py-2 text-[10px]">
         <Link href="/" className="flex items-center gap-1 hover:opacity-80">
           <AiFillHome size={18} style={{ color: "#5DBB63" }} />

@@ -514,7 +514,8 @@ export default function MobileResponsiveJobForm() {
             </section>
             <div className="space-y-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-[#00004d] ml-1 block">Desired Job Category</label>
+                <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Profession & Type</h2></div>
+                <label className="text-[10px] font-bold text-[#00004d] ml-1 block">Desired Job</label>
                 <div className="relative" ref={catRef}>
                   <div
                     onClick={() => setIsCatOpen(!isCatOpen)}
