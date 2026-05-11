@@ -3,8 +3,8 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Send, Briefcase, MapPin, DollarSign, List, Info,
-  FileText, Award, Loader2, AlertCircle, Search, ChevronDown, Lock,
+  Send, MapPin, DollarSign, List, Info,
+  FileText, Award, Loader2, Search, ChevronDown, Lock,
   GraduationCap
 } from "lucide-react";
 import SuccessModal from "../../components/SuccessModal";
