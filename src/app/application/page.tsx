@@ -185,7 +185,7 @@ export default function MobileResponsiveJobForm() {
 
   const [formData, setFormData] = useState({
     fullName: "", dob: "", gender: "Male", city: "", image: "",
-    jobtype: "Full-Time", category: "", education: "",
+    jobtype: "Full-Time", category: "", otherCategory: "", education: "", otherEducation: "",
     yearsOfExperience: "0", skills: "", achievements: "",
     email: "", phone: "+92 ", whatsapp: "+92 ", salaryDemand: "", agreeTerms: false
   });
@@ -289,15 +289,17 @@ export default function MobileResponsiveJobForm() {
   };
 
   const filteredEducation = useMemo(() => {
-    return EDUCATION_OPTIONS.filter(opt =>
+    const filtered = EDUCATION_OPTIONS.filter(opt =>
       opt.toLowerCase().includes(eduSearch.toLowerCase())
     );
+    return ["Other", ...filtered];
   }, [eduSearch]);
 
   const filteredCategories = useMemo(() => {
-    return JOB_CATEGORIES.filter(opt =>
+    const filtered = JOB_CATEGORIES.filter(opt =>
       opt.toLowerCase().includes(catSearch.toLowerCase())
     );
+    return ["Other", ...filtered];
   }, [catSearch]);
 
   const handleExperienceChange = (index: number, field: keyof ExperienceEntry, value: any) => {
@@ -342,10 +344,10 @@ export default function MobileResponsiveJobForm() {
     }
   };
 
-   const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-    
+
     if (!token) {
       setIsAuthModalOpen(true);
       return;
@@ -357,8 +359,13 @@ export default function MobileResponsiveJobForm() {
     }
 
     setLoading(true);
+    const finalCategory = formData.category === "Other" ? formData.otherCategory : formData.category;
+    const finalEducation = formData.education === "Other" ? formData.otherEducation : formData.education;
+
     const finalPayload = {
       ...formData,
+      category: finalCategory,
+      education: finalEducation,
       skills: formData.skills ? formData.skills.split(",").map(s => s.trim()) : [],
       isFresher: isFresher,
       yearsOfExperience: isFresher ? 0 : Number(calculatedTotalYears),
@@ -388,10 +395,10 @@ export default function MobileResponsiveJobForm() {
 
   return (
     <div className="min-h-screen bg-[#f4f7f9] pb-10 font-sans">
-      <AuthRequiredModal 
-        isOpen={isAuthModalOpen} 
-        onClose={() => setIsAuthModalOpen(false)} 
-        onAction={handleAuthNavigation} 
+      <AuthRequiredModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onAction={handleAuthNavigation}
       />
       <AnimatePresence>
         {isCropping && (
@@ -505,51 +512,132 @@ export default function MobileResponsiveJobForm() {
                 </div>
               </div>
             </section>
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-[#00004d] ml-1 block">Desired Job</label>
-              <div className="relative" ref={catRef}>
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-[#00004d] ml-1 block">Desired Job Category</label>
+                <div className="relative" ref={catRef}>
+                  <div
+                    onClick={() => setIsCatOpen(!isCatOpen)}
+                    className="w-full bg-[#f8fafc] p-4 rounded-xl border border-gray-100 flex justify-between items-center cursor-pointer min-h-[56px]"
+                  >
+                    <span className={`font-bold ${formData.category ? 'text-[#00004d] text-[11px]' : 'text-gray-400 text-[11px]'}`}>
+                      {formData.category || "Select Category"}
+                    </span>
+                    <div className={`transition-transform duration-200 ${isCatOpen ? 'rotate-180' : ''}`}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00004d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
+                    </div>
+                  </div>
+                  <AnimatePresence>
+                    {isCatOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="absolute z-[60] w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden"
+                      >
+                        <div className="p-2 border-b bg-gray-50">
+                          <input
+                            type="text"
+                            placeholder="Search category..."
+                            className="w-full p-2 text-[11px] font-medium border rounded-lg outline-none focus:border-[#00004d]"
+                            value={catSearch}
+                            onChange={(e) => setCatSearch(e.target.value)}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        </div>
+
+                        <div className="max-h-64 overflow-y-auto scrollbar-thin">
+                          {filteredCategories.length > 0 ? (
+                            filteredCategories.map((opt) => (
+                              <div
+                                key={opt}
+                                onClick={() => {
+                                  setFormData(prev => ({ ...prev, category: opt }));
+                                  setIsCatOpen(false);
+                                  setCatSearch("");
+                                }}
+                                className={`px-4 py-3 text-[11px] font-bold border-b border-gray-50 last:border-0 transition-colors
+                      ${formData.category === opt ? 'bg-blue-50 text-[#00004d]' : 'text-gray-600 hover:bg-gray-50'}`}
+                              >
+                                {opt}
+                              </div>
+                            ))
+                          ) : (
+                            <div className="p-4 text-[11px] text-gray-400 text-center">No results found</div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+                {formData.category === "Other" && (
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2">
+                    <input
+                      required
+                      name="otherCategory"
+                      value={formData.otherCategory}
+                      onChange={handleChange}
+                      placeholder="Please specify your job category"
+                      className="w-full bg-[#f8fafc] border-2 border-blue-100 rounded-xl p-4 text-sm font-bold outline-none focus:border-[#00004d] transition-all"
+                    />
+                  </motion.div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-[#00004d] ml-1 block">Job Type</label>
+                <select name="jobtype" value={formData.jobtype} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none">
+                  {JOB_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+            </div>
+            <section className="space-y-3">
+              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3">
+                <h2 className="text-[#00004d] font-bold text-lg tracking-wider">Education</h2>
+              </div>
+              <div className="relative" ref={eduRef}>
                 <div
-                  onClick={() => setIsCatOpen(!isCatOpen)}
+                  onClick={() => setIsEduOpen(!isEduOpen)}
                   className="w-full bg-[#f8fafc] p-4 rounded-xl border border-gray-100 flex justify-between items-center cursor-pointer min-h-[56px]"
                 >
-                  <span className={`font-bold ${formData.category ? 'text-[#00004d] text-[11px]' : 'text-gray-400 text-[11px]'}`}>
-                    {formData.category || "Select Category"}
+                  <span className={`font-bold ${formData.education ? 'text-[#00004d] text-[11px]' : 'text-gray-400 text-[11px]'}`}>
+                    {formData.education || "Select Your Qualification"}
                   </span>
-                  <div className={`transition-transform duration-200 ${isCatOpen ? 'rotate-180' : ''}`}>
+                  <div className={`transition-transform duration-200 ${isEduOpen ? 'rotate-180' : ''}`}>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00004d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
                   </div>
                 </div>
                 <AnimatePresence>
-                  {isCatOpen && (
+                  {isEduOpen && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="absolute z-[60] w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden"
+                      className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden"
                     >
                       <div className="p-2 border-b bg-gray-50">
                         <input
                           type="text"
-                          placeholder="Search category..."
+                          placeholder="Search qualification..."
                           className="w-full p-2 text-[11px] font-medium border rounded-lg outline-none focus:border-[#00004d]"
-                          value={catSearch}
-                          onChange={(e) => setCatSearch(e.target.value)}
+                          value={eduSearch}
+                          onChange={(e) => setEduSearch(e.target.value)}
                           onClick={(e) => e.stopPropagation()}
                         />
                       </div>
 
                       <div className="max-h-64 overflow-y-auto scrollbar-thin">
-                        {filteredCategories.length > 0 ? (
-                          filteredCategories.map((opt) => (
+                        {filteredEducation.length > 0 ? (
+                          filteredEducation.map((opt) => (
                             <div
                               key={opt}
                               onClick={() => {
-                                setFormData(prev => ({ ...prev, category: opt }));
-                                setIsCatOpen(false);
-                                setCatSearch("");
+                                setFormData(prev => ({ ...prev, education: opt }));
+                                setIsEduOpen(false);
+                                setEduSearch("");
                               }}
                               className={`px-4 py-3 text-[11px] font-bold border-b border-gray-50 last:border-0 transition-colors
-                    ${formData.category === opt ? 'bg-blue-50 text-[#00004d]' : 'text-gray-600 hover:bg-gray-50'}`}
+                    ${formData.education === opt ? 'bg-blue-50 text-[#00004d]' : 'text-gray-600 hover:bg-gray-50'}`}
                             >
                               {opt}
                             </div>
@@ -562,182 +650,128 @@ export default function MobileResponsiveJobForm() {
                   )}
                 </AnimatePresence>
               </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-[#00004d] ml-1 block">Job Type</label>
-              <select name="jobtype" value={formData.jobtype} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none">
-                {JOB_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-              </select>
-            </div>
-        </div>
-        <section className="space-y-3">
-          <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3">
-            <h2 className="text-[#00004d] font-bold text-lg tracking-wider">Education</h2>
-          </div>
-          <div className="relative" ref={eduRef}>
-            <div
-              onClick={() => setIsEduOpen(!isEduOpen)}
-              className="w-full bg-[#f8fafc] p-4 rounded-xl border border-gray-100 flex justify-between items-center cursor-pointer min-h-[56px]"
-            >
-              <span className={`font-bold ${formData.education ? 'text-[#00004d] text-[11px]' : 'text-gray-400 text-[11px]'}`}>
-                {formData.education || "Select Your Qualification"}
-              </span>
-              <div className={`transition-transform duration-200 ${isEduOpen ? 'rotate-180' : ''}`}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00004d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
-              </div>
-            </div>
-            <AnimatePresence>
-              {isEduOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden"
-                >
-                  <div className="p-2 border-b bg-gray-50">
-                    <input
-                      type="text"
-                      placeholder="Search qualification..."
-                      className="w-full p-2 text-[11px] font-medium border rounded-lg outline-none focus:border-[#00004d]"
-                      value={eduSearch}
-                      onChange={(e) => setEduSearch(e.target.value)}
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  </div>
-
-                  <div className="max-h-64 overflow-y-auto scrollbar-thin">
-                    {filteredEducation.length > 0 ? (
-                      filteredEducation.map((opt) => (
-                        <div
-                          key={opt}
-                          onClick={() => {
-                            setFormData(prev => ({ ...prev, education: opt }));
-                            setIsEduOpen(false);
-                            setEduSearch("");
-                          }}
-                          className={`px-4 py-3 text-[11px] font-bold border-b border-gray-50 last:border-0 transition-colors
-                    ${formData.education === opt ? 'bg-blue-50 text-[#00004d]' : 'text-gray-600 hover:bg-gray-50'}`}
-                        >
-                          {opt}
-                        </div>
-                      ))
-                    ) : (
-                      <div className="p-4 text-[11px] text-gray-400 text-center">No results found</div>
-                    )}
-                  </div>
+              {formData.education === "Other" && (
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2">
+                  <input
+                    required
+                    name="otherEducation"
+                    value={formData.otherEducation}
+                    onChange={handleChange}
+                    placeholder="Please specify your qualification"
+                    className="w-full bg-[#f8fafc] border-2 border-blue-100 rounded-xl p-4 text-sm font-bold outline-none focus:border-[#00004d] transition-all"
+                  />
                 </motion.div>
               )}
-            </AnimatePresence>
-          </div>
-        </section>
-        <section className="space-y-6">
-          <div className="flex items-center justify-between border-l-4 border-[#00004d] pl-3">
-            <h2 className="text-[#00004d] font-bold text-lg tracking-wider">Experience</h2>
-            <label className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-full cursor-pointer border border-gray-100">
-              <input type="checkbox" checked={isFresher} onChange={(e) => setIsFresher(e.target.checked)} className="accent-[#00004d] w-4 h-4" />
-              <span className="text-[10px] font-bold text-[#00004d]">I am a Fresher</span>
-            </label>
-          </div>
-
-          {!isFresher && (
-            <div className="space-y-6 bg-gray-50/50 p-5 md:p-8 rounded-[30px] border border-gray-100">
-              <div className="flex items-center gap-2 bg-[#00004d] text-white self-start px-4 py-2 rounded-xl w-fit">
-                <Briefcase size={14} />
-                <span className="text-xs font-bold tracking-tight">Total: {calculatedTotalYears} Years Exp</span>
+            </section>
+            <section className="space-y-6">
+              <div className="flex items-center justify-between border-l-4 border-[#00004d] pl-3">
+                <h2 className="text-[#00004d] font-bold text-lg tracking-wider">Experience</h2>
+                <label className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-full cursor-pointer border border-gray-100">
+                  <input type="checkbox" checked={isFresher} onChange={(e) => setIsFresher(e.target.checked)} className="accent-[#00004d] w-4 h-4" />
+                  <span className="text-[10px] font-bold text-[#00004d]">I am a Fresher</span>
+                </label>
               </div>
 
-              {experienceList.map((exp, index) => (
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  key={index}
-                  className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-4 relative"
-                >
-                  {experienceList.length > 1 && (
-                    <button type="button" onClick={() => removeExperience(index)} className="absolute top-4 right-4 text-red-400 hover:text-red-600">
-                      <Trash2 size={18} />
-                    </button>
-                  )}
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-bold text-gray-400 ml-1">Company/Organization Name</label>
-                      <input required value={exp.companyName} onChange={(e) => handleExperienceChange(index, 'companyName', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-bold text-gray-400 ml-1">Designation</label>
-                      <input required value={exp.designation} onChange={(e) => handleExperienceChange(index, 'designation', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-bold text-gray-400 ml-1">Start Date</label>
-                      <input required type="date" value={exp.startDate} onChange={(e) => handleExperienceChange(index, 'startDate', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-bold text-gray-400 ml-1">End Date</label>
-                      <input required={!exp.isCurrentJob} disabled={exp.isCurrentJob} type="date" value={exp.endDate} onChange={(e) => handleExperienceChange(index, 'endDate', e.target.value)} className={`w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none ${exp.isCurrentJob ? 'opacity-50' : ''}`} />
-                      <label className="flex items-center gap-2 mt-2 ml-1 cursor-pointer">
-                        <input type="checkbox" checked={exp.isCurrentJob} onChange={(e) => handleExperienceChange(index, 'isCurrentJob', e.target.checked)} className="w-3 h-3 accent-[#0E8449]" />
-                        <span className="text-[10px] font-bold text-gray-500">Currently Working Here</span>
-                      </label>
-                    </div>
+              {!isFresher && (
+                <div className="space-y-6 bg-gray-50/50 p-5 md:p-8 rounded-[30px] border border-gray-100">
+                  <div className="flex items-center gap-2 bg-[#00004d] text-white self-start px-4 py-2 rounded-xl w-fit">
+                    <Briefcase size={14} />
+                    <span className="text-xs font-bold tracking-tight">Total: {calculatedTotalYears} Years Exp</span>
                   </div>
-                </motion.div>
-              ))}
 
-              <button type="button" onClick={addExperience} className="w-full flex items-center justify-center gap-2 py-4 border-2 border-dashed border-gray-200 rounded-2xl text-gray-400 font-bold text-xs hover:border-[#00004d] hover:text-[#00004d] transition-all">
-                <Plus size={16} /> Add Another Experience
-              </button>
+                  {experienceList.map((exp, index) => (
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      key={index}
+                      className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-4 relative"
+                    >
+                      {experienceList.length > 1 && (
+                        <button type="button" onClick={() => removeExperience(index)} className="absolute top-4 right-4 text-red-400 hover:text-red-600">
+                          <Trash2 size={18} />
+                        </button>
+                      )}
 
-              <div className="space-y-2 mt-6">
-                <label className="text-[10px] font-bold text-[#00004d] ml-1 block tracking-widest">Achievements / Key Responsibilities</label>
-                <textarea value={formData.achievements} name="achievements" onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none border border-gray-100" placeholder="Describe your main projects or achievements..." rows={3} />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-[9px] font-bold text-gray-400 ml-1">Company/Organization Name</label>
+                          <input required value={exp.companyName} onChange={(e) => handleExperienceChange(index, 'companyName', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[9px] font-bold text-gray-400 ml-1">Designation</label>
+                          <input required value={exp.designation} onChange={(e) => handleExperienceChange(index, 'designation', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[9px] font-bold text-gray-400 ml-1">Start Date</label>
+                          <input required type="date" value={exp.startDate} onChange={(e) => handleExperienceChange(index, 'startDate', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[9px] font-bold text-gray-400 ml-1">End Date</label>
+                          <input required={!exp.isCurrentJob} disabled={exp.isCurrentJob} type="date" value={exp.endDate} onChange={(e) => handleExperienceChange(index, 'endDate', e.target.value)} className={`w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none ${exp.isCurrentJob ? 'opacity-50' : ''}`} />
+                          <label className="flex items-center gap-2 mt-2 ml-1 cursor-pointer">
+                            <input type="checkbox" checked={exp.isCurrentJob} onChange={(e) => handleExperienceChange(index, 'isCurrentJob', e.target.checked)} className="w-3 h-3 accent-[#0E8449]" />
+                            <span className="text-[10px] font-bold text-gray-500">Currently Working Here</span>
+                          </label>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+
+                  <button type="button" onClick={addExperience} className="w-full flex items-center justify-center gap-2 py-4 border-2 border-dashed border-gray-200 rounded-2xl text-gray-400 font-bold text-xs hover:border-[#00004d] hover:text-[#00004d] transition-all">
+                    <Plus size={16} /> Add Another Experience
+                  </button>
+
+                  <div className="space-y-2 mt-6">
+                    <label className="text-[10px] font-bold text-[#00004d] ml-1 block tracking-widest">Achievements / Key Responsibilities</label>
+                    <textarea value={formData.achievements} name="achievements" onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none border border-gray-100" placeholder="Describe your main projects or achievements..." rows={3} />
+                  </div>
+                </div>
+              )}
+            </section>
+            <section className="space-y-6">
+              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Skills</h2></div>
+              <input type="text" name="skills" value={formData.skills} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Your Skills" />
+            </section>
+            <section className="space-y-6">
+              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Contact Info</h2></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
+                <div className="space-y-1.5 md:col-span-2">
+                  <label className="text-[10px] font-bold text-[#00004d] ml-1 flex items-center gap-1"><Mail size={12} /> Email Address</label>
+                  <input type="email" required name="email" value={formData.email} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="example@mail.com" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-[#00004d] ml-1 flex items-center gap-1"><Phone size={12} /> Phone Number</label>
+                  <input required name="phone" value={formData.phone} onChange={(e) => handlePhoneChange(e, "phone")} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="+92 300 0000000" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-[#00004d] ml-1 flex items-center gap-1"><MessageCircle size={12} /> WhatsApp Number</label>
+                  <input required name="whatsapp" value={formData.whatsapp} onChange={(e) => handlePhoneChange(e, "whatsapp")} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="+92 300 0000000" />
+                </div>
               </div>
+            </section>
+            <section className="space-y-6">
+              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Salary Demand</h2></div>
+              <input type="text" name="salaryDemand" value={formData.salaryDemand} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Mention your desired salary range" />
+            </section>
+            <div className="flex flex-col items-center gap-8 pt-10 border-t">
+              <button type="button"
+                onClick={() => router.push('/readpolicy')} className="w-80% md:w-auto bg-[#5DBB63] text-white px-12 py-3.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-all shadow-sm">
+                Read Privacy Policy
+              </button>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${formData.agreeTerms ? 'bg-[#00004d] border-white' : 'bg-white border-gray-200'}`}>
+                  <input type="checkbox" className="hidden" checked={formData.agreeTerms} onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })} />
+                  {formData.agreeTerms && <Check size={14} className="text-white" />}
+                </div>
+                <span className="text-[10px] font-bold text-gray-400">I agree to the privacy policy</span>
+              </label>
+              <button disabled={loading || submitted} className={`w-full md:w-80 font-bold py-5 rounded-2xl shadow-xl tracking-[0.2em] text-xs transition-all flex justify-center items-center gap-2 ${submitted ? 'bg-green-600 text-white' : 'bg-[#00004d] text-white active:scale-95'} ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}>
+                {loading ? <Loader2 className="animate-spin" size={18} /> : submitted ? <CheckCircle size={18} /> : "Submit Application"}
+                {loading ? " Submitting..." : submitted ? " Submitted!" : ""}
+              </button>
             </div>
-          )}
-        </section>
-        <section className="space-y-6">
-          <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Skills</h2></div>
-          <input type="text" name="skills" value={formData.skills} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Your Skills" />
-        </section>
-        <section className="space-y-6">
-          <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Contact Info</h2></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
-            <div className="space-y-1.5 md:col-span-2">
-              <label className="text-[10px] font-bold text-[#00004d] ml-1 flex items-center gap-1"><Mail size={12} /> Email Address</label>
-              <input type="email" required name="email" value={formData.email} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="example@mail.com" />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-[#00004d] ml-1 flex items-center gap-1"><Phone size={12} /> Phone Number</label>
-              <input required name="phone" value={formData.phone} onChange={(e) => handlePhoneChange(e, "phone")} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="+92 300 0000000" />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-[#00004d] ml-1 flex items-center gap-1"><MessageCircle size={12} /> WhatsApp Number</label>
-              <input required name="whatsapp" value={formData.whatsapp} onChange={(e) => handlePhoneChange(e, "whatsapp")} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="+92 300 0000000" />
-            </div>
-          </div>
-        </section>
-         <section className="space-y-6">
-          <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Salary Demand</h2></div>
-          <input type="text" name="salaryDemand" value={formData.salaryDemand} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Mention your desired salary range" />
-        </section>
-        <div className="flex flex-col items-center gap-8 pt-10 border-t">
-          <button type="button"
-            onClick={() => router.push('/readpolicy')} className="w-80% md:w-auto bg-[#5DBB63] text-white px-12 py-3.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-all shadow-sm">
-            Read Privacy Policy
-          </button>
-          <label className="flex items-center gap-3 cursor-pointer">
-            <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${formData.agreeTerms ? 'bg-[#00004d] border-white' : 'bg-white border-gray-200'}`}>
-              <input type="checkbox" className="hidden" checked={formData.agreeTerms} onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })} />
-              {formData.agreeTerms && <Check size={14} className="text-white" />}
-            </div>
-            <span className="text-[10px] font-bold text-gray-400">I agree to the privacy policy</span>
-          </label>
-          <button disabled={loading || submitted} className={`w-full md:w-80 font-bold py-5 rounded-2xl shadow-xl tracking-[0.2em] text-xs transition-all flex justify-center items-center gap-2 ${submitted ? 'bg-green-600 text-white' : 'bg-[#00004d] text-white active:scale-95'} ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}>
-            {loading ? <Loader2 className="animate-spin" size={18} /> : submitted ? <CheckCircle size={18} /> : "Submit Application"}
-            {loading ? " Submitting..." : submitted ? " Submitted!" : ""}
-          </button>
+          </form>
         </div>
-      </form>
-    </div>
       </div >
     </div >
   );
