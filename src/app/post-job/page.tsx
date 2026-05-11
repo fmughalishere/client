@@ -16,6 +16,7 @@ export default function PostJobPage() {
 
   const [formData, setFormData] = useState({
     category: "",
+    otherCategory: "",
     city: "",
     salary: "",
     type: "Full-Time",
@@ -23,6 +24,7 @@ export default function PostJobPage() {
     description: "",
     skills: "",
     education: "",
+    otherEducation: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -67,11 +69,13 @@ export default function PostJobPage() {
   }, []);
 
   const filteredCategories = useMemo(() => {
-    return JOB_CATEGORIES.filter(opt => opt.toLowerCase().includes(catSearch.toLowerCase()));
+    const filtered = JOB_CATEGORIES.filter(opt => opt.toLowerCase().includes(catSearch.toLowerCase()));
+    return ["Other", ...filtered];
   }, [catSearch]);
 
   const filteredEducation = useMemo(() => {
-    return EDUCATION_OPTIONS.filter(opt => opt.toLowerCase().includes(eduSearch.toLowerCase()));
+    const filtered = EDUCATION_OPTIONS.filter(opt => opt.toLowerCase().includes(eduSearch.toLowerCase()));
+    return ["Other", ...filtered];
   }, [eduSearch]);
 
   const filteredCities = useMemo(() => {
@@ -80,8 +84,11 @@ export default function PostJobPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const finalCategory = formData.category === "Other" ? formData.otherCategory : formData.category;
+    const finalEducation = formData.education === "Other" ? formData.otherEducation : formData.education;
+
     if (userStatus === "guest") {
-      localStorage.setItem("pendingJobPost", JSON.stringify(formData));
+      localStorage.setItem("pendingJobPost", JSON.stringify({ ...formData, category: finalCategory, education: finalEducation }));
       router.push("/company-register");
       return;
     }
@@ -97,6 +104,8 @@ export default function PostJobPage() {
         },
         body: JSON.stringify({
           ...formData,
+          category: finalCategory,
+          education: finalEducation,
           skills: formData.skills.split(",").map(s => s.trim())
         }),
       });
@@ -161,7 +170,7 @@ export default function PostJobPage() {
                     <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-2xl overflow-hidden">
                       <div className="p-3 bg-gray-50 border-b border-gray-100 flex items-center gap-2">
                         <Search size={14} className="text-gray-400" />
-                        <input type="text" placeholder="Search city..." className="bg-transparent text-xs font-bold outline-none w-full" value={citySearch} onChange={(e) => setCatSearch(e.target.value)} onClick={(e) => e.stopPropagation()} />
+                        <input type="text" placeholder="Search city..." className="bg-transparent text-xs font-bold outline-none w-full" value={citySearch} onChange={(e) => setCitySearch(e.target.value)} onClick={(e) => e.stopPropagation()} />
                       </div>
                       <div className="max-h-60 overflow-y-auto">
                         {filteredCities.map((city) => (
@@ -175,7 +184,7 @@ export default function PostJobPage() {
                 </AnimatePresence>
               </div>
               <div className="relative" ref={catRef}>
-                <label className={labelStyle}><List size={14} strokeWidth={3} />Job Title</label>
+                <label className={labelStyle}><List size={14} strokeWidth={3} />Job Title / Category</label>
                 <div onClick={() => setIsCatOpen(!isCatOpen)} className={`${inputStyle} flex justify-between items-center cursor-pointer`}>
                   <span className={formData.category ? "text-[#00004d]" : "text-gray-300"}>
                     {formData.category || "Select Category"}
@@ -199,6 +208,18 @@ export default function PostJobPage() {
                     </motion.div>
                   )}
                 </AnimatePresence>
+                {formData.category === "Other" && (
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-3">
+                    <input
+                      required
+                      type="text"
+                      placeholder="Specify Job Title"
+                      className={inputStyle}
+                      value={formData.otherCategory}
+                      onChange={(e) => setFormData({ ...formData, otherCategory: e.target.value })}
+                    />
+                  </motion.div>
+                )}
               </div>
               <div className="relative" ref={eduRef}>
                 <label className={labelStyle}><GraduationCap size={14} strokeWidth={3} />Education</label>
@@ -225,6 +246,18 @@ export default function PostJobPage() {
                     </motion.div>
                   )}
                 </AnimatePresence>
+                {formData.education === "Other" && (
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-3">
+                    <input
+                      required
+                      type="text"
+                      placeholder="Specify Education Qualification"
+                      className={inputStyle}
+                      value={formData.otherEducation}
+                      onChange={(e) => setFormData({ ...formData, otherEducation: e.target.value })}
+                    />
+                  </motion.div>
+                )}
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
