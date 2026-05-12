@@ -132,12 +132,12 @@ const Navbar = () => {
       </div>
     </nav>
       <div className="bg-[#00004d] text-white flex items-center justify-around py-2 text-[10px]">
-        <Link href="/" className="flex items-center gap-1 hover:opacity-80">
+        <Link href="/" className="flex items-center gap-2 hover:opacity-80">
           <AiFillHome size={18} style={{ color: "#5DBB63" }} />
           Home
         </Link>
         <div className="w-[1px] h-4 bg-white"></div>
-        <Link href={dashboardLink} className="flex items-center gap-1 hover:opacity-80">
+        <Link href={dashboardLink} className="flex items-center gap-2 hover:opacity-80">
           <FaUserGear size={18} style={{ color: "#5DBB63" }} />
           My Control Panel
         </Link>
@@ -146,7 +146,7 @@ const Navbar = () => {
 
         <button
           onClick={() => setShowInstallBox(true)}
-          className="flex items-center gap-1 hover:opacity-80"
+          className="flex items-center gap-2 hover:opacity-80"
         >
           <PlusCircle size={18} style={{ color: "#5DBB63" }} />
           Add to Home Screen

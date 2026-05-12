@@ -131,9 +131,9 @@ export default function HomePage() {
     const years = Math.floor(totalMonths / 12);
     const months = totalMonths % 12;
     if (years > 0) {
-      return `Exp. ${years}${months > 0 ? `.${Math.round(months / 1.2)}` : ""} ${years === 1 && months === 0 ? "Year" : "Years"}`;
+      return `Experience. ${years}${months > 0 ? `.${Math.round(months / 1.2)}` : ""} ${years === 1 && months === 0 ? "Year" : "Years"}`;
     } else {
-      return `Exp ${months} Months`;
+      return `Experience. ${months} Months`;
     }
   };
 
@@ -192,10 +192,10 @@ export default function HomePage() {
               <div className="relative flex items-center h-[42px] bg-white rounded-2xl text-[#00004d] shadow-lg px-4">
                 <div className="shrink-0 z-10">{action.icon}</div>
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="font-bold text-[14px] whitespace-nowrap">{action.label}</span>
+                  <span className="text-[15px] font-black text-[#00004d] leading-tight truncate">{action.label}</span>
                 </div>
                 <div className="ml-auto flex items-center gap-2 z-10">
-                  <span className="font-bold text-[11px] uppercase"><ChevronRight size={18}/></span>
+                  <span className="font-bold"><ChevronRight size={24}/></span>
                 </div>
               </div>
             </button>
@@ -244,9 +244,9 @@ export default function HomePage() {
                     Profession:{app.category || "Consultant"}
                   </p>
                   <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00004d] whitespace-nowrap">
-                    <span>Edu.{app.education || "BSIT"}</span>
+                    <span>Education.{app.education || "BSIT"}</span>
                   </div>
-                  <p className="text-[10px] font-bold text-[#00004d] mt-0.5 tracking-[0.1em]">
+                  <p className="text-[10px] font-bold text-[#00004d] mt-0.5">
                     {calculateTotalExperience(app.experience, app.isFresher)}
                   </p>
                   <div className="flex items-center justify-between">
