@@ -135,32 +135,40 @@ export default function CompanyRegister() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      return toast.error("Passwords do not match!");
+      return toast.error("Passwords match nahi kar rahay!");
     }
     if (formData.password.length < 6) {
-      return toast.error("Password too short (min 6 chars)");
+      return toast.error("Password kam se kam 6 characters ka hona chahiye");
     }
     if (!formData.city) {
-      return toast.error("Please select a city");
+      return toast.error("Meharbani karke city select karein");
     }
 
     setLoading(true);
     try {
       const response = await fetch("https://easyjobspk.onrender.com/api/auth/company-register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, logo: logoPreview }),
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ 
+          ...formData, 
+          logo: logoPreview
+        }),
       });
 
       const data = await response.json();
+
       if (response.ok) {
         setIsEmailSent(true);
-        toast.success("Verification link sent!");
+        toast.success(data.message || "Verification link sent to your email!");
       } else {
         toast.error(data.message || "Registration failed");
       }
     } catch (err: any) {
-      toast.error("Network error! Try again later.");
+      console.error("Submit Error:", err);
+      toast.error("Network error! Server connect nahi ho raha.");
     } finally {
       setLoading(false);
     }
@@ -175,7 +183,7 @@ export default function CompanyRegister() {
             <div className="relative w-full h-full md:w-[500px] md:h-[500px] md:rounded-3xl overflow-hidden shadow-2xl">
               <Cropper image={imageToCrop!} crop={crop} zoom={zoom} aspect={1} onCropChange={setCrop} onCropComplete={onCropComplete} onZoomChange={setZoom} />
             </div>
-            <div className="absolute bottom-10 w-full max-w-md px-6 space-y-4">
+            <div className="absolute bottom-10 w-full max-md px-6 space-y-4">
               <input type="range" value={zoom} min={1} max={3} step={0.1} onChange={(e) => setZoom(Number(e.target.value))} className="w-full h-2 bg-white/20 rounded-lg appearance-none accent-white" />
               <div className="flex gap-3">
                 <button onClick={() => setIsCropping(false)} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold backdrop-blur-md">CANCEL</button>
@@ -308,7 +316,7 @@ export default function CompanyRegister() {
                   <p className="text-[11px] font-bold text-gray-500 leading-relaxed"> I agree to the <span className="text-[#00004d] underline">Terms of Service</span> and authorize account verification via the business email. </p>
                 </div>
 
-                <button type="submit" disabled={!agreed || loading} className={`w-full py-6 rounded-3xl font-black text-s tracking-[0.2em] transition-all flex items-center justify-center gap-4 shadow-2xl active:scale-95 ${agreed && !loading ? 'bg-[#5DBB63] text-white' : 'bg-gray-100 text-gray-300 cursor-not-allowed'}`}>
+                <button type="submit" disabled={!agreed || loading} className={`w-full py-6 rounded-3xl font-black text-s tracking-[0.2em] transition-all flex items-center justify-center gap-4 shadow-2xl active:scale-95 ${agreed && !loading ? 'bg-[#5DBB63] text-white hover:bg-green-600 shadow-green-100' : 'bg-gray-100 text-gray-300 cursor-not-allowed shadow-none'}`}>
                   {loading ? "Registering..." : "Register Company"} {!loading && <Mail size={20} />}
                 </button>
               </form>
