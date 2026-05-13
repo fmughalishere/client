@@ -446,11 +446,11 @@ export default function MobileResponsiveJobForm() {
         message={modalContent.message}
         onAction={handleRedirect}
       />
-      <div className="bg-[#5DBB63] pt-12 pb-20 md:pt-16 md:pb-24 rounded-b-[40px] md:rounded-b-[60px] text-center border-b border-blue-100 px-4">
-        <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-white text-3xl md:text-5xl font-bold tracking-tight">Apply for a Job</motion.h1>
-        <p className="text-white/60 font-bold text-[10px] md:text-xs mt-3 tracking-[0.2em] md:tracking-[0.4em] uppercase">Create your professional profile</p>
+      <div className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
+        <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-[#5DBB63] text-3xl md:text-2xl font-bold">Apply for a Job</motion.h1>
+        <p className="text-[#5DBB63] font-bold text-[13px] md:text-xs mt-3 tracking-[0.1em] ">Create your professional profile</p>
       </div>
-      <div className="max-w-4xl mx-auto -mt-12 md:-mt-16 px-4">
+      <div className="max-w-4xl mx-auto -mt-13 md:-mt-16 px-4">
         <div className="bg-white rounded-[35px] md:rounded-[45px] shadow-xl overflow-hidden border border-white">
           <form onSubmit={handleSubmit} className="p-6 md:p-14 space-y-12 md:space-y-20">
             <section className="flex flex-col items-center gap-6">
@@ -756,7 +756,7 @@ export default function MobileResponsiveJobForm() {
             </section>
             <div className="flex flex-col items-center gap-8 pt-10 border-t">
               <button type="button"
-                onClick={() => router.push('/readpolicy')} className="w-80% md:w-auto bg-[#5DBB63] text-white px-12 py-3.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-all shadow-sm">
+                onClick={() => router.push('/readpolicy')} className="w-full md:w-auto bg-[#00004d] text-white px-12 py-3.5 rounded-[13px] text-[13px] font-bold tracking-[0.1em] active:scale-95 transition-all shadow-sm">
                 Read Privacy Policy
               </button>
               <label className="flex items-center gap-3 cursor-pointer">
@@ -766,7 +766,7 @@ export default function MobileResponsiveJobForm() {
                 </div>
                 <span className="text-[10px] font-bold text-gray-400">I agree to the privacy policy</span>
               </label>
-              <button disabled={loading || submitted} className={`w-full md:w-80 font-bold py-5 rounded-2xl shadow-xl tracking-[0.2em] text-xs transition-all flex justify-center items-center gap-2 ${submitted ? 'bg-green-600 text-white' : 'bg-[#00004d] text-white active:scale-95'} ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}>
+              <button disabled={loading || submitted} className={`w-80% md:w-auto bg-[#5DBB63] text-white px-12 py-3.5 rounded-2xl text-[13px] font-bold tracking-[0.1em] active:scale-95 transition-all shadow-sm'} ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}>
                 {loading ? <Loader2 className="animate-spin" size={18} /> : submitted ? <CheckCircle size={18} /> : "Submit Application"}
                 {loading ? " Submitting..." : submitted ? " Submitted!" : ""}
               </button>
