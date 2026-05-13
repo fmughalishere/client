@@ -62,6 +62,14 @@ export default function JobsPage() {
     }
   };
 
+     const handleSearch = (selectedQuery?: string) => {
+    const finalQuery = selectedQuery || searchQuery;
+    if (finalQuery.trim()) {
+      setShowSuggestions(false);
+      router.push(`/jobs?search=${finalQuery}`);
+    }
+  };
+
   const handleSelectSuggestion = (item: string) => {
     setSearchQuery(item);
     setShowSuggestions(false);
@@ -79,38 +87,47 @@ export default function JobsPage() {
 
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-20 font-sans">
-      <section className="bg-[#5DBB63] rounded-b-[35px] pt-10 pb-12 px-6 shadow-sm relative z-30">
-        <div className="max-w-2xl mx-auto text-center">
+      <section className="px-0 pt-0 relative">
+        <div className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
           <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full mb-3 shadow-sm border border-[#00004d]/10">
-            <Sparkles size={12} className="text-[#00004d]" />
-            <span className="text-[9px] font-black text-[#00004d] tracking-widest ">Explore Jobs</span>
+              <Sparkles size={12} className="text-[#00004d]" />
+              <span className="text-[9px] font-black text-[#00004d] tracking-widest">Explore Jobs</span>
+            </div>
+          <div className="text-center mb-1 mt-0 relative z-10">
+            <h1 className="text-[26px] font-black text-[#5DBB63] leading-tight">Find Your Dream <br /> Career Today</h1>
           </div>
-          <h1 className="text-2xl font-black text-white leading-tight mb-5">
-            Find Your Dream <br /> Career Today
-          </h1>
-          <div className="relative max-w-md mx-auto" ref={searchRef}>
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-              <Search className="h-4 w-4 text-[#00004d]" strokeWidth={3} />
+        </div>
+          <div className="relative -mt-7 flex justify-center px-6 z-30" ref={searchRef}>
+          <div className="relative w-full max-w-[280px]">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-[#00004d]" strokeWidth={3} />
             </div>
             <input
               type="text"
-              placeholder="Search jobs, cities..."
-              className="block w-full pl-10 pr-4 py-2 bg-white border border-[#00004d] rounded-full shadow-md text-xs text-[#00004d] font-bold outline-none"
               value={searchQuery}
               onChange={handleInputChange}
               onFocus={() => searchQuery.length > 0 && setShowSuggestions(true)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              placeholder="Search jobs... "
+              className="block w-full pl-11 pr-14 py-2.5 bg-white rounded-[15px] shadow-lg text-sm text-[#00004d] font-bold outline-none"
             />
-
+            <div className="absolute inset-y-0 right-0 flex items-center pr-4 gap-2">
+              <div className="h-5 w-[1.5px] bg-[#00004d]"></div>
+              <button onClick={() => handleSearch()} className="text-[#00004d] font-black text-[15px] hover:opacity-70">Go</button>
+            </div>
             {showSuggestions && suggestions.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden text-left z-50">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden text-left">
                 {suggestions.map((item, idx) => (
                   <div
                     key={idx}
-                    onClick={() => handleSelectSuggestion(item)}
-                    className="px-4 py-3 flex items-center gap-3 hover:bg-gray-50 cursor-pointer border-b last:border-none border-gray-50 transition-colors"
+                    onClick={() => {
+                      setSearchQuery(item);
+                      handleSearch(item);
+                    }}
+                    className="px-4 py-3 flex items-center gap-3 hover:bg-gray-100 cursor-pointer border-b last:border-none border-gray-50 transition-colors"
                   >
-                    <Search size={12} className="text-gray-400" />
-                    <span className="text-[11px] font-bold text-[#00004d]">{item}</span>
+                    <Search className="h-3 w-3 text-gray-400" />
+                    <span className="text-sm font-semibold text-[#00004d]">{item}</span>
                   </div>
                 ))}
               </div>
@@ -118,7 +135,6 @@ export default function JobsPage() {
           </div>
         </div>
       </section>
-
       <section className="max-w-[360px] mx-auto px-4 mt-6 relative z-20">
         <div className="flex flex-col gap-3">
           {loading ? (
