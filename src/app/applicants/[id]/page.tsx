@@ -264,7 +264,7 @@ export default function ApplicantDetail() {
       />
 
       <div className="max-w-5xl mx-auto space-y-6">
-        <div className="bg-[#5DBB63] text-white p-6 md:p-10 rounded-[40px] shadow-lg flex items-center gap-6 overflow-hidden">
+        <div className="bg-white text-[#5DBB63] p-6 md:p-10 rounded-[40px] shadow-lg flex items-center gap-6 overflow-hidden">
           <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white/20 overflow-hidden bg-white shadow-xl flex-shrink-0 flex items-center justify-center">
             {applicant.image === "male" ? (
               <img src={MALE_ICON} className="w-[75%] h-[75%] object-contain" style={navyBlueFilter} alt="Male" />

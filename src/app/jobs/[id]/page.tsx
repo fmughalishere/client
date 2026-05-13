@@ -63,20 +63,20 @@ export default function JobDetailPage() {
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-20 font-sans text-[#00004d]">
       <Toaster position="top-center" />
-      <section className="bg-[#5DBB63] px-6 pt-12 pb-24 rounded-b-[50px] relative text-center">
+      <section className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden mb-13">
         <button onClick={handleShare} className="absolute top-6 right-6 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white backdrop-blur-sm transition-all active:scale-90">
           <Share2 size={20} />
         </button>
         
         <div className="mb-3 flex justify-center items-center gap-2">
-            <p className="text-white text-[11px] font-bold  tracking-[0.3em]">Elevate Your Career in</p>
+            <p className="text-[#5DBB63] text-[11px] font-bold  tracking-[0.3em]">Elevate Your Career in</p>
         </div>
 
-        <h2 className="text-3xl font-black text-white leading-tight px-2">
+        <h2 className="text-3xl font-black text-[#5DBB63] leading-tight px-2">
           {job.category}
         </h2>
         
-        <p className="mt-4 text-white text-sm font-medium opacity-80">
+        <p className="mt-2 text-[#5DBB63] text-sm font-medium opacity-80">
           Unlock your potential with this {job.type} role
         </p>
       </section>
@@ -89,11 +89,12 @@ export default function JobDetailPage() {
           { label: "💼 EXPERIENCE LEVEL", value: job.experience || "Fresh / Entry Level" },
           { label: "📁 JOB CATEGORY", value: job.category },
           { label: "⏱️ EMPLOYMENT TYPE", value: job.type }
-        ].map((item, idx) => (
-          <div key={idx} className="bg-white p-5 rounded-2xl shadow-lg shadow-black/5 flex flex-col gap-1">
-            <h4 className="text-[10px] font-black text-[#5DBB63] tracking-widest  mb-1">{item.label}</h4>
-            <p className="text-base font-black text-[#00004d] leading-none">{item.value}</p>
+        ].map((item, idx) => (<>
+            <h4 className="text-[10px] font-black text-[#00004d] tracking-widest">{item.label}</h4>
+            <div key={idx} className="bg-white p-5 rounded-2xl shadow-lg shadow-black/5 flex flex-col gap-1">
+            <p className="text-base font-black text-[#5DBB63] leading-none">{item.value}</p>
           </div>
+          </>
         ))}
         <div className="pt-6 border-t border-gray-100">
           <h3 className="text-sm font-black text-[#00004d]  tracking-widest mb-4 inline-block border-b-2 border-[#5DBB63] pb-1">
