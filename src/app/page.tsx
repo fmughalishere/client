@@ -69,8 +69,8 @@ export default function HomePage() {
     };
     document.addEventListener("mousedown", handleClickOutside);
 
-    return () => { 
-      socket.disconnect(); 
+    return () => {
+      socket.disconnect();
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [fetchApplicants]);
@@ -81,8 +81,8 @@ export default function HomePage() {
 
     if (value.trim().length > 0) {
       const filtered = applicants
-        .filter((app) => 
-          app.fullName.toLowerCase().includes(value.toLowerCase()) || 
+        .filter((app) =>
+          app.fullName.toLowerCase().includes(value.toLowerCase()) ||
           (app.category && app.category.toLowerCase().includes(value.toLowerCase()))
         )
         .map((app) => (app.category && app.category.toLowerCase().includes(value.toLowerCase()) ? app.category : app.fullName));
@@ -146,7 +146,7 @@ export default function HomePage() {
             <h1 className="text-[26px] font-black text-[#5DBB63] leading-tight">Get hired easy</h1>
           </div>
         </div>
-          <div className="relative -mt-7 flex justify-center px-6 z-30" ref={searchRef}>
+        <div className="relative -mt-7 flex justify-center px-6 z-30" ref={searchRef}>
           <div className="relative w-full max-w-[280px]">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-[#00004d]" strokeWidth={3} />
@@ -184,18 +184,24 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
+      
       <section className="max-w-md mx-auto px-6 mt-6 relative z-10">
         <div className="flex flex-col gap-2.5 items-center justify-center w-full">
           {quickActions.map((action, i) => (
-            <button key={i} onClick={() => router.push(action.href)} className="w-full max-w-[220px] transition-transform active:scale-95">
+            <button
+              key={i}
+              onClick={() => router.push(action.href)}
+              className="w-full max-w-[220px] transition-transform active:scale-95"
+            >
               <div className="relative flex items-center h-[42px] bg-white rounded-2xl text-[#00004d] shadow-lg px-4">
-                <div className="shrink-0 z-10">{action.icon}</div>
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="text-[15px] font-black text-[#00004d] leading-tight truncate">{action.label}</span>
+                <div className="flex items-center gap-2 z-10">
+                  <div className="shrink-0">{action.icon}</div>
+                  <span className="text-[15px] font-black text-[#00004d] leading-tight truncate">
+                    {action.label}
+                  </span>
                 </div>
-                <div className="ml-auto flex items-center gap-2 z-10">
-                  <span className="font-bold"><ChevronRight size={24}/></span>
+                <div className="ml-auto flex items-center z-10">
+                  <ChevronRight size={24} />
                 </div>
               </div>
             </button>
@@ -268,10 +274,10 @@ export default function HomePage() {
             <p className="text-center text-gray-400 font-bold py-10">No applicants found yet.</p>
           )}
           {!loading && applicants.length > 0 && (
-            <Pagination 
-              currentPage={currentPage} 
-              totalPages={totalPages} 
-              onPageChange={(page: number) => setCurrentPage(page)} 
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page: number) => setCurrentPage(page)}
             />
           )}
         </div>
