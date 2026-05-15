@@ -15,7 +15,7 @@ export default function JobsPage() {
   const router = useRouter();
   const searchRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 25;
 
   const fetchJobs = useCallback(async () => {
     try {

@@ -18,7 +18,7 @@ export default function ApplicantsPage() {
   const router = useRouter();
   const searchRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 25;
 
   const navyBlueFilter = {
     filter: "invert(7%) sepia(76%) saturate(5793%) hue-rotate(241deg) brightness(91%) contrast(108%)"
