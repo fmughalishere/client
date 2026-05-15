@@ -24,7 +24,7 @@ export default function HomePage() {
   const [visitorCount, setVisitorCount] = useState(0);
   const searchRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 25;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -184,7 +184,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      
+
       <section className="max-w-md mx-auto px-6 mt-6 relative z-10">
         <div className="flex flex-col gap-2.5 items-center justify-center w-full">
           {quickActions.map((action, i) => (
