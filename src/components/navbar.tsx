@@ -146,7 +146,7 @@ const Navbar = () => {
 
         <button
           onClick={() => setShowInstallBox(true)}
-          className="flex items-center gap-2 hover:opacity-80"
+          className="flex items-center gap-2 hover:opacity-80 ml-[-10]"
         >
           <PlusCircle size={18} style={{ color: "#5DBB63" }} />
           Add to Home Screen
