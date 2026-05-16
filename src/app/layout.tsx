@@ -4,7 +4,7 @@ import "./globals.css";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import { AuthProvider } from "../components/AuthProvider";
-
+import VisitorTracker from "../components/VisitorTracker";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -31,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${jakarta.className} bg-slate-50 flex flex-col min-h-screen`}>
         <AuthProvider>
         <Navbar />
+        <VisitorTracker/>
         <main className="flex-grow">{children}</main>
         <Footer />
         </AuthProvider>
