@@ -8,7 +8,7 @@ import { FaInstagram } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-[#f3ead8] mt-[-200]">
+    <footer className="w-full bg-[#f3ead8]">
       <div className="relative w-full h-[180px] md:h-[220px]">
         <Image
           src="/images/IMG (1).png"
