@@ -10,16 +10,16 @@ const Footer = () => {
   return (
     <footer className="w-full bg-[#f3ead8]">
       <div className="relative w-full h-[180px] md:h-[220px]">
-        <Image 
-          src="/images/IMG (1).png" 
-          alt="Illustration" 
-          fill 
+        <Image
+          src="/images/IMG (1).png"
+          alt="Illustration"
+          fill
           className="object-cover object-top"
           priority
         />
-                <div className="absolute inset-0 flex flex-col items-center justify-start pt-2 px-4 z-10">
-              <div className="flex items-center justify-between w-full max-w-[290px] mb-10">
-               <Link href="https://facebook.com" target="_blank" className="text-white">
+        <div className="absolute inset-0 flex flex-col items-center justify-start pt-2 px-4 z-10">
+          <div className="flex items-center justify-between w-full max-w-[290px] mb-10">
+            <Link href="https://facebook.com" target="_blank" className="text-white">
               <IoLogoFacebook size={25} />
             </Link>
             <Link href="https://linkedin.com" target="_blank" className="flex items-center">
@@ -27,22 +27,22 @@ const Footer = () => {
                 <GrLinkedin size={16} fill="currentColor" />
               </div>
             </Link>
-            <Link 
-              href="/help" 
+            <Link
+              href="/help"
               className="bg-[#5DBB63] text-white px-3 py-1 rounded-[9px] text-[10px] font-bold shadow-md transition-colors"
             >
               GET HELP
             </Link>
             <Link href="https://tiktok.com" target="_blank">
-               <div className="bg-black text-white p-[4px] rounded-full flex items-center justify-center">
-                  <FaTiktok size={13} fill="white" />
-               </div>
+              <div className="bg-black text-white p-[4px] rounded-full flex items-center justify-center">
+                <FaTiktok size={13} fill="white" />
+              </div>
             </Link>
             <Link href="https://instagram.com" target="_blank">
               <div className="rounded-md p-[2px] bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white flex items-center justify-center">
-                 <FaInstagram size={17} />
+                <FaInstagram size={17} />
               </div>
-            </Link>        
+            </Link>
           </div>
           <div className="text-center">
             <p className="text-[#1e3a8a] text-[12px] font-bold leading-tight">
