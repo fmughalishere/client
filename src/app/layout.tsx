@@ -28,12 +28,12 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${jakarta.className} bg-slate-50 flex flex-col min-h-screen`}>
+      <body className={`${jakarta.className} bg-[#fcfcfc] flex flex-col`}>
         <AuthProvider>
-        <Navbar />
-        <VisitorTracker/>
-        <main className="flex-grow">{children}</main>
-        <Footer />
+          <Navbar />
+          <VisitorTracker />
+          <main className="flex-grow">{children}</main>
+          <Footer />
         </AuthProvider>
       </body>
     </html>
