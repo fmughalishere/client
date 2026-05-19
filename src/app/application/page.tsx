@@ -3,9 +3,9 @@
 import React, { useState, useRef, ChangeEvent, FormEvent, useMemo, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import Cropper from "react-easy-crop";
+import Cropper, { Area } from "react-easy-crop";
 import {
-  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, Mail, Phone, MessageCircle, Plus, Trash2, X, Scissors, Lock, ArrowRight, ArrowLeft
+  User, Camera, Check, Loader2, CheckCircle2, Mail, Phone, MessageCircle, Trash2, X, Lock, ArrowRight, ArrowLeft
 } from "lucide-react";
 
 import {
@@ -105,7 +105,7 @@ export default function MobileResponsiveJobForm() {
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isCropping, setIsCropping] = useState(false);
   const [isEduOpen, setIsEduOpen] = useState(false);
   const [eduSearch, setEduSearch] = useState("");
@@ -147,6 +147,7 @@ export default function MobileResponsiveJobForm() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+  
 
   const calculatedTotalYears = useMemo(() => {
     if (isFresher) return 0;
