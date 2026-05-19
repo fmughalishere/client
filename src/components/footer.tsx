@@ -1,17 +1,17 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { IoLogoFacebook } from "react-icons/io";
 import { GrLinkedin } from "react-icons/gr";
 import { FaTiktok } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa";
+import { FaFacebook } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-[#f3ead8]">
+    <footer className="w-full">
       <div className="relative w-full h-[180px] md:h-[220px]">
         <Image
-          src="/images/IMG (1).png"
+          src="/images/footer-img.png"
           alt="Illustration"
           fill
           className="object-cover object-top"
@@ -19,8 +19,8 @@ const Footer = () => {
         />
         <div className="absolute inset-0 flex flex-col items-center justify-start pt-2 px-4 z-10">
           <div className="flex items-center justify-between w-full max-w-[290px] mb-10">
-            <Link href="https://facebook.com" target="_blank" className="text-white">
-              <IoLogoFacebook size={25} />
+            <Link href="https://facebook.com" target="_blank" className="text-[#0070f3]">
+              <FaFacebook size={25} />
             </Link>
             <Link href="https://linkedin.com" target="_blank" className="flex items-center">
               <div className="bg-[#0a66c2] text-white p-[2px] rounded-[2px]">

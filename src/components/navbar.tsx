@@ -95,66 +95,79 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b shadow-sm">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      <Link href="/">
-        <Image
-          src="/images/nav-logo.png"
-          alt="Logo"
-          width={170}
-          height={50}
-          className="object-contain"
-          priority
-        />
-      </Link>
-      <div className="hidden md:flex items-center gap-1">
-        {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className={`px-4 py-2 rounded-full text-[14px] font-semibold transition ${pathname === link.href
+        <Link href="/">
+          <Image
+            src="/images/nav-logo.png"
+            alt="Logo"
+            width={170}
+            height={50}
+            className="object-contain"
+            priority
+          />
+        </Link>
+        <div className="hidden md:flex items-center gap-1">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`px-4 py-2 rounded-full text-[14px] font-semibold transition ${pathname === link.href
                 ? "text-blue-900 bg-blue-50"
                 : "text-gray-500 hover:text-blue-800 hover:bg-gray-50"
-              }`}
+                }`}
+            >
+              {link.name}
+            </Link>
+          ))}
+        </div>
+        <div className="flex items-center gap-2">
+          <button className="relative p-2 mt-1 rounded-full hover:bg-gray-100 transition">
+            <Bell size={24} className="text-[#00004d]" />
+          </button>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden p-2 text-[#00004d]"
           >
-            {link.name}
+            {isOpen ? <X size={26} /> : <Menu size={26} />}
+          </button>
+        </div>
+      </nav>
+      <div className="border-t-2 border-blue-900 py-3">
+        <div className="flex items-center justify-center gap-1 px-3">
+          <Link
+            href="/"
+            className="flex items-center justify-center gap-1 bg-white rounded-[13px] px-3 h-[42px] shadow-md hover:shadow-lg transition"
+          >
+            <AiFillHome size={20} style={{ color: "#5DBB63" }} />
+            <span className="font-semibold text-[13px] text-[#00004d]">
+              Home
+            </span>
           </Link>
-        ))}
-      </div>
-      <div className="flex items-center gap-2">
-        <button className="relative p-2 mt-1 rounded-full hover:bg-gray-100 transition">
-          <Bell size={24} className="text-[#00004d]" />
-        </button>
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 text-[#00004d]"
-        >
-          {isOpen ? <X size={26} /> : <Menu size={26} />}
-        </button>
-      </div>
-    </nav>
-      <div className="bg-[#00004d] text-white flex items-center justify-around py-2 text-[10px]">
-        <Link href="/" className="flex items-center gap-2 hover:opacity-80">
-          <AiFillHome size={18} style={{ color: "#5DBB63" }} />
-          Home
-        </Link>
-        <div className="w-[1px] h-4 bg-white"></div>
-        <Link href={dashboardLink} className="flex items-center gap-2 hover:opacity-80">
-          <FaUserGear size={18} style={{ color: "#5DBB63" }} />
-          My Control Panel
-        </Link>
 
-        <div className="w-[1px] h-4 bg-white"></div>
+          <Link
+            href={dashboardLink}
+            className="flex items-center justify-center gap-1 bg-white rounded-[13px] px-3 h-[42px] shadow-md hover:shadow-lg transition"
+          >
+            <FaUserGear size={20} style={{ color: "#5DBB63" }} />
+            <span className="font-semibold text-[13px] text-[#00004d] whitespace-nowrap">
+              Control Panel
+            </span>
+          </Link>
 
-        <button
-          onClick={() => setShowInstallBox(true)}
-          className="flex items-center gap-2 hover:opacity-80 ml-[-10]"
-        >
-          <PlusCircle size={18} style={{ color: "#5DBB63" }} />
-          Add to Home Screen
-        </button>
+          <button
+            onClick={() => setShowInstallBox(true)}
+            className="flex items-center justify-center gap-1 bg-white rounded-[13px] px-3 h-[42px] shadow-md hover:shadow-lg transition"
+          >
+            <PlusCircle size={20} style={{ color: "#5DBB63" }} />
+            <span className="font-semibold text-[13px] text-[#00004d] whitespace-nowrap">
+              Add to Home
+            </span>
+          </button>
+
+        </div>
       </div>
       <AnimatePresence>
         {showInstallBox && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[60]">
+          <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-[60]">
             <motion.div
               initial={{ scale: 0.8, opacity: 0, y: 40 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
