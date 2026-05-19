@@ -31,7 +31,9 @@ export default function ApplicantsPage() {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();
-      setApplicants(Array.isArray(data) ? data : []);
+      const approvedOnly = Array.isArray(data) ? data.filter((app: any) => app.status === "shortlisted") : [];
+      
+      setApplicants(approvedOnly);
     } catch (error) {
       console.error("Error fetching applicants:", error);
     } finally {
@@ -50,6 +52,7 @@ export default function ApplicantsPage() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [fetchApplicants]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
@@ -72,16 +75,10 @@ export default function ApplicantsPage() {
     }
   };
 
-  const handleSelectSuggestion = (item: string) => {
-    setSearchQuery(item);
-    setShowSuggestions(false);
-  };
-
-   const handleSearch = (selectedQuery?: string) => {
+  const handleSearch = (selectedQuery?: string) => {
     const finalQuery = selectedQuery || searchQuery;
     if (finalQuery.trim()) {
       setShowSuggestions(false);
-      router.push(`/applicants?search=${finalQuery}`);
     }
   };
 
@@ -149,30 +146,13 @@ export default function ApplicantsPage() {
               onChange={handleInputChange}
               onFocus={() => searchQuery.length > 0 && setShowSuggestions(true)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              placeholder="Search name, category or city..."
+              placeholder="Search approved candidates..."
               className="block w-full pl-11 pr-14 py-2.5 bg-white rounded-[15px] shadow-lg text-sm text-[#00004d] font-bold outline-none"
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-4 gap-2">
               <div className="h-5 w-[1.5px] bg-[#00004d]"></div>
               <button onClick={() => handleSearch()} className="text-[#00004d] font-black text-[15px] hover:opacity-70">Go</button>
             </div>
-            {showSuggestions && suggestions.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden text-left">
-                {suggestions.map((item, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => {
-                      setSearchQuery(item);
-                      handleSearch(item);
-                    }}
-                    className="px-4 py-3 flex items-center gap-3 hover:bg-gray-100 cursor-pointer border-b last:border-none border-gray-50 transition-colors"
-                  >
-                    <Search className="h-3 w-3 text-gray-400" />
-                    <span className="text-sm font-semibold text-[#00004d]">{item}</span>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         </div>
       </section>
@@ -216,10 +196,6 @@ export default function ApplicantsPage() {
                     {app.category || "Professional"}
                   </p>
 
-                  <div className="flex items-center gap-1.5 text-[9px] font-bold text-gray-500 whitespace-nowrap">
-                    <span>{app.education || "Qualification N/A"}</span>
-                  </div>
-
                   <p className="text-[10px] font-bold text-[#00004d] mt-0.5 tracking-tight">
                     {calculateTotalExperience(app.experience, app.isFresher)}
                   </p>
@@ -227,7 +203,7 @@ export default function ApplicantsPage() {
                   <div className="flex items-center justify-between mt-1">
                     <div className="flex items-center gap-1 text-[#5DBB63] ml-[-3px]">
                       <IoIosPin size={13} />
-                      <span className="font-bold text-[10px] truncate">{app.city || "Pakistan"}</span>
+                      <span className="font-bold text-[10px] truncate">{app.city}</span>
                     </div>
 
                     <button className="text-[#5DBB63] font-black text-[10px] flex items-center gap-0.5 shrink-0">
@@ -239,9 +215,11 @@ export default function ApplicantsPage() {
             ))
           ) : (
             <div className="text-center py-20">
-              <p className="text-gray-400 font-bold text-sm tracking-widest">No Applicants Found</p>
+              <p className="text-gray-400 font-bold text-sm tracking-widest uppercase">No Candidates Available</p>
+              <p className="text-xs text-gray-400 mt-1">Only approved profiles are displayed here.</p>
             </div>
           )}
+
           {!loading && filteredApplicants.length > 0 && (
             <Pagination
               currentPage={currentPage}

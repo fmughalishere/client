@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Cropper from "react-easy-crop";
 import {
-  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, Mail, Phone, MessageCircle, Plus, Trash2, X, Scissors, Lock
+  User, Camera, Check, Globe, Briefcase, Loader2, CheckCircle, CheckCircle2, Mail, Phone, MessageCircle, Plus, Trash2, X, Scissors, Lock, ArrowRight, ArrowLeft
 } from "lucide-react";
 
 import {
@@ -25,26 +25,13 @@ async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> 
   const image = await createImage(imageSrc);
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
-
   if (!ctx) return "";
-
   canvas.width = pixelCrop.width;
   canvas.height = pixelCrop.height;
-
-  ctx.drawImage(
-    image,
-    pixelCrop.x,
-    pixelCrop.y,
-    pixelCrop.width,
-    pixelCrop.height,
-    0,
-    0,
-    pixelCrop.width,
-    pixelCrop.height
-  );
-
+  ctx.drawImage(image, pixelCrop.x, pixelCrop.y, pixelCrop.width, pixelCrop.height, 0, 0, pixelCrop.width, pixelCrop.height);
   return canvas.toDataURL("image/jpeg", 0.7);
 }
+
 const navyBlueFilter = {
   filter: "invert(7%) sepia(76%) saturate(5793%) hue-rotate(241deg) brightness(91%) contrast(108%)"
 };
@@ -55,14 +42,6 @@ interface ExperienceEntry {
   startDate: string;
   endDate: string;
   isCurrentJob: boolean;
-}
-
-interface SuccessModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  message: string;
-  onAction: () => void;
 }
 
 function AuthRequiredModal({ isOpen, onClose, onAction }: { isOpen: boolean; onClose: () => void; onAction: () => void }) {
@@ -76,17 +55,10 @@ function AuthRequiredModal({ isOpen, onClose, onAction }: { isOpen: boolean; onC
               <Lock className="text-[#00004d]" size={30} />
             </div>
             <h3 className="text-xl font-bold text-[#00004d] mb-2">Authentication Required</h3>
-            <p className="text-gray-600 text-sm mb-6 leading-relaxed">
-              Please login or create your account first to submit your job application.
-              <br /><span className="text-[12px] text-gray-400 mt-2 block">اپنا اکاؤنٹ لاگ ان کریں یا نیا اکاؤنٹ بنائیں۔</span>
-            </p>
+            <p className="text-gray-600 text-sm mb-6 leading-relaxed">Please login or create your account first to submit your application.<br /><span className="text-[12px] text-gray-400 mt-2 block">اپنا اکاؤنٹ لاگ ان کریں یا نیا اکاؤنٹ بنائیں۔</span></p>
             <div className="space-y-3">
-              <button onClick={onAction} className="w-full bg-[#00004d] text-white py-4 rounded-xl font-bold text-sm active:scale-95 transition-transform">
-                Continue to Account
-              </button>
-              <button onClick={onClose} className="w-full bg-gray-100 text-gray-500 py-3 rounded-xl font-bold text-sm">
-                Cancel
-              </button>
+              <button onClick={onAction} className="w-full bg-[#00004d] text-white py-4 rounded-xl font-bold text-sm active:scale-95 transition-transform">Continue to Account</button>
+              <button onClick={onClose} className="w-full bg-gray-100 text-gray-500 py-3 rounded-xl font-bold text-sm">Cancel</button>
             </div>
           </motion.div>
         </div>
@@ -95,67 +67,21 @@ function AuthRequiredModal({ isOpen, onClose, onAction }: { isOpen: boolean; onC
   );
 }
 
-function SuccessModal({ isOpen, onClose, onAction }: SuccessModalProps) {
+function SuccessModal({ isOpen, onClose, onAction }: { isOpen: boolean, onClose: () => void, onAction: () => void, title: string, message: string }) {
   return (
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="absolute inset-0 bg-bold/60 backdrop-blur-sm"
-          />
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 50 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 50 }}
-            className="relative w-full max-w-[360px] md:max-w-md bg-white rounded-[30px] p-6 md:p-8 text-left shadow-2xl overflow-y-auto max-h-[90vh]"
-          >
-            <div className="flex justify-center mb-4">
-              <div className="bg-green-100 p-3 rounded-full">
-                <CheckCircle2 size={40} className="text-green-500 md:w-12 md:h-12" />
-              </div>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <motion.div initial={{ scale: 0.9, opacity: 0, y: 50 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 50 }} className="relative w-full max-w-[360px] md:max-w-md bg-white rounded-[30px] p-6 md:p-8 text-left shadow-2xl overflow-y-auto max-h-[90vh]">
+            <div className="flex justify-center mb-4"><div className="bg-green-100 p-3 rounded-full"><CheckCircle2 size={40} className="text-green-500" /></div></div>
+            <h3 className="text-xl font-bold text-[#00004d] mb-3 text-center">Thank You for Submitting Your Profile</h3>
+            <div className="text-sm text-gray-700 space-y-4 leading-relaxed">
+              <div><p className="font-semibold">1. Your profile will be published after admin approval.</p><p className="text-gray-500 text-[12px]">آپ کی پروفائل مین پیج پر صرف ایڈمن کی منظوری کے بعد لگائی جائے گی۔</p></div>
+              <div><p className="font-semibold">2. Your contact information will remain confidential.</p><p className="text-gray-500 text-[12px]">آپ کی کانٹیکٹ انفارمیشن مکمل طور پر خفیہ رکھی جائے گی۔</p></div>
+              <div><p className="font-semibold">3. Employers will contact you directly.</p><p className="text-gray-500 text-[12px]">ایمپلائر خود آپ سے براہِ راست رابطہ کریں گے اور آپ کو جاب آفر دیں گے۔</p></div>
             </div>
-            <h3 className="text-xl md:text-2xl font-bold text-[#00004d] mb-3 text-center">
-              Thank You for Submitting Your Profile
-            </h3>
-            <p className="text-sm md:text-base text-gray-600 mb-4 text-center">
-              Your profile has been received successfully.
-            </p>
-            <div className="text-sm md:text-base text-gray-700 space-y-4 leading-relaxed">
-              <div>
-                <p className="font-semibold">1. Your profile will be published after admin approval.</p>
-                <p className="text-gray-500">
-                  آپ کی پروفائل مین پیج پر صرف ایڈمن کی منظوری کے بعد لگائی جائے گی۔
-                </p>
-              </div>
-              <div>
-                <p className="font-semibold">2. Your contact information will remain confidential.</p>
-                <p className="text-gray-500">
-                  آپ کی کانٹیکٹ انفارمیشن مکمل طور پر خفیہ رکھی جائے گی۔
-                </p>
-              </div>
-              <div>
-                <p className="font-semibold">3. Employers will contact you directly.</p>
-                <p className="text-gray-500">
-                  ایمپلائر خود آپ سے براہِ راست رابطہ کریں گے اور آپ کو جاب آفر دیں گے۔
-                </p>
-              </div>
-              <div>
-                <p className="font-semibold">4. Your profile will be deleted after 45 days.</p>
-                <p className="text-gray-500">
-                  آپ کا پروفائل 45 دن بعد خود بخود ڈیلیٹ ہو جائے گا۔
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={onAction}
-              className="w-full mt-6 bg-[#00004d] text-white py-4 rounded-full font-bold text-sm md:text-base active:scale-95 transition-transform"
-            >
-              Go to Dashboard
-            </button>
+            <button onClick={onAction} className="w-full mt-6 bg-[#00004d] text-white py-4 rounded-full font-bold text-sm active:scale-95 transition-transform">Go to Dashboard</button>
           </motion.div>
         </div>
       )}
@@ -166,6 +92,9 @@ function SuccessModal({ isOpen, onClose, onAction }: SuccessModalProps) {
 export default function MobileResponsiveJobForm() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 5;
 
   const [isFresher, setIsFresher] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -182,6 +111,7 @@ export default function MobileResponsiveJobForm() {
   const [eduSearch, setEduSearch] = useState("");
   const eduRef = useRef<HTMLDivElement>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "", dob: "", gender: "Male", city: "", image: "",
@@ -194,37 +124,29 @@ export default function MobileResponsiveJobForm() {
     { companyName: "", designation: "", startDate: "", endDate: "", isCurrentJob: false }
   ]);
 
-  const handleAuthNavigation = () => {
-    const appData = {
-      formData,
-      isFresher,
-      experienceList
-    };
-    localStorage.setItem("pendingJobApplication", JSON.stringify(appData));
-    const isRegistered = localStorage.getItem("isRegistered");
+  const nextStep = () => {
+    if (currentStep < totalSteps) setCurrentStep(prev => prev + 1);
+    window.scrollTo(0, 0);
+  };
+  const prevStep = () => {
+    if (currentStep > 1) setCurrentStep(prev => prev - 1);
+    window.scrollTo(0, 0);
+  };
 
-    if (isRegistered === "true") {
-      router.push("/login");
-    } else {
-      router.push("/register");
-    }
+  const handleAuthNavigation = () => {
+    localStorage.setItem("pendingJobApplication", JSON.stringify({ formData, isFresher, experienceList }));
+    const isRegistered = localStorage.getItem("isRegistered");
+    router.push(isRegistered === "true" ? "/login" : "/register");
   };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (eduRef.current && !eduRef.current.contains(event.target as Node)) {
-        setIsEduOpen(false);
-      }
-      if (catRef.current && !catRef.current.contains(event.target as Node)) {
-        setIsCatOpen(false);
-      }
+      if (eduRef.current && !eduRef.current.contains(event.target as Node)) setIsEduOpen(false);
+      if (catRef.current && !catRef.current.contains(event.target as Node)) setIsCatOpen(false);
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState({ title: "", message: "" });
 
   const calculatedTotalYears = useMemo(() => {
     if (isFresher) return 0;
@@ -240,48 +162,15 @@ export default function MobileResponsiveJobForm() {
     return (totalMonths / 12).toFixed(1);
   }, [experienceList, isFresher]);
 
-  useEffect(() => {
-    const savedData = localStorage.getItem("pendingJobApplication");
-    if (savedData) {
-      const parsed = JSON.parse(savedData);
-      setFormData(parsed.formData);
-      setIsFresher(parsed.isFresher);
-      if (parsed.experienceList) setExperienceList(parsed.experienceList);
-      localStorage.removeItem("pendingJobApplication");
-    }
-  }, []);
-
-  const handleRedirect = () => {
-    const token = localStorage.getItem("token");
-    setIsModalOpen(false);
-    if (!token) {
-      router.push("/login");
-    } else {
-      router.push("/");
-    }
-  };
-
   const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>, field: string) => {
     let value = e.target.value;
     if (!value.startsWith("+92 ")) value = "+92 ";
-
     const suffix = value.slice(4).replace(/[^\d]/g, "");
     let formatted = "+92 ";
     if (suffix.length > 0) formatted += suffix.slice(0, 3);
     if (suffix.length > 3) formatted += " " + suffix.slice(3, 10);
-
     setFormData({ ...formData, [field]: formatted });
   };
-
-  const calculatedAge = useMemo(() => {
-    if (!formData.dob) return null;
-    const birthDate = new Date(formData.dob);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
-    return age < 0 ? 0 : age;
-  }, [formData.dob]);
 
   const handleChange = (e: ChangeEvent<any>) => {
     const { name, value } = e.target;
@@ -289,16 +178,12 @@ export default function MobileResponsiveJobForm() {
   };
 
   const filteredEducation = useMemo(() => {
-    const filtered = EDUCATION_OPTIONS.filter(opt =>
-      opt.toLowerCase().includes(eduSearch.toLowerCase())
-    );
+    const filtered = EDUCATION_OPTIONS.filter(opt => opt.toLowerCase().includes(eduSearch.toLowerCase()));
     return ["Other", ...filtered];
   }, [eduSearch]);
 
   const filteredCategories = useMemo(() => {
-    const filtered = JOB_CATEGORIES.filter(opt =>
-      opt.toLowerCase().includes(catSearch.toLowerCase())
-    );
+    const filtered = JOB_CATEGORIES.filter(opt => opt.toLowerCase().includes(catSearch.toLowerCase()));
     return ["Other", ...filtered];
   }, [catSearch]);
 
@@ -308,66 +193,39 @@ export default function MobileResponsiveJobForm() {
     setExperienceList(newList);
   };
 
-  const addExperience = () => {
-    setExperienceList([...experienceList, { companyName: "", designation: "", startDate: "", endDate: "", isCurrentJob: false }]);
-  };
-
-  const removeExperience = (index: number) => {
-    setExperienceList(experienceList.filter((_, i) => i !== index));
-  };
+  const addExperience = () => setExperienceList([...experienceList, { companyName: "", designation: "", startDate: "", endDate: "", isCurrentJob: false }]);
+  const removeExperience = (index: number) => setExperienceList(experienceList.filter((_, i) => i !== index));
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => {
-      setImageToCrop(reader.result as string);
-      setIsCropping(true);
-    };
+    reader.onload = () => { setImageToCrop(reader.result as string); setIsCropping(true); };
     reader.readAsDataURL(file);
   };
 
-  const onCropComplete = useCallback((_croppedArea: any, croppedAreaPixels: any) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
-
   const saveCroppedImage = async () => {
-    try {
-      if (imageToCrop && croppedAreaPixels) {
-        const croppedImage = await getCroppedImg(imageToCrop, croppedAreaPixels);
-        setFormData({ ...formData, image: croppedImage });
-        setIsCropping(false);
-        setImageToCrop(null);
-      }
-    } catch (e) {
-      console.error(e);
+    if (imageToCrop && croppedAreaPixels) {
+      const croppedImage = await getCroppedImg(imageToCrop, croppedAreaPixels);
+      setFormData({ ...formData, image: croppedImage });
+      setIsCropping(false);
+      setImageToCrop(null);
     }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-
-    if (!token) {
-      setIsAuthModalOpen(true);
-      return;
-    }
-
-    if (!formData.agreeTerms) {
-      alert("Please agree to the privacy policy.");
-      return;
-    }
+    if (!token) { setIsAuthModalOpen(true); return; }
+    if (!formData.agreeTerms) { alert("Please agree to the privacy policy."); return; }
 
     setLoading(true);
-    const finalCategory = formData.category === "Other" ? formData.otherCategory : formData.category;
-    const finalEducation = formData.education === "Other" ? formData.otherEducation : formData.education;
-
     const finalPayload = {
       ...formData,
-      category: finalCategory,
-      education: finalEducation,
+      category: formData.category === "Other" ? formData.otherCategory : formData.category,
+      education: formData.education === "Other" ? formData.otherEducation : formData.education,
       skills: formData.skills ? formData.skills.split(",").map(s => s.trim()) : [],
-      isFresher: isFresher,
+      isFresher,
       yearsOfExperience: isFresher ? 0 : Number(calculatedTotalYears),
       experience: isFresher ? [] : experienceList
     };
@@ -378,402 +236,254 @@ export default function MobileResponsiveJobForm() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(finalPayload)
       });
-
-      if (res.ok) {
-        setSubmitted(true);
-        setIsModalOpen(true);
-      } else {
-        const data = await res.json();
-        alert(data.message || "Error submitting application");
-      }
-    } catch {
-      alert("Server error. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+      if (res.ok) { setSubmitted(true); setIsModalOpen(true); }
+      else { const data = await res.json(); alert(data.message || "Error submitting application"); }
+    } catch { alert("Server error. Please try again."); }
+    finally { setLoading(false); }
   };
 
   return (
     <div className="min-h-screen bg-[#f4f7f9] pb-10 font-sans">
-      <AuthRequiredModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        onAction={handleAuthNavigation}
-      />
+      <AuthRequiredModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onAction={handleAuthNavigation} />
+      <SuccessModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="" message="" onAction={() => router.push("/")} />
       <AnimatePresence>
         {isCropping && (
           <div className="fixed inset-0 z-[110] flex flex-col items-center justify-center bg-black p-4">
             <div className="relative w-full h-[60vh] md:w-[500px] md:h-[500px] bg-gray-900 rounded-2xl overflow-hidden">
-              <Cropper
-                image={imageToCrop!}
-                crop={crop}
-                zoom={zoom}
-                aspect={1}
-                cropShape="round"
-                showGrid={false}
-                onCropChange={setCrop}
-                onCropComplete={onCropComplete}
-                onZoomChange={setZoom}
-              />
+              <Cropper image={imageToCrop!} crop={crop} zoom={zoom} aspect={1} cropShape="round" onCropChange={setCrop} onCropComplete={(_, pix) => setCroppedAreaPixels(pix)} onZoomChange={setZoom} />
             </div>
-
             <div className="mt-8 w-full max-w-[400px] space-y-6 px-4">
-              <input
-                type="range"
-                value={zoom}
-                min={1}
-                max={3}
-                step={0.1}
-                onChange={(e) => setZoom(Number(e.target.value))}
-                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#5DBB63]"
-              />
+              <input type="range" value={zoom} min={1} max={3} step={0.1} onChange={(e) => setZoom(Number(e.target.value))} className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#5DBB63]" />
               <div className="flex gap-4">
-                <button onClick={() => setIsCropping(false)} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold flex items-center justify-center gap-2 border border-white/20">
-                  <X size={18} /> Cancel
-                </button>
-                <button onClick={saveCroppedImage} className="flex-1 py-4 bg-[#5DBB63] text-white rounded-2xl font-bold flex items-center justify-center gap-2">
-                  <Check size={18} /> Done
-                </button>
+                <button onClick={() => setIsCropping(false)} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold flex items-center justify-center gap-2 border border-white/20"><X size={18} /> Cancel</button>
+                <button onClick={saveCroppedImage} className="flex-1 py-4 bg-[#5DBB63] text-white rounded-2xl font-bold flex items-center justify-center gap-2"><Check size={18} /> Done</button>
               </div>
             </div>
           </div>
         )}
       </AnimatePresence>
-      <SuccessModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={modalContent.title}
-        message={modalContent.message}
-        onAction={handleRedirect}
-      />
+
       <div className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
-        <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-[#5DBB63] text-3xl md:text-2xl font-bold">Apply for a Job</motion.h1>
-        <p className="text-[#5DBB63] font-bold text-[13px] md:text-xs mt-3 tracking-[0.1em] ">Create your professional profile</p>
+        <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-[#5DBB63] text-3xl font-bold">Apply for a Job</motion.h1>
+        <div className="flex gap-2 mt-4">
+          {[1, 2, 3, 4, 5].map((s) => (
+            <div key={s} className={`h-1.5 w-8 rounded-full transition-all duration-300 ${s <= currentStep ? 'bg-[#5DBB63]' : 'bg-gray-200'}`} />
+          ))}
+        </div>
       </div>
-      <div className="max-w-4xl mx-auto -mt-13 md:-mt-16 px-4">
-        <div className="bg-white rounded-[35px] md:rounded-[45px] shadow-xl overflow-hidden border border-white">
-          <form onSubmit={handleSubmit} className="p-6 md:p-14 space-y-12 md:space-y-20">
-            <section className="flex flex-col items-center gap-6">
-              <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-4 border-[#f8fcfd] shadow-lg bg-gray-50 flex items-center justify-center overflow-hidden">
-                  {formData.image.length > 20 ? (
-                    <img src={formData.image} className="w-full h-full object-cover" alt="Profile" />
-                  ) : formData.image === "male" ? (
-                    <img src={MALE_ICON} className="w-[80%] h-[80%] object-contain" style={navyBlueFilter} alt="Male" />
-                  ) : formData.image === "female" ? (
-                    <img src={FEMALE_ICON} className="w-[80%] h-[80%] object-contain" style={navyBlueFilter} alt="Female" />
-                  ) : (
-                    <div className="bg-[#00004d] w-full h-full flex items-center justify-center"><User className="w-16 h-16 text-white" /></div>
-                  )}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <Scissors className="text-white" size={24} />
-                    <span className="text-white text-[10px] font-bold ml-2">EDIT</span>
+
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="bg-white rounded-[35px] shadow-xl overflow-hidden border border-white">
+          <form onSubmit={handleSubmit} className="p-6 md:p-14">
+            {currentStep === 1 && (
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-10">
+                <section className="flex flex-col items-center gap-6">
+                  <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                    <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-4 border-[#f8fcfd] shadow-lg bg-gray-50 flex items-center justify-center overflow-hidden">
+                      {formData.image.length > 20 ? (
+                        <img src={formData.image} className="w-full h-full object-cover" alt="Profile" />
+                      ) : formData.image === "male" ? (
+                        <img src={MALE_ICON} className="w-[80%] h-[80%] object-contain" style={navyBlueFilter} alt="Male" />
+                      ) : formData.image === "female" ? (
+                        <img src={FEMALE_ICON} className="w-[80%] h-[80%] object-contain" style={navyBlueFilter} alt="Female" />
+                      ) : (
+                        <div className="bg-[#00004d] w-full h-full flex items-center justify-center"><User className="w-16 h-16 text-white" /></div>
+                      )}
+                    </div>
+                    <div className="absolute bottom-1 right-1 bg-[#00004d] text-white p-2.5 rounded-full shadow-lg"><Camera size={18} /></div>
                   </div>
-                </div>
-                <div className="absolute bottom-1 right-1 bg-[#00004d] text-white p-2.5 rounded-full shadow-lg"><Camera size={18} /></div>
-              </div>
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Optional</span>
-              <div className="flex items-center gap-4 w-full max-w-xs">
-                <div className="h-[1px] bg-gray-200 flex-1"></div>
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Or Use Icon</span>
-                <div className="h-[1px] bg-gray-200 flex-1"></div>
-              </div>
-              <input type="file" ref={fileInputRef} className="hidden" onChange={handleImageChange} accept="image/*" />
-              <div className="flex gap-4 w-full justify-center">
-                <button type="button" onClick={() => setFormData({ ...formData, image: "male" })} className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "male" ? 'border-[#00004d] bg-[#00004d] text-white' : 'border-gray-100 text-gray-400'}`}>
-                  <img src={MALE_ICON} className={`w-5 h-5 ${formData.image === "male" ? 'brightness-0 invert' : ''}`} style={formData.image !== "male" ? navyBlueFilter : {}} alt="" /> <span className="text-[10px] font-bold">Male</span>
-                </button>
-                <button type="button" onClick={() => setFormData({ ...formData, image: "female" })} className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "female" ? 'border-[#00004d] bg-[#00004d] text-white' : 'border-gray-100 text-gray-400'}`}>
-                  <img src={FEMALE_ICON} className={`w-5 h-5 ${formData.image === "female" ? 'brightness-0 invert' : ''}`} style={formData.image !== "female" ? navyBlueFilter : {}} alt="" /> <span className="text-[10px] font-bold">Female</span>
-                </button>
-              </div>
-            </section>
-            <section className="space-y-6">
-              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Personal Details</h2></div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-[#00004d] ml-1">Full Name</label>
-                  <input required name="fullName" value={formData.fullName} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Enter Your Name" />
-                </div>
-                <div className="space-y-1.5 relative">
-                  <div className="flex justify-between items-center ml-1">
-                    <label className="text-[10px] font-bold text-[#00004d]">Date of Birth</label>
-                    {calculatedAge !== null && <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">{calculatedAge} Years Old</span>}
+                  <input type="file" ref={fileInputRef} className="hidden" onChange={handleImageChange} accept="image/*" />
+                  <div className="flex gap-4 w-full justify-center">
+                    <button type="button" onClick={() => setFormData({ ...formData, image: "male" })} className={`px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "male" ? 'border-[#00004d] bg-[#00004d] text-white' : 'border-gray-100 text-gray-400'}`}>
+                      <span className="text-[10px] font-bold">Male Icon</span>
+                    </button>
+                    <button type="button" onClick={() => setFormData({ ...formData, image: "female" })} className={`px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "female" ? 'border-[#00004d] bg-[#00004d] text-white' : 'border-gray-100 text-gray-400'}`}>
+                      <span className="text-[10px] font-bold">Female Icon</span>
+                    </button>
                   </div>
-                  <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" />
-                </div>
-                <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none"><option>Male</option><option>Female</option><option>Other</option></select>
-                <div className="w-full bg-gray-100 rounded-xl p-4 text-sm font-bold text-gray-500 flex items-center gap-2"><Globe size={14} /> Pakistan</div>
-                <div className="md:col-span-2">
-                  <select required name="city" value={formData.city} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none">
-                    <option value="">Select City</option>
-                    {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
-              </div>
-            </section>
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Profession & Type</h2></div>
-                <label className="text-[10px] font-bold text-[#00004d] ml-1 block">Desired Job</label>
-                <div className="relative" ref={catRef}>
-                  <div
-                    onClick={() => setIsCatOpen(!isCatOpen)}
-                    className="w-full bg-[#f8fafc] p-4 rounded-xl border border-gray-100 flex justify-between items-center cursor-pointer min-h-[56px]"
-                  >
-                    <span className={`font-bold ${formData.category ? 'text-[#00004d] text-[11px]' : 'text-gray-400 text-[11px]'}`}>
-                      {formData.category || "Select Category"}
-                    </span>
-                    <div className={`transition-transform duration-200 ${isCatOpen ? 'rotate-180' : ''}`}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00004d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
+                </section>
+
+                <section className="space-y-6">
+                  <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Personal Details</h2></div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-[#00004d] ml-1">Full Name</label>
+                      <input required name="fullName" value={formData.fullName} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Enter Your Name" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-[#00004d] ml-1">Date of Birth</label>
+                      <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-[#00004d] ml-1">Gender</label>
+                      <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none"><option>Male</option><option>Female</option><option>Other</option></select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-[#00004d] ml-1">City</label>
+                      <select required name="city" value={formData.city} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none">
+                        <option value="">Select City</option>
+                        {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
+                      </select>
                     </div>
                   </div>
-                  <AnimatePresence>
+                </section>
+              </motion.div>
+            )}
+
+            {currentStep === 2 && (
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
+                <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Profession & Type</h2></div>
+                <div className="space-y-4">
+                  <label className="text-[10px] font-bold text-[#00004d] block">Desired Job Category</label>
+                  <div className="relative" ref={catRef}>
+                    <div onClick={() => setIsCatOpen(!isCatOpen)} className="w-full bg-[#f8fafc] p-4 rounded-xl border border-gray-100 flex justify-between items-center cursor-pointer">
+                      <span className="font-bold text-[#00004d] text-sm">{formData.category || "Select Category"}</span>
+                    </div>
                     {isCatOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="absolute z-[60] w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden"
-                      >
-                        <div className="p-2 border-b bg-gray-50">
-                          <input
-                            type="text"
-                            placeholder="Search category..."
-                            className="w-full p-2 text-[11px] font-medium border rounded-lg outline-none focus:border-[#00004d]"
-                            value={catSearch}
-                            onChange={(e) => setCatSearch(e.target.value)}
-                            onClick={(e) => e.stopPropagation()}
-                          />
+                      <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden">
+                        <div className="p-2 bg-gray-50"><input placeholder="Search..." className="w-full p-2 text-sm border rounded-lg outline-none" value={catSearch} onChange={(e) => setCatSearch(e.target.value)} /></div>
+                        <div className="max-h-60 overflow-y-auto">
+                          {filteredCategories.map(opt => (
+                            <div key={opt} onClick={() => { setFormData({ ...formData, category: opt }); setIsCatOpen(false); }} className="px-4 py-3 text-sm font-bold hover:bg-gray-50 cursor-pointer">{opt}</div>
+                          ))}
                         </div>
-
-                        <div className="max-h-64 overflow-y-auto scrollbar-thin">
-                          {filteredCategories.length > 0 ? (
-                            filteredCategories.map((opt) => (
-                              <div
-                                key={opt}
-                                onClick={() => {
-                                  setFormData(prev => ({ ...prev, category: opt }));
-                                  setIsCatOpen(false);
-                                  setCatSearch("");
-                                }}
-                                className={`px-4 py-3 text-[11px] font-bold border-b border-gray-50 last:border-0 transition-colors
-                      ${formData.category === opt ? 'bg-blue-50 text-[#00004d]' : 'text-gray-600 hover:bg-gray-50'}`}
-                              >
-                                {opt}
-                              </div>
-                            ))
-                          ) : (
-                            <div className="p-4 text-[11px] text-gray-400 text-center">No results found</div>
-                          )}
-                        </div>
-                      </motion.div>
+                      </div>
                     )}
-                  </AnimatePresence>
-                </div>
-                {formData.category === "Other" && (
-                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2">
-                    <input
-                      required
-                      name="otherCategory"
-                      value={formData.otherCategory}
-                      onChange={handleChange}
-                      placeholder="Please specify your job category"
-                      className="w-full bg-[#f8fafc] border-2 border-blue-100 rounded-xl p-4 text-sm font-bold outline-none focus:border-[#00004d] transition-all"
-                    />
-                  </motion.div>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-[#00004d] ml-1 block">Job Type</label>
-                <select name="jobtype" value={formData.jobtype} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none">
-                  {JOB_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </div>
-            </div>
-            <section className="space-y-3">
-              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3">
-                <h2 className="text-[#00004d] font-bold text-lg tracking-wider">Education</h2>
-              </div>
-              <div className="relative" ref={eduRef}>
-                <div
-                  onClick={() => setIsEduOpen(!isEduOpen)}
-                  className="w-full bg-[#f8fafc] p-4 rounded-xl border border-gray-100 flex justify-between items-center cursor-pointer min-h-[56px]"
-                >
-                  <span className={`font-bold ${formData.education ? 'text-[#00004d] text-[11px]' : 'text-gray-400 text-[11px]'}`}>
-                    {formData.education || "Select Your Qualification"}
-                  </span>
-                  <div className={`transition-transform duration-200 ${isEduOpen ? 'rotate-180' : ''}`}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00004d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
                   </div>
-                </div>
-                <AnimatePresence>
-                  {isEduOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden"
-                    >
-                      <div className="p-2 border-b bg-gray-50">
-                        <input
-                          type="text"
-                          placeholder="Search qualification..."
-                          className="w-full p-2 text-[11px] font-medium border rounded-lg outline-none focus:border-[#00004d]"
-                          value={eduSearch}
-                          onChange={(e) => setEduSearch(e.target.value)}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </div>
-
-                      <div className="max-h-64 overflow-y-auto scrollbar-thin">
-                        {filteredEducation.length > 0 ? (
-                          filteredEducation.map((opt) => (
-                            <div
-                              key={opt}
-                              onClick={() => {
-                                setFormData(prev => ({ ...prev, education: opt }));
-                                setIsEduOpen(false);
-                                setEduSearch("");
-                              }}
-                              className={`px-4 py-3 text-[11px] font-bold border-b border-gray-50 last:border-0 transition-colors
-                    ${formData.education === opt ? 'bg-blue-50 text-[#00004d]' : 'text-gray-600 hover:bg-gray-50'}`}
-                            >
-                              {opt}
-                            </div>
-                          ))
-                        ) : (
-                          <div className="p-4 text-[11px] text-gray-400 text-center">No results found</div>
-                        )}
-                      </div>
-                    </motion.div>
+                  {formData.category === "Other" && (
+                    <input name="otherCategory" value={formData.otherCategory} onChange={handleChange} placeholder="Specify category" className="w-full bg-[#f8fafc] border border-blue-100 rounded-xl p-4 text-sm font-bold outline-none" />
                   )}
-                </AnimatePresence>
-              </div>
-              {formData.education === "Other" && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2">
-                  <input
-                    required
-                    name="otherEducation"
-                    value={formData.otherEducation}
-                    onChange={handleChange}
-                    placeholder="Please specify your qualification"
-                    className="w-full bg-[#f8fafc] border-2 border-blue-100 rounded-xl p-4 text-sm font-bold outline-none focus:border-[#00004d] transition-all"
-                  />
-                </motion.div>
-              )}
-            </section>
-            <section className="space-y-6">
-              <div className="flex items-center justify-between border-l-4 border-[#00004d] pl-3">
-                <h2 className="text-[#00004d] font-bold text-lg tracking-wider">Experience</h2>
-                <label className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-full cursor-pointer border border-gray-100">
-                  <input type="checkbox" checked={isFresher} onChange={(e) => setIsFresher(e.target.checked)} className="accent-[#00004d] w-4 h-4" />
-                  <span className="text-[10px] font-bold text-[#00004d]">I am a Fresher</span>
-                </label>
-              </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-[#00004d] block">Job Type</label>
+                  <select name="jobtype" value={formData.jobtype} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none">
+                    {JOB_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+              </motion.div>
+            )}
 
-              {!isFresher && (
-                <div className="space-y-6 bg-gray-50/50 p-5 md:p-8 rounded-[30px] border border-gray-100">
-                  <div className="flex items-center gap-2 bg-[#00004d] text-white self-start px-4 py-2 rounded-xl w-fit">
-                    <Briefcase size={14} />
-                    <span className="text-xs font-bold tracking-tight">Total: {calculatedTotalYears} Years Exp</span>
+            {currentStep === 3 && (
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
+                <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Education</h2></div>
+                <div className="relative" ref={eduRef}>
+                  <div onClick={() => setIsEduOpen(!isEduOpen)} className="w-full bg-[#f8fafc] p-4 rounded-xl border border-gray-100 flex justify-between items-center cursor-pointer">
+                    <span className="font-bold text-[#00004d] text-sm">{formData.education || "Select Qualification"}</span>
                   </div>
-
-                  {experienceList.map((exp, index) => (
-                    <motion.div
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      key={index}
-                      className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-4 relative"
-                    >
-                      {experienceList.length > 1 && (
-                        <button type="button" onClick={() => removeExperience(index)} className="absolute top-4 right-4 text-red-400 hover:text-red-600">
-                          <Trash2 size={18} />
-                        </button>
-                      )}
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-1">
-                          <label className="text-[9px] font-bold text-gray-400 ml-1">Company/Organization Name</label>
-                          <input required value={exp.companyName} onChange={(e) => handleExperienceChange(index, 'companyName', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-[9px] font-bold text-gray-400 ml-1">Designation</label>
-                          <input required value={exp.designation} onChange={(e) => handleExperienceChange(index, 'designation', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-[9px] font-bold text-gray-400 ml-1">Start Date</label>
-                          <input required type="date" value={exp.startDate} onChange={(e) => handleExperienceChange(index, 'startDate', e.target.value)} className="w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none" />
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-[9px] font-bold text-gray-400 ml-1">End Date</label>
-                          <input required={!exp.isCurrentJob} disabled={exp.isCurrentJob} type="date" value={exp.endDate} onChange={(e) => handleExperienceChange(index, 'endDate', e.target.value)} className={`w-full bg-[#f8fafc] border border-gray-100 p-3 rounded-xl text-sm font-bold outline-none ${exp.isCurrentJob ? 'opacity-50' : ''}`} />
-                          <label className="flex items-center gap-2 mt-2 ml-1 cursor-pointer">
-                            <input type="checkbox" checked={exp.isCurrentJob} onChange={(e) => handleExperienceChange(index, 'isCurrentJob', e.target.checked)} className="w-3 h-3 accent-[#0E8449]" />
-                            <span className="text-[10px] font-bold text-gray-500">Currently Working Here</span>
-                          </label>
-                        </div>
+                  {isEduOpen && (
+                    <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden">
+                      <div className="p-2 bg-gray-50"><input placeholder="Search..." className="w-full p-2 text-sm border rounded-lg outline-none" value={eduSearch} onChange={(e) => setEduSearch(e.target.value)} /></div>
+                      <div className="max-h-60 overflow-y-auto">
+                        {filteredEducation.map(opt => (
+                          <div key={opt} onClick={() => { setFormData({ ...formData, education: opt }); setIsEduOpen(false); }} className="px-4 py-3 text-sm font-bold hover:bg-gray-50 cursor-pointer">{opt}</div>
+                        ))}
                       </div>
-                    </motion.div>
-                  ))}
+                    </div>
+                  )}
+                </div>
+                {formData.education === "Other" && (
+                  <input name="otherEducation" value={formData.otherEducation} onChange={handleChange} placeholder="Specify qualification" className="w-full bg-[#f8fafc] border border-blue-100 rounded-xl p-4 text-sm font-bold outline-none" />
+                )}
+              </motion.div>
+            )}
 
-                  <button type="button" onClick={addExperience} className="w-full flex items-center justify-center gap-2 py-4 border-2 border-dashed border-gray-200 rounded-2xl text-gray-400 font-bold text-xs hover:border-[#00004d] hover:text-[#00004d] transition-all">
-                    <Plus size={16} /> Add Another Experience
-                  </button>
+            {currentStep === 4 && (
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
+                <div className="flex items-center justify-between border-l-4 border-[#00004d] pl-3">
+                  <h2 className="text-[#00004d] font-bold text-lg tracking-wider">Experience & Skills</h2>
+                  <label className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-full cursor-pointer">
+                    <input type="checkbox" checked={isFresher} onChange={(e) => setIsFresher(e.target.checked)} className="accent-[#00004d]" />
+                    <span className="text-[10px] font-bold">I am a Fresher</span>
+                  </label>
+                </div>
 
-                  <div className="space-y-2 mt-6">
-                    <label className="text-[10px] font-bold text-[#00004d] ml-1 block tracking-widest">Achievements / Key Responsibilities</label>
-                    <textarea value={formData.achievements} name="achievements" onChange={handleChange} className="w-full bg-white rounded-xl p-4 text-sm font-bold shadow-sm outline-none border border-gray-100" placeholder="Describe your main projects or achievements..." rows={3} />
+                {!isFresher && (
+                  <div className="space-y-4">
+                    <div className="bg-[#00004d] text-white px-4 py-2 rounded-xl w-fit text-xs font-bold">Total: {calculatedTotalYears} Years Exp</div>
+                    {experienceList.map((exp, index) => (
+                      <div key={index} className="bg-gray-50 p-4 rounded-2xl border relative space-y-3">
+                        {experienceList.length > 1 && <button type="button" onClick={() => removeExperience(index)} className="absolute top-2 right-2 text-red-500"><Trash2 size={16} /></button>}
+                        <input placeholder="Company Name" value={exp.companyName} onChange={(e) => handleExperienceChange(index, 'companyName', e.target.value)} className="w-full p-3 rounded-xl border text-sm font-bold outline-none" />
+                        <input placeholder="Designation" value={exp.designation} onChange={(e) => handleExperienceChange(index, 'designation', e.target.value)} className="w-full p-3 rounded-xl border text-sm font-bold outline-none" />
+                        <div className="grid grid-cols-2 gap-2">
+                          <input type="date" value={exp.startDate} onChange={(e) => handleExperienceChange(index, 'startDate', e.target.value)} className="p-3 rounded-xl border text-xs font-bold" />
+                          <input type="date" disabled={exp.isCurrentJob} value={exp.endDate} onChange={(e) => handleExperienceChange(index, 'endDate', e.target.value)} className="p-3 rounded-xl border text-xs font-bold" />
+                        </div>
+                        <label className="flex items-center gap-2 text-[10px] font-bold text-gray-500 cursor-pointer">
+                          <input type="checkbox" checked={exp.isCurrentJob} onChange={(e) => handleExperienceChange(index, 'isCurrentJob', e.target.checked)} /> Currently Working Here
+                        </label>
+                      </div>
+                    ))}
+                    <button type="button" onClick={addExperience} className="w-full py-3 border-2 border-dashed rounded-xl text-gray-400 font-bold text-xs">+ Add Experience</button>
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-[#00004d] block">Skills (Comma separated)</label>
+                  <input name="skills" value={formData.skills} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="e.g. Sales, Marketing, Driving" />
+                </div>
+              </motion.div>
+            )}
+
+            {currentStep === 5 && (
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
+                <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Contact Info & Salary</h2></div>
+                <div className="grid grid-cols-1 gap-5">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Mail size={12} /> Email</label>
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="example@mail.com" />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Phone size={12} /> Phone</label>
+                      <input name="phone" value={formData.phone} onChange={(e) => handlePhoneChange(e, "phone")} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><MessageCircle size={12} /> WhatsApp</label>
+                      <input name="whatsapp" value={formData.whatsapp} onChange={(e) => handlePhoneChange(e, "whatsapp")} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" />
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-[#00004d]">Salary Demand</label>
+                    <input name="salaryDemand" value={formData.salaryDemand} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="e.g. 50,000 - 60,000" />
                   </div>
                 </div>
+
+                <div className="pt-6 border-t space-y-4">
+                  <button type="button" onClick={() => router.push('/readpolicy')} className="text-[#00004d] text-[11px] font-bold underline">Read Privacy Policy</button>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${formData.agreeTerms ? 'bg-[#00004d] border-[#00004d]' : 'bg-white'}`}>
+                      <input type="checkbox" className="hidden" checked={formData.agreeTerms} onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })} />
+                      {formData.agreeTerms && <Check size={12} className="text-white" />}
+                    </div>
+                    <span className="text-[10px] font-bold text-gray-500">I agree to the privacy policy</span>
+                  </label>
+                </div>
+              </motion.div>
+            )}
+
+            <div className="flex items-center justify-between mt-12 gap-4">
+              {currentStep > 1 && (
+                <button type="button" onClick={prevStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-gray-100 text-[#00004d] font-bold text-sm">
+                  <ArrowLeft size={18} /> Back
+                </button>
               )}
-            </section>
-            <section className="space-y-6">
-              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Skills</h2></div>
-              <input type="text" name="skills" value={formData.skills} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Your Skills" />
-            </section>
-            <section className="space-y-6">
-              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Contact Info</h2></div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
-                <div className="space-y-1.5 md:col-span-2">
-                  <label className="text-[10px] font-bold text-[#00004d] ml-1 flex items-center gap-1"><Mail size={12} /> Email Address</label>
-                  <input type="email" required name="email" value={formData.email} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="example@mail.com" />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-[#00004d] ml-1 flex items-center gap-1"><Phone size={12} /> Phone Number</label>
-                  <input required name="phone" value={formData.phone} onChange={(e) => handlePhoneChange(e, "phone")} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="+92 300 0000000" />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-[#00004d] ml-1 flex items-center gap-1"><MessageCircle size={12} /> WhatsApp Number</label>
-                  <input required name="whatsapp" value={formData.whatsapp} onChange={(e) => handlePhoneChange(e, "whatsapp")} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="+92 300 0000000" />
-                </div>
-              </div>
-            </section>
-            <section className="space-y-6">
-              <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Salary Demand</h2></div>
-              <input type="text" name="salaryDemand" value={formData.salaryDemand} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Mention your desired salary range" />
-            </section>
-            <div className="flex flex-col items-center gap-8 pt-10 border-t">
-              <button type="button"
-                onClick={() => router.push('/readpolicy')} className="w-full md:w-auto bg-[#00004d] text-white px-12 py-3.5 rounded-[13px] text-[13px] font-bold tracking-[0.1em] active:scale-95 transition-all shadow-sm">
-                Read Privacy Policy
-              </button>
-              <label className="flex items-center gap-3 cursor-pointer">
-                <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${formData.agreeTerms ? 'bg-[#00004d] border-white' : 'bg-white border-gray-200'}`}>
-                  <input type="checkbox" className="hidden" checked={formData.agreeTerms} onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })} />
-                  {formData.agreeTerms && <Check size={14} className="text-white" />}
-                </div>
-                <span className="text-[10px] font-bold text-gray-400">I agree to the privacy policy</span>
-              </label>
-              <button disabled={loading || submitted} className={`w-80% md:w-auto bg-[#5DBB63] text-white px-12 py-3.5 rounded-2xl text-[13px] font-bold tracking-[0.1em] active:scale-95 transition-all shadow-sm'} ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}>
-                {loading ? <Loader2 className="animate-spin" size={18} /> : submitted ? <CheckCircle size={18} /> : "Submit Application"}
-                {loading ? " Submitting..." : submitted ? " Submitted!" : ""}
-              </button>
+
+              {currentStep < totalSteps ? (
+                <button type="button" onClick={nextStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#00004d] text-white font-bold text-sm">
+                  Next Step <ArrowRight size={18} />
+                </button>
+              ) : (
+                <button disabled={loading || submitted} className="flex-[2] flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#5DBB63] text-white font-bold text-sm shadow-lg active:scale-95 transition-transform">
+                  {loading ? <Loader2 className="animate-spin" /> : <CheckCircle2 />}
+                  {loading ? "Submitting..." : "Submit Application"}
+                </button>
+              )}
             </div>
+
           </form>
         </div>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 }
