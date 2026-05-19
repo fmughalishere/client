@@ -93,7 +93,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b shadow-sm">
+    <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         <Link href="/">
           <Image
@@ -131,14 +131,14 @@ const Navbar = () => {
           </button>
         </div>
       </nav>
-      <div className="border-t-2 border-blue-900 py-3">
+      <div className=" py-3">
         <div className="flex items-center justify-center gap-1 px-3">
           <Link
             href="/"
             className="flex items-center justify-center gap-1 bg-white rounded-[13px] px-3 h-[42px] shadow-md hover:shadow-lg transition"
           >
             <AiFillHome size={20} style={{ color: "#5DBB63" }} />
-            <span className="font-semibold text-[13px] text-[#00004d]">
+            <span className="font-bold text-[10px] text-[#00004d]">
               Home
             </span>
           </Link>
@@ -148,7 +148,7 @@ const Navbar = () => {
             className="flex items-center justify-center gap-1 bg-white rounded-[13px] px-3 h-[42px] shadow-md hover:shadow-lg transition"
           >
             <FaUserGear size={20} style={{ color: "#5DBB63" }} />
-            <span className="font-semibold text-[13px] text-[#00004d] whitespace-nowrap">
+            <span className="font-bold text-[10px] text-[#00004d] whitespace-nowrap">
               Control Panel
             </span>
           </Link>
@@ -158,8 +158,8 @@ const Navbar = () => {
             className="flex items-center justify-center gap-1 bg-white rounded-[13px] px-3 h-[42px] shadow-md hover:shadow-lg transition"
           >
             <PlusCircle size={20} style={{ color: "#5DBB63" }} />
-            <span className="font-semibold text-[13px] text-[#00004d] whitespace-nowrap">
-              Add to Home
+            <span className="font-bold text-[10px] text-[#00004d] whitespace-nowrap">
+              Add to Home Screen
             </span>
           </button>
 

@@ -11,7 +11,7 @@ const Footer = () => {
     <footer className="w-full">
       <div className="relative w-full h-[180px] md:h-[220px]">
         <Image
-          src="/images/footer-img.png"
+          src="/images/Footer.png"
           alt="Illustration"
           fill
           className="object-cover object-top"
