@@ -84,7 +84,7 @@ export default function HomePage() {
               onClick={() => router.push(action.href)}
               className="w-full transition-transform active:scale-95 group"
             >
-              <div className="relative flex flex-col items-center justify-center h-[90px] bg-white rounded-2xl text-[#00004d] shadow-md border border-gray-50 p-3">                <div className="mb-3 transform group-hover:scale-110 transition-transform">
+              <div className="relative flex flex-col items-center justify-center h-[110px] bg-white rounded-2xl text-[#00004d] shadow-md border border-gray-50 p-3">                <div className="mb-3 transform group-hover:scale-110 transition-transform">
                 {action.icon}
               </div>
                 <span className="text-[14px] font-black text-[#00004d] text-center leading-tight">
