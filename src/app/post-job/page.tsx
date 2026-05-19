@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Cropper, { Area } from "react-easy-crop";
 import {
-  MapPin, DollarSign, Info, FileText, Award, Search, 
-  ChevronDown, Lock, Camera, Scissors, Check, X, 
+  MapPin, DollarSign, Info, FileText, Award, Search,
+  ChevronDown, Lock, Camera, Scissors, Check, X,
   Building2, Briefcase, Globe, ArrowRight, ArrowLeft, Loader2
 } from "lucide-react";
 import SuccessModal from "../../components/SuccessModal";
@@ -36,8 +36,6 @@ async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> 
 export default function PostJobPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  // Steps State
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 3;
 
@@ -175,8 +173,7 @@ export default function PostJobPage() {
   if (userStatus === null) return null;
 
   return (
-    <div className="min-h-screen bg-[#f4f7f9] pb-10 font-sans">
-      {/* Cropper UI */}
+    <div className="min-h-[70vh] bg-[#f4f7f9] pb-10 font-sans">
       <AnimatePresence>
         {isCropping && (
           <div className="fixed inset-0 z-[110] flex flex-col items-center justify-center bg-black p-4">
@@ -203,19 +200,16 @@ export default function PostJobPage() {
 
       <div className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
         <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-[#5DBB63] text-3xl font-bold">Post a Vacancy</motion.h1>
-        {/* Step Indicator */}
         <div className="flex gap-2 mt-4">
-            {[1, 2, 3].map((s) => (
-                <div key={s} className={`h-1.5 w-12 rounded-full transition-all duration-300 ${s <= currentStep ? 'bg-[#5DBB63]' : 'bg-gray-200'}`} />
-            ))}
+          {[1, 2, 3].map((s) => (
+            <div key={s} className={`h-1.5 w-12 rounded-full transition-all duration-300 ${s <= currentStep ? 'bg-[#5DBB63]' : 'bg-gray-200'}`} />
+          ))}
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto -mt-10 px-4">
+      <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-[35px] shadow-xl overflow-hidden border border-white">
           <form onSubmit={handleSubmit} className="p-6 md:p-14">
-            
-            {/* STEP 1: COMPANY & LOCATION */}
             {currentStep === 1 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-10">
                 <section className="flex flex-col items-center gap-6">
@@ -246,7 +240,7 @@ export default function PostJobPage() {
                         <div className="absolute z-50 w-full mt-2 bg-white border rounded-2xl shadow-xl overflow-hidden">
                           <div className="p-2 bg-gray-50"><input placeholder="Search city..." className="w-full p-2 text-xs border rounded-lg outline-none" value={citySearch} onChange={(e) => setCitySearch(e.target.value)} /></div>
                           <div className="max-h-60 overflow-y-auto">
-                            {filteredCities.map(c => <div key={c} onClick={() => { setFormData({...formData, city: c}); setIsCityOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{c}</div>)}
+                            {filteredCities.map(c => <div key={c} onClick={() => { setFormData({ ...formData, city: c }); setIsCityOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{c}</div>)}
                           </div>
                         </div>
                       )}
@@ -256,12 +250,10 @@ export default function PostJobPage() {
                 </section>
               </motion.div>
             )}
-
-            {/* STEP 2: JOB SPECS */}
             {currentStep === 2 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Job Information</h2></div>
-                
+
                 <div className="space-y-4" ref={catRef}>
                   <label className="text-[10px] font-bold text-[#00004d] block uppercase tracking-tight">Job Title / Category</label>
                   <div onClick={() => setIsCatOpen(!isCatOpen)} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold text-[#00004d] flex justify-between items-center cursor-pointer">
@@ -272,7 +264,7 @@ export default function PostJobPage() {
                     <div className="absolute z-50 w-full md:w-[60%] bg-white border rounded-2xl shadow-xl overflow-hidden">
                       <div className="p-2 bg-gray-50"><input placeholder="Search title..." className="w-full p-2 text-xs border rounded-lg outline-none" value={catSearch} onChange={(e) => setCatSearch(e.target.value)} /></div>
                       <div className="max-h-60 overflow-y-auto">
-                        {filteredCategories.map(cat => <div key={cat} onClick={() => { setFormData({...formData, category: cat}); setIsCatOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{cat}</div>)}
+                        {filteredCategories.map(cat => <div key={cat} onClick={() => { setFormData({ ...formData, category: cat }); setIsCatOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{cat}</div>)}
                       </div>
                     </div>
                   )}
@@ -289,7 +281,7 @@ export default function PostJobPage() {
                     <div className="absolute z-50 w-full md:w-[60%] bg-white border rounded-2xl shadow-xl overflow-hidden">
                       <div className="p-2 bg-gray-50"><input placeholder="Search education..." className="w-full p-2 text-xs border rounded-lg outline-none" value={eduSearch} onChange={(e) => setEduSearch(e.target.value)} /></div>
                       <div className="max-h-60 overflow-y-auto">
-                        {filteredEducation.map(edu => <div key={edu} onClick={() => { setFormData({...formData, education: edu}); setIsEduOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{edu}</div>)}
+                        {filteredEducation.map(edu => <div key={edu} onClick={() => { setFormData({ ...formData, education: edu }); setIsEduOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{edu}</div>)}
                       </div>
                     </div>
                   )}
@@ -305,27 +297,26 @@ export default function PostJobPage() {
               </motion.div>
             )}
 
-            {/* STEP 3: DETAILS & SALARY */}
             {currentStep === 3 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Salary & Requirements</h2></div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><DollarSign size={12}/> Monthly Salary</label>
-                        <input placeholder="e.g. 40k - 60k" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.salary} onChange={(e) => setFormData({ ...formData, salary: e.target.value })} />
-                    </div>
-                    <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Briefcase size={12}/> Experience</label>
-                        <input placeholder="e.g. 1 Year / Fresh" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.experience} onChange={(e) => setFormData({ ...formData, experience: e.target.value })} />
-                    </div>
-                    <div className="space-y-1.5 md:col-span-2">
-                        <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Award size={12}/> Skills</label>
-                        <input placeholder="Comma separated skills" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.skills} onChange={(e) => setFormData({ ...formData, skills: e.target.value })} />
-                    </div>
-                    <div className="space-y-1.5 md:col-span-2">
-                        <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><FileText size={12}/> Description (Optional)</label>
-                        <textarea rows={4} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none resize-none" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
-                    </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><DollarSign size={12} /> Monthly Salary</label>
+                    <input placeholder="e.g. 40k - 60k" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.salary} onChange={(e) => setFormData({ ...formData, salary: e.target.value })} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Briefcase size={12} /> Experience</label>
+                    <input placeholder="e.g. 1 Year / Fresh" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.experience} onChange={(e) => setFormData({ ...formData, experience: e.target.value })} />
+                  </div>
+                  <div className="space-y-1.5 md:col-span-2">
+                    <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Award size={12} /> Skills</label>
+                    <input placeholder="Comma separated skills" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.skills} onChange={(e) => setFormData({ ...formData, skills: e.target.value })} />
+                  </div>
+                  <div className="space-y-1.5 md:col-span-2">
+                    <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><FileText size={12} /> Description (Optional)</label>
+                    <textarea rows={4} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none resize-none" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
+                  </div>
                 </div>
 
                 {userStatus === "guest" && (
@@ -337,7 +328,6 @@ export default function PostJobPage() {
               </motion.div>
             )}
 
-            {/* Navigation Buttons */}
             <div className="flex items-center justify-between mt-12 gap-4">
               {currentStep > 1 && (
                 <button type="button" onClick={prevStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-gray-100 text-[#00004d] font-bold text-sm">
@@ -364,7 +354,6 @@ export default function PostJobPage() {
   );
 }
 
-// Choti si help component
-function CheckCircle2({size}: {size?: number}) {
-    return <svg width={size || 20} height={size || 20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+function CheckCircle2({ size }: { size?: number }) {
+  return <svg width={size || 20} height={size || 20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
 }
