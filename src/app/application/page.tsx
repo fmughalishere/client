@@ -218,8 +218,6 @@ export default function MobileResponsiveJobForm() {
     e.preventDefault();
     const token = localStorage.getItem("token");
     if (!token) { setIsAuthModalOpen(true); return; }
-    if (!formData.agreeTerms) { alert("Please agree to the privacy policy."); return; }
-
     setLoading(true);
     const finalPayload = {
       ...formData,
@@ -244,7 +242,7 @@ export default function MobileResponsiveJobForm() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f4f7f9] pb-10 font-sans">
+    <div className="min-h-[60vh] bg-[#f4f7f9] pb-10 font-sans">
       <AuthRequiredModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onAction={handleAuthNavigation} />
       <SuccessModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="" message="" onAction={() => router.push("/")} />
       <AnimatePresence>
