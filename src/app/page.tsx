@@ -76,7 +76,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section className="max-w-2xl mx-auto px-6 mt-10 relative z-10">
+      <section className="max-w-2xl mx-auto px-6 mt-5 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
           {quickActions.map((action, i) => (
             <button
