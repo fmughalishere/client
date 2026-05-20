@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useRef, ChangeEvent, FormEvent, useMemo, useEffect, useCallback } from "react";
+import { useState, useRef, ChangeEvent, FormEvent, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Cropper, { Area } from "react-easy-crop";
+import toast, { Toaster } from "react-hot-toast";
 import {
-  User, Camera, Check, Loader2, CheckCircle2, Mail, Phone, MessageCircle, Trash2, X, Lock, ArrowRight, ArrowLeft
+  User, Camera, Check, Loader2, CheckCircle2, Mail, Phone, MessageCircle, Trash2, X, Lock, ArrowRight, ArrowLeft, Globe
 } from "lucide-react";
 
 import {
@@ -67,7 +68,7 @@ function AuthRequiredModal({ isOpen, onClose, onAction }: { isOpen: boolean; onC
   );
 }
 
-function SuccessModal({ isOpen, onClose, onAction }: { isOpen: boolean, onClose: () => void, onAction: () => void, title: string, message: string }) {
+function SuccessModal({ isOpen, onClose, onAction }: { isOpen: boolean, onClose: () => void, onAction: () => void }) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -124,10 +125,31 @@ export default function MobileResponsiveJobForm() {
     { companyName: "", designation: "", startDate: "", endDate: "", isCurrentJob: false }
   ]);
 
-  const nextStep = () => {
-    if (currentStep < totalSteps) setCurrentStep(prev => prev + 1);
-    window.scrollTo(0, 0);
+  const validateStep = () => {
+    if (currentStep === 1) {
+      return formData.fullName.trim() !== "" && formData.city !== "";
+    }
+    if (currentStep === 2) {
+      return formData.category !== "" && (formData.category === "Other" ? formData.otherCategory.trim() !== "" : true);
+    }
+    if (currentStep === 3) {
+      return formData.education !== "" && (formData.education === "Other" ? formData.otherEducation.trim() !== "" : true);
+    }
+    if (currentStep === 5) {
+      return formData.phone.replace(/\s/g, "").length > 10 && formData.salaryDemand.trim() !== "" && formData.agreeTerms;
+    }
+    return true;
   };
+
+  const nextStep = () => {
+    if (validateStep()) {
+      if (currentStep < totalSteps) setCurrentStep(prev => prev + 1);
+      window.scrollTo(0, 0);
+    } else {
+      toast.error("Please fill all required fields.", { position: "top-center" });
+    }
+  };
+
   const prevStep = () => {
     if (currentStep > 1) setCurrentStep(prev => prev - 1);
     window.scrollTo(0, 0);
@@ -147,7 +169,7 @@ export default function MobileResponsiveJobForm() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  
+
 
   const calculatedTotalYears = useMemo(() => {
     if (isFresher) return 0;
@@ -211,13 +233,24 @@ export default function MobileResponsiveJobForm() {
       setFormData({ ...formData, image: croppedImage });
       setIsCropping(false);
       setImageToCrop(null);
+      toast.success("Profile image updated!", { position: "top-center" });
     }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
     const token = localStorage.getItem("token");
-    if (!token) { setIsAuthModalOpen(true); return; }
+    if (!token) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+
+    if (!validateStep()) {
+      toast.error("Please ensure all required fields and terms are completed.", { position: "top-center" });
+      return;
+    }
+
     setLoading(true);
     const finalPayload = {
       ...formData,
@@ -235,16 +268,29 @@ export default function MobileResponsiveJobForm() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(finalPayload)
       });
-      if (res.ok) { setSubmitted(true); setIsModalOpen(true); }
-      else { const data = await res.json(); alert(data.message || "Error submitting application"); }
-    } catch { alert("Server error. Please try again."); }
-    finally { setLoading(false); }
+      if (res.ok) {
+        setSubmitted(true);
+        setIsModalOpen(true);
+        toast.success("Application submitted successfully!", { position: "top-center" });
+      }
+      else {
+        const data = await res.json();
+        toast.error(data.message || "Error submitting application", { position: "top-center" });
+      }
+    } catch {
+      toast.error("Server error. Please try again later.", { position: "top-center" });
+    }
+    finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-[60vh] bg-[#e1eaed] pb-10 font-sans">
+      <Toaster position="top-center" reverseOrder={false} />
       <AuthRequiredModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onAction={handleAuthNavigation} />
-      <SuccessModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="" message="" onAction={() => router.push("/")} />
+      <SuccessModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAction={() => router.push("/")} />
+
       <AnimatePresence>
         {isCropping && (
           <div className="fixed inset-0 z-[110] flex flex-col items-center justify-center bg-black p-4">
@@ -306,7 +352,7 @@ export default function MobileResponsiveJobForm() {
                   <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Personal Details</h2></div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-[#00004d] ml-1">Full Name</label>
+                      <label className="text-[10px] font-bold text-[#00004d] ml-1">Full Name *</label>
                       <input required name="fullName" value={formData.fullName} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="Enter Your Name" />
                     </div>
                     <div className="space-y-1.5">
@@ -318,12 +364,13 @@ export default function MobileResponsiveJobForm() {
                       <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none"><option>Male</option><option>Female</option><option>Other</option></select>
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-[#00004d] ml-1">City</label>
+                      <label className="text-[10px] font-bold text-[#00004d] ml-1">City *</label>
                       <select required name="city" value={formData.city} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none">
                         <option value="">Select City</option>
                         {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
                     </div>
+                    <div className="flex items-end"><div className="w-full bg-gray-100 rounded-xl p-4 text-sm font-bold text-gray-500 flex items-center gap-2 h-[54px]"><Globe size={14} /> Pakistan</div></div>
                   </div>
                 </section>
               </motion.div>
@@ -333,7 +380,7 @@ export default function MobileResponsiveJobForm() {
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Profession & Type</h2></div>
                 <div className="space-y-4">
-                  <label className="text-[10px] font-bold text-[#00004d] block">Desired Job Category</label>
+                  <label className="text-[10px] font-bold text-[#00004d] block">Desired Job Category *</label>
                   <div className="relative" ref={catRef}>
                     <div onClick={() => setIsCatOpen(!isCatOpen)} className="w-full bg-[#f8fafc] p-4 rounded-xl border border-gray-100 flex justify-between items-center cursor-pointer">
                       <span className="font-bold text-[#00004d] text-sm">{formData.category || "Select Category"}</span>
@@ -350,7 +397,7 @@ export default function MobileResponsiveJobForm() {
                     )}
                   </div>
                   {formData.category === "Other" && (
-                    <input name="otherCategory" value={formData.otherCategory} onChange={handleChange} placeholder="Specify category" className="w-full bg-[#f8fafc] border border-blue-100 rounded-xl p-4 text-sm font-bold outline-none" />
+                    <input name="otherCategory" value={formData.otherCategory} onChange={handleChange} placeholder="Specify category *" className="w-full bg-[#f8fafc] border border-blue-100 rounded-xl p-4 text-sm font-bold outline-none" />
                   )}
                 </div>
                 <div className="space-y-2">
@@ -366,6 +413,7 @@ export default function MobileResponsiveJobForm() {
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Education</h2></div>
                 <div className="relative" ref={eduRef}>
+                  <label className="text-[10px] font-bold text-[#00004d] block mb-2">Highest Qualification *</label>
                   <div onClick={() => setIsEduOpen(!isEduOpen)} className="w-full bg-[#f8fafc] p-4 rounded-xl border border-gray-100 flex justify-between items-center cursor-pointer">
                     <span className="font-bold text-[#00004d] text-sm">{formData.education || "Select Qualification"}</span>
                   </div>
@@ -381,7 +429,7 @@ export default function MobileResponsiveJobForm() {
                   )}
                 </div>
                 {formData.education === "Other" && (
-                  <input name="otherEducation" value={formData.otherEducation} onChange={handleChange} placeholder="Specify qualification" className="w-full bg-[#f8fafc] border border-blue-100 rounded-xl p-4 text-sm font-bold outline-none" />
+                  <input name="otherEducation" value={formData.otherEducation} onChange={handleChange} placeholder="Specify qualification *" className="w-full bg-[#f8fafc] border border-blue-100 rounded-xl p-4 text-sm font-bold outline-none" />
                 )}
               </motion.div>
             )}
@@ -429,7 +477,7 @@ export default function MobileResponsiveJobForm() {
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Contact Info & Salary</h2></div>
                 <div className="grid grid-cols-1 gap-5">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Mail size={12} /> Email</label>
+                    <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Mail size={12} /> Email (Optional)</label>
                     <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="example@mail.com" />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -443,7 +491,7 @@ export default function MobileResponsiveJobForm() {
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-[#00004d]">Salary Demand</label>
+                    <label className="text-[10px] font-bold text-[#00004d]">Salary Demand *</label>
                     <input name="salaryDemand" value={formData.salaryDemand} onChange={handleChange} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" placeholder="e.g. 50,000 - 60,000" />
                   </div>
                 </div>
@@ -455,7 +503,7 @@ export default function MobileResponsiveJobForm() {
                       <input type="checkbox" className="hidden" checked={formData.agreeTerms} onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })} />
                       {formData.agreeTerms && <Check size={12} className="text-white" />}
                     </div>
-                    <span className="text-[10px] font-bold text-gray-500">I agree to the privacy policy</span>
+                    <span className="text-[10px] font-bold text-gray-500">I agree to the privacy policy *</span>
                   </label>
                 </div>
               </motion.div>
@@ -469,11 +517,11 @@ export default function MobileResponsiveJobForm() {
               )}
 
               {currentStep < totalSteps ? (
-                <button type="button" onClick={nextStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#00004d] text-white font-bold text-sm">
+                <button type="button" onClick={nextStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#00004d] text-white font-bold text-sm ml-auto">
                   Next Step <ArrowRight size={18} />
                 </button>
               ) : (
-                <button disabled={loading || submitted} className="flex-[2] flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#5DBB63] text-white font-bold text-sm shadow-lg active:scale-95 transition-transform">
+                <button type="submit" disabled={loading || submitted} className="flex-[2] flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#5DBB63] text-white font-bold text-sm shadow-lg active:scale-95 transition-transform">
                   {loading ? <Loader2 className="animate-spin" /> : <CheckCircle2 />}
                   {loading ? "Submitting..." : "Submit Application"}
                 </button>

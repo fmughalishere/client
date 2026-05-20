@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useState, useRef, ChangeEvent, FormEvent, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useRef, ChangeEvent, FormEvent, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Cropper, { Area } from "react-easy-crop";
+import toast, { Toaster } from "react-hot-toast";
 import {
   MapPin, DollarSign, Info, FileText, Award, Search,
-  ChevronDown, Lock, Camera, Scissors, Check, X,
-  Building2, Briefcase, Globe, ArrowRight, ArrowLeft, Loader2
+  ChevronDown, Lock, Camera, Check, X,
+  Building2, Briefcase, Globe, ArrowRight, ArrowLeft, Loader2, CheckCircle2
 } from "lucide-react";
-import SuccessModal from "../../components/SuccessModal";
 
 import { JOB_CATEGORIES, JOB_TYPES, CITIES, EDUCATION_OPTIONS } from "../constants";
 
@@ -31,6 +31,47 @@ async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> 
   canvas.height = pixelCrop.height;
   ctx.drawImage(image, pixelCrop.x, pixelCrop.y, pixelCrop.width, pixelCrop.height, 0, 0, pixelCrop.width, pixelCrop.height);
   return canvas.toDataURL("image/jpeg", 0.7);
+}
+
+function AuthRequiredModal({ isOpen, onClose, onAction }: { isOpen: boolean; onClose: () => void; onAction: () => void }) {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-sm bg-white rounded-[30px] p-8 text-center shadow-2xl">
+            <div className="bg-[#5DBB63] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Lock className="text-[#00004d]" size={30} />
+            </div>
+            <h3 className="text-xl font-bold text-[#00004d] mb-2">Authentication Required</h3>
+            <p className="text-gray-600 text-sm mb-6 leading-relaxed">Please login or create an Employer account to post this job vacancy.<br /><span className="text-[12px] text-gray-400 mt-2 block">جاب پوسٹ کرنے کے لیے لاگ ان کریں۔</span></p>
+            <div className="space-y-3">
+              <button onClick={onAction} className="w-full bg-[#00004d] text-white py-4 rounded-xl font-bold text-sm active:scale-95 transition-transform">Continue to Login</button>
+              <button onClick={onClose} className="w-full bg-gray-100 text-gray-500 py-3 rounded-xl font-bold text-sm">Cancel</button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function CustomSuccessModal({ isOpen, onClose, onAction }: { isOpen: boolean, onClose: () => void, onAction: () => void }) {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <motion.div initial={{ scale: 0.9, opacity: 0, y: 50 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 50 }} className="relative w-full max-w-md bg-white rounded-[30px] p-8 text-center shadow-2xl">
+            <div className="flex justify-center mb-4"><div className="bg-green-100 p-4 rounded-full"><CheckCircle2 size={50} className="text-green-500" /></div></div>
+            <h3 className="text-2xl font-bold text-[#00004d] mb-3">Job Submitted Successfully!</h3>
+            <p className="text-gray-600 text-sm mb-8 leading-relaxed">Your vacancy has been sent for approval. It will be live on the platform once the admin reviews it.<br /><span className="text-[12px] text-gray-400 mt-2 block">آپ کی جاب ایڈمن کی منظوری کے بعد لائیو کر دی جائے گی۔</span></p>
+            <button onClick={onAction} className="w-full bg-[#00004d] text-white py-4 rounded-full font-bold text-sm active:scale-95 transition-transform shadow-lg shadow-blue-900/20">Go to My Jobs</button>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
 }
 
 export default function PostJobPage() {
@@ -55,13 +96,16 @@ export default function PostJobPage() {
 
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [userStatus, setUserStatus] = useState<"guest" | "jobseeker" | "employer" | null>(null);
+  
   const [isCatOpen, setIsCatOpen] = useState(false);
   const [isEduOpen, setIsEduOpen] = useState(false);
   const [isCityOpen, setIsCityOpen] = useState(false);
   const [catSearch, setCatSearch] = useState("");
   const [eduSearch, setEduSearch] = useState("");
   const [citySearch, setCitySearch] = useState("");
+  
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -94,8 +138,32 @@ export default function PostJobPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const nextStep = () => { if (currentStep < totalSteps) setCurrentStep(prev => prev + 1); window.scrollTo(0, 0); };
+  const validateStep = () => {
+    if (currentStep === 1) return formData.city !== "";
+    if (currentStep === 2) {
+      const isCatOk = formData.category !== "" && (formData.category === "Other" ? formData.otherCategory.trim() !== "" : true);
+      const isEduOk = formData.education !== "" && (formData.education === "Other" ? formData.otherEducation.trim() !== "" : true);
+      return isCatOk && isEduOk;
+    }
+    if (currentStep === 3) return formData.salary.trim() !== "" && formData.experience.trim() !== "";
+    return true;
+  };
+
+  const nextStep = () => {
+    if (validateStep()) {
+      if (currentStep < totalSteps) setCurrentStep(prev => prev + 1);
+      window.scrollTo(0, 0);
+    } else {
+      toast.error("Please fill required fields", { position: "top-center" });
+    }
+  };
+
   const prevStep = () => { if (currentStep > 1) setCurrentStep(prev => prev - 1); window.scrollTo(0, 0); };
+
+  const handleAuthNavigation = () => {
+    localStorage.setItem("pendingJobPost", JSON.stringify(formData));
+    router.push("/company-register");
+  };
 
   const filteredCategories = useMemo(() => {
     const filtered = JOB_CATEGORIES.filter(opt => opt.toLowerCase().includes(catSearch.toLowerCase()));
@@ -123,22 +191,27 @@ export default function PostJobPage() {
       setFormData({ ...formData, companyLogo: croppedImage });
       setIsCropping(false);
       setImageToCrop(null);
+      toast.success("Logo updated!");
     }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const finalCategory = formData.category === "Other" ? formData.otherCategory : formData.category;
-    const finalEducation = formData.education === "Other" ? formData.otherEducation : formData.education;
 
     if (userStatus === "guest") {
-      localStorage.setItem("pendingJobPost", JSON.stringify({ ...formData, category: finalCategory, education: finalEducation }));
-      router.push("/company-register");
+      setIsAuthModalOpen(true);
+      return;
+    }
+
+    if (!validateStep()) {
+      toast.error("Please complete all required fields");
       return;
     }
 
     setLoading(true);
     const token = localStorage.getItem("token");
+    const finalCategory = formData.category === "Other" ? formData.otherCategory : formData.category;
+    const finalEducation = formData.education === "Other" ? formData.otherEducation : formData.education;
     try {
       const res = await fetch("https://easyjobspk.onrender.com/api/jobs", {
         method: "POST",
@@ -151,10 +224,17 @@ export default function PostJobPage() {
         }),
       });
 
-      if (res.ok) setShowSuccess(true);
-      else { const errorData = await res.json(); alert(errorData.message || "Failed to post job"); }
-    } catch (err) { alert("Server error. Please try again."); }
-    finally { setLoading(false); }
+      if (res.ok) {
+        setShowSuccess(true);
+      } else {
+        const errorData = await res.json();
+        toast.error(errorData.message || "Failed to post job");
+      }
+    } catch (err) {
+      toast.error("Server error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (userStatus === "jobseeker") {
@@ -174,9 +254,12 @@ export default function PostJobPage() {
 
   return (
     <div className="min-h-[70vh] bg-[#e1eaed] pb-10 font-sans">
+      <Toaster position="top-center" />
+      <AuthRequiredModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onAction={handleAuthNavigation} />
+      <CustomSuccessModal isOpen={showSuccess} onClose={() => setShowSuccess(false)} onAction={() => router.push("/dashboard/employer/my-jobs")} />
       <AnimatePresence>
         {isCropping && (
-          <div className="fixed inset-0 z-[110] flex flex-col items-center justify-center bg-black p-4">
+          <div className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-black p-4">
             <div className="relative w-full h-[60vh] md:w-[500px] md:h-[500px] bg-gray-900 rounded-2xl overflow-hidden">
               <Cropper image={imageToCrop!} crop={crop} zoom={zoom} aspect={1} onCropChange={setCrop} onCropComplete={(_, pix) => setCroppedAreaPixels(pix)} onZoomChange={setZoom} />
             </div>
@@ -190,13 +273,6 @@ export default function PostJobPage() {
           </div>
         )}
       </AnimatePresence>
-
-      <SuccessModal
-        isOpen={showSuccess}
-        onClose={() => router.push("/dashboard/employer/my-jobs")}
-        title="JOB SUBMITTED!"
-        message="Your job listing has been received. It will be live on the platform after Admin Approval."
-      />
 
       <div className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
         <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-[#5DBB63] text-3xl font-bold">Post a Vacancy</motion.h1>
@@ -231,7 +307,7 @@ export default function PostJobPage() {
                   <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Location Details</h2></div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="relative" ref={cityRef}>
-                      <label className="text-[10px] font-bold text-[#00004d] mb-2 block">Select City</label>
+                      <label className="text-[10px] font-bold text-[#00004d] mb-2 block">Select City *</label>
                       <div onClick={() => setIsCityOpen(!isCityOpen)} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold text-[#00004d] flex justify-between items-center cursor-pointer">
                         {formData.city || "Choose City"}
                         <ChevronDown size={16} className={isCityOpen ? 'rotate-180' : ''} />
@@ -253,15 +329,14 @@ export default function PostJobPage() {
             {currentStep === 2 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Job Information</h2></div>
-
                 <div className="space-y-4" ref={catRef}>
-                  <label className="text-[10px] font-bold text-[#00004d] block uppercase tracking-tight">Job Title / Category</label>
+                  <label className="text-[10px] font-bold text-[#00004d] block uppercase tracking-tight">Job Title / Category *</label>
                   <div onClick={() => setIsCatOpen(!isCatOpen)} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold text-[#00004d] flex justify-between items-center cursor-pointer">
                     {formData.category || "Select Category"}
                     <ChevronDown size={16} className={isCatOpen ? 'rotate-180' : ''} />
                   </div>
                   {isCatOpen && (
-                    <div className="absolute z-50 w-full md:w-[60%] bg-white border rounded-2xl shadow-xl overflow-hidden">
+                    <div className="absolute z-50 w-full bg-white border rounded-2xl shadow-xl overflow-hidden">
                       <div className="p-2 bg-gray-50"><input placeholder="Search title..." className="w-full p-2 text-xs border rounded-lg outline-none" value={catSearch} onChange={(e) => setCatSearch(e.target.value)} /></div>
                       <div className="max-h-60 overflow-y-auto">
                         {filteredCategories.map(cat => <div key={cat} onClick={() => { setFormData({ ...formData, category: cat }); setIsCatOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{cat}</div>)}
@@ -272,13 +347,13 @@ export default function PostJobPage() {
                 </div>
 
                 <div className="space-y-4" ref={eduRef}>
-                  <label className="text-[10px] font-bold text-[#00004d] block uppercase tracking-tight">Required Education</label>
+                  <label className="text-[10px] font-bold text-[#00004d] block uppercase tracking-tight">Required Education *</label>
                   <div onClick={() => setIsEduOpen(!isEduOpen)} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold text-[#00004d] flex justify-between items-center cursor-pointer">
                     {formData.education || "Select Education"}
                     <ChevronDown size={16} className={isEduOpen ? 'rotate-180' : ''} />
                   </div>
                   {isEduOpen && (
-                    <div className="absolute z-50 w-full md:w-[60%] bg-white border rounded-2xl shadow-xl overflow-hidden">
+                    <div className="absolute z-50 w-full bg-white border rounded-2xl shadow-xl overflow-hidden">
                       <div className="p-2 bg-gray-50"><input placeholder="Search education..." className="w-full p-2 text-xs border rounded-lg outline-none" value={eduSearch} onChange={(e) => setEduSearch(e.target.value)} /></div>
                       <div className="max-h-60 overflow-y-auto">
                         {filteredEducation.map(edu => <div key={edu} onClick={() => { setFormData({ ...formData, education: edu }); setIsEduOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{edu}</div>)}
@@ -302,11 +377,11 @@ export default function PostJobPage() {
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Salary & Requirements</h2></div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><DollarSign size={12} /> Monthly Salary</label>
+                    <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><DollarSign size={12} /> Monthly Salary *</label>
                     <input placeholder="e.g. 40k - 60k" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.salary} onChange={(e) => setFormData({ ...formData, salary: e.target.value })} />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Briefcase size={12} /> Experience</label>
+                    <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Briefcase size={12} /> Experience *</label>
                     <input placeholder="e.g. 1 Year / Fresh" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.experience} onChange={(e) => setFormData({ ...formData, experience: e.target.value })} />
                   </div>
                   <div className="space-y-1.5 md:col-span-2">
@@ -318,13 +393,6 @@ export default function PostJobPage() {
                     <textarea rows={4} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none resize-none" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
                   </div>
                 </div>
-
-                {userStatus === "guest" && (
-                  <div className="p-4 bg-red-50 rounded-xl flex items-center gap-3 text-red-600 border border-red-100">
-                    <Lock size={18} />
-                    <p className="text-[11px] font-bold uppercase tracking-widest">Login required to publish this vacancy</p>
-                  </div>
-                )}
               </motion.div>
             )}
 
@@ -340,7 +408,7 @@ export default function PostJobPage() {
                   Next Step <ArrowRight size={18} />
                 </button>
               ) : (
-                <button disabled={loading} className="flex-[2] flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#5DBB63] text-white font-bold text-sm shadow-lg active:scale-95 transition-transform">
+                <button type="submit" disabled={loading} className="flex-[2] flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#5DBB63] text-white font-bold text-sm shadow-lg active:scale-95 transition-transform">
                   {loading ? <Loader2 className="animate-spin" /> : <CheckCircle2 size={18} />}
                   {loading ? "Publishing..." : "Publish Vacancy"}
                 </button>
@@ -352,8 +420,4 @@ export default function PostJobPage() {
       </div>
     </div>
   );
-}
-
-function CheckCircle2({ size }: { size?: number }) {
-  return <svg width={size || 20} height={size || 20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
 }
