@@ -86,7 +86,7 @@ export default function JobsPage() {
   const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
 
   return (
-    <main className="min-h-screen bg-[#fcfcfc] pb-20 font-sans">
+    <main className="min-h-screen bg-[#f4f7f9] pb-20 font-sans">
       <section className="px-0 pt-0 relative">
         <div className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
           <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full mb-3 shadow-sm border border-[#00004d]/10">

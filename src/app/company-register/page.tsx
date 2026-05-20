@@ -175,7 +175,7 @@ export default function CompanyRegister() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-start md:justify-center px-4 py-6 md:p-12 relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#f4f7f9] flex flex-col items-center justify-start md:justify-center px-4 py-6 md:p-12 relative overflow-x-hidden">
       <Toaster position="top-center" />
       <AnimatePresence>
         {isCropping && (

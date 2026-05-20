@@ -11,7 +11,7 @@ const Footer = () => {
     <footer className="w-full">
       <div className="relative w-full h-[180px] md:h-[220px]">
         <Image
-          src="/images/footer-logo.png"
+          src="/images/footer-img.png"
           alt="Illustration"
           fill
           className="object-cover object-top"
@@ -45,11 +45,11 @@ const Footer = () => {
             </Link>
           </div>
           <div className="text-center">
-            <p className="text-[#1e3a8a] text-[12px] font-bold leading-tight">
+            <p className="text-[#1e3a8a] text-[10px] font-bold leading-tight">
               Copyright © 2026 <span className="underline decoration-green-400">easyjobs.pk</span>
             </p>
             <p className="text-[#1e3a8a] text-[10px] mt-0.5 opacity-90">
-              A project of <span className="font-bold">Success Signatures SMC Pvt Ltd.</span>
+              A project of <span className="font-bold">Success Signatures (SMC Pvt Ltd.) Lahore-Pakistan</span>
             </p>
           </div>
 

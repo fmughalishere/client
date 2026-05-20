@@ -51,7 +51,7 @@ export default function JobSeekerDashboard() {
   const jobOffers = data?.recentApplications?.filter((app: any) => app.status === "Offered") || [];
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#f4f7f9] flex flex-col md:flex-row">
       <aside className="w-full md:w-72 bg-white border-r p-8 flex flex-col justify-between md:min-h-screen">
           <div className="flex flex-col gap-8">
             <div className="flex items-center gap-3">

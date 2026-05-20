@@ -32,7 +32,7 @@ function VerifyEmailContent() {
   }, [token, router]);
 
   return (
-    <div className="text-center p-8 md:p-12 bg-white rounded-[2.5rem] shadow-2xl max-w-md w-full border border-gray-100">
+    <div className="text-center p-8 md:p-12 bg-[#f4f7f9] rounded-[2.5rem] shadow-2xl max-w-md w-full border border-gray-100">
       {status === "verifying" && (
         <div className="space-y-4">
           <div className="w-12 h-12 border-4 border-[#00004d] border-t-transparent rounded-full animate-spin mx-auto"></div>

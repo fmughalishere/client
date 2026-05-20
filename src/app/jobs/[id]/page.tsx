@@ -61,7 +61,7 @@ export default function JobDetailPage() {
   );
 
   return (
-    <main className="min-h-screen bg-[#fcfcfc] pb-20 font-sans text-[#00004d]">
+    <main className="min-h-screen bg-[#f4f7f9] pb-20 font-sans text-[#00004d]">
       <Toaster position="top-center" />
       <section className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden mb-13">
         <button onClick={handleShare} className="absolute top-6 right-6 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white backdrop-blur-sm transition-all active:scale-90">
