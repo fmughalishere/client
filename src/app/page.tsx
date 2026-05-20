@@ -49,7 +49,7 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-[72vh] bg-[#e1eaed] font-sans">
+    <main className="min-h-[62vh] bg-[#e1eaed] font-sans">
       <section className="px-0 pt-0 relative">
         <div className="bg-white rounded-b-[40px] pt-6 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
           <div className="text-center mb-1 mt-0 relative z-10">
