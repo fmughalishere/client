@@ -76,27 +76,27 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section className="max-w-2xl mx-auto px-6 mt-5 relative z-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
-          {quickActions.map((action, i) => (
-            <button
-              key={i}
-              onClick={() => router.push(action.href)}
-              className="w-full transition-transform active:scale-95 group"
-            >
-              {/* Changed h-[115px] to aspect-square w-full */}
-              <div className="relative flex flex-col items-center justify-center aspect-square w-full bg-white rounded-2xl text-[#00004d] shadow-md border border-gray-50 p-3">
-                <div className="mb-3 transform group-hover:scale-110 transition-transform">
-                  {action.icon}
-                </div>
-                <span className="text-[14px] font-black text-[#00004d] text-center leading-tight">
-                  {action.label}
-                </span>
-              </div>
-            </button>
-          ))}
+<section className="max-w-lg mx-auto px-6 mt-3 relative z-10">
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 w-full justify-items-center">
+    {quickActions.map((action, i) => (
+      <button
+        key={i}
+        onClick={() => router.push(action.href)}
+        className="w-full max-w-[105px] transition-transform active:scale-95 group mx-auto"
+      >
+        <div className="relative flex flex-col items-center justify-center h-[82px] w-full bg-white rounded-xl text-[#00004d] shadow-md border border-gray-50 p-1.5">
+          <div className="mb-1 transform group-hover:scale-110 transition-transform">
+            {action.icon}
+          </div>
+
+          <span className="text-[11px] font-black text-[#00004d] text-center leading-tight">
+            {action.label}
+          </span>
         </div>
-      </section>
+      </button>
+    ))}
+  </div>
+</section>
     </main>
   );
 }
