@@ -49,7 +49,7 @@ const Footer = () => {
               Copyright © 2026 <span className="underline decoration-green-400">easyjobs.pk</span>
             </p>
             <p className="text-[#1e3a8a] text-[10px] mt-0.5 opacity-90">
-              <span className="font-bold">A project of  Success Signatures (SMC Pvt Ltd.) Lahore-Pakistan</span>
+              <span className="font-bold">A project of  Success Signatures (SMC Pvt) Ltd. Lahore-Pakistan</span>
             </p>
           </div>
 
