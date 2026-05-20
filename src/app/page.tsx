@@ -82,7 +82,7 @@ export default function HomePage() {
             <button
               key={i}
               onClick={() => router.push(action.href)}
-              className="w-full transition-transform active:scale-95 group"
+              className="w-35 transition-transform active:scale-95 group"
             >
               <div className="relative flex flex-col items-center justify-center h-[115px] bg-white rounded-2xl text-[#00004d] shadow-md border border-gray-50 p-3">                <div className="mb-3 transform group-hover:scale-110 transition-transform">
                 {action.icon}
