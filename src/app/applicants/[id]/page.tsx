@@ -219,7 +219,7 @@ export default function ApplicantDetail() {
   );
 
   return (
-    <div className="min-h-screen bg-[#f4f7f9] p-4 md:p-10 pb-24 font-sans">
+    <div className="min-h-screen bg-[#e1eaed] p-4 md:p-10 pb-24 font-sans">
             <AnimatePresence>
         {isCropping && (
           <div className="fixed inset-0 z-[120] flex flex-col items-center justify-center bg-black/90 p-4">

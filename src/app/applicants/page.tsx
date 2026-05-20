@@ -124,7 +124,7 @@ export default function ApplicantsPage() {
   const totalPages = Math.ceil(filteredApplicants.length / itemsPerPage);
 
   return (
-    <main className="min-h-screen bg-[#f4f7f9] pb-20 font-sans">
+    <main className="min-h-screen bg-[#e1eaed] pb-20 font-sans">
       <section className="px-0 pt-0 relative">
         <div className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
           <div className="text-center mb-1 mt-0 relative z-10">

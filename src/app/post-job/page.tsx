@@ -173,7 +173,7 @@ export default function PostJobPage() {
   if (userStatus === null) return null;
 
   return (
-    <div className="min-h-[70vh] bg-[#f4f7f9] pb-10 font-sans">
+    <div className="min-h-[70vh] bg-[#e1eaed] pb-10 font-sans">
       <AnimatePresence>
         {isCropping && (
           <div className="fixed inset-0 z-[110] flex flex-col items-center justify-center bg-black p-4">
