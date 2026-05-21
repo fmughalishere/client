@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Search, User, Loader2, Bookmark, Heart } from "lucide-react";
+import { Search, User, Loader2, Heart } from "lucide-react";
 import { LuChevronsRight } from "react-icons/lu";
 import { IoIosPin } from "react-icons/io";
 import { MALE_ICON, FEMALE_ICON } from "../constants";
@@ -14,6 +14,8 @@ export default function ApplicantsPage() {
   const [applicants, setApplicants] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 25;
@@ -24,6 +26,16 @@ export default function ApplicantsPage() {
   const navyBlueFilter = {
     filter: "invert(7%) sepia(76%) saturate(5793%) hue-rotate(241deg) brightness(91%) contrast(108%)"
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const fetchApplicants = useCallback(async () => {
     try {
@@ -51,6 +63,34 @@ export default function ApplicantsPage() {
   useEffect(() => {
     fetchApplicants();
   }, [fetchApplicants]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    setCurrentPage(1);
+
+    if (value.trim().length > 0) {
+      const filtered = applicants
+        .filter((app) =>
+          app.fullName.toLowerCase().includes(value.toLowerCase()) ||
+          (app.category && app.category.toLowerCase().includes(value.toLowerCase()))
+        )
+        .map((app) => (app.category && app.category.toLowerCase().includes(value.toLowerCase()) ? app.category : app.fullName));
+      
+      const uniqueSuggestions = Array.from(new Set(filtered)).slice(0, 5);
+      setSuggestions(uniqueSuggestions as string[]);
+      setShowSuggestions(true);
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSearch = (selectedQuery?: string) => {
+    const finalQuery = selectedQuery || searchQuery;
+    setSearchQuery(finalQuery);
+    setShowSuggestions(false);
+  };
 
   const handleToggleSave = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -82,7 +122,11 @@ export default function ApplicantsPage() {
 
   const filteredApplicants = applicants.filter((app) => {
     const query = searchQuery.toLowerCase();
-    return app.fullName?.toLowerCase().includes(query) || app.category?.toLowerCase().includes(query) || app.city?.toLowerCase().includes(query);
+    return (
+      app.fullName?.toLowerCase().includes(query) || 
+      app.category?.toLowerCase().includes(query) || 
+      app.city?.toLowerCase().includes(query)
+    );
   });
 
   const totalPages = Math.ceil(filteredApplicants.length / itemsPerPage);
@@ -115,86 +159,108 @@ export default function ApplicantsPage() {
   return (
     <main className="min-h-screen bg-[#e1eaed] pb-20 font-sans">
       <Toaster position="top-center" />
-      <section className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center relative">
-        <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] text-[#5DBB63] leading-tight text-center">Hire Experts <br /> Get Quality Work</h1>
+            <section className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center relative shadow-sm">
+        <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] text-[#5DBB63] leading-tight text-center">
+          Hire Experts <br /> Get Quality Work
+        </h1>
       </section>
-
-      <div className="relative -mt-7 flex justify-center px-6 z-30">
+      <div className="relative -mt-8 flex justify-center px-6 z-30" ref={searchRef}>
         <div className="relative w-full max-w-[280px]">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#00004d]" strokeWidth={3} />
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <Search className="h-5 w-5 text-[#00004d]" strokeWidth={3} />
+          </div>
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+            onChange={handleInputChange}
+            onFocus={() => searchQuery.trim().length > 0 && setShowSuggestions(true)}
             placeholder="Search candidates..."
-            className="block w-full pl-11 pr-4 py-2.5 bg-white rounded-[15px] shadow-lg text-sm text-[#00004d] font-bold outline-none"
+            className="block w-full pl-11 pr-14 py-3 bg-[#e1eaed] rounded-[15px] shadow-lg text-sm text-[#00004d] font-bold outline-none"
           />
+          <div className="absolute inset-y-0 right-0 flex items-center pr-4 gap-2">
+            <div className="h-5 w-[1.5px] bg-[#00004d]"></div>
+            <button 
+              onClick={() => handleSearch()} 
+              className="text-[#00004d] font-black text-[15px] hover:opacity-70"
+            >
+              Go
+            </button>
+          </div>
+          {showSuggestions && suggestions.length > 0 && (
+            <div className="absolute mt-2 w-full bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50">
+              {suggestions.map((suggestion, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleSearch(suggestion)}
+                  className="w-full text-left px-4 py-3 text-sm font-bold text-[#00004d] hover:bg-gray-50 border-b last:border-0 border-gray-100"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
-
-      <section className="max-w-[360px] mx-auto px-4 mt-6">
+      <section className="max-w-[360px] mx-auto px-4 mt-10">
         <div className="flex flex-col gap-3">
           {loading ? (
             <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#00004d]" /></div>
           ) : (
             <>
-              {currentItems.map((app) => (
-                <div key={app._id} onClick={() => router.push(`/applicants/${app._id}`)} className="bg-white border border-gray-100 rounded-[15px] flex items-center gap-3 shadow-md h-[100px] cursor-pointer overflow-hidden">
-                  <div className="relative w-24 h-full shrink-0 bg-gray-200 shadow-sm">
-                    {app.image === "male" ? (
-                      <Image
-                        src={MALE_ICON}
-                        alt="M"
-                        fill
-                        className="object-cover"
-                        style={navyBlueFilter}
-                        unoptimized
-                      />
-                    ) : app.image === "female" ? (
-                      <Image
-                        src={FEMALE_ICON}
-                        alt="F"
-                        fill
-                        className="object-cover"
-                        style={navyBlueFilter}
-                        unoptimized
-                      />
-                    ) : app.image?.length > 20 ? (
-                      <Image
-                        src={app.image}
-                        alt="U"
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    ) : (
-                      <div className="flex items-center justify-center h-full w-full">
-                        <User size={30} className="text-[#00004d]" />
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex flex-col flex-1 overflow-hidden py-2 pr-3">
-                    <div className="flex justify-between items-center">
-                      <div className="flex gap-2 items-center truncate">
-                        <h2 className="text-[10px] font-black text-[#00004d] truncate">{app.fullName}</h2>
-                        <span className="text-[9px] font-bold text-[#00004d] bg-gray-100 px-1.5 py-0.5 rounded-md">Age {calculateAge(app.dob)}</span>
-                      </div>
-                      <button onClick={(e) => handleToggleSave(e, app._id)} className="p-1">
-                        <Heart size={18} className={app.savedBy?.includes(currentUserId) ? "fill-[#00004d] text-[#00004d]" : "text-[#00004d]"} />
-                      </button>
+              {currentItems.length > 0 ? (
+                currentItems.map((app) => (
+                  <div 
+                    key={app._id} 
+                    onClick={() => router.push(`/applicants/${app._id}`)} 
+                    className="bg-white border border-gray-100 rounded-[15px] flex items-center gap-3 shadow-md h-[100px] cursor-pointer overflow-hidden transition-transform active:scale-95"
+                  >
+                    <div className="relative w-24 h-full shrink-0 bg-gray-200 shadow-sm">
+                      {app.image === "male" ? (
+                        <Image src={MALE_ICON} alt="M" fill className="object-cover" style={navyBlueFilter} unoptimized />
+                      ) : app.image === "female" ? (
+                        <Image src={FEMALE_ICON} alt="F" fill className="object-cover" style={navyBlueFilter} unoptimized />
+                      ) : app.image?.length > 20 ? (
+                        <Image src={app.image} alt="U" fill className="object-cover" unoptimized />
+                      ) : (
+                        <div className="flex items-center justify-center h-full w-full">
+                          <User size={30} className="text-[#00004d]" />
+                        </div>
+                      )}
                     </div>
-                    <p className="text-[9px] font-bold text-[#00004d] opacity-90 truncate">{app.category}</p>
-                    <p className="text-[9px] font-bold text-[#00004d] mt-0.5">{calculateTotalExperience(app.experience, app.isFresher)}</p>
-                    <div className="flex justify-between items-center mt-1">
-                      <div className="flex items-center gap-0 text-[#5DBB63] ml-[-3]"><IoIosPin size={13} /><span className="font-bold text-[10px]">{app.city}</span></div>
-                      <button className="text-[#5DBB63] font-black text-[10px] flex items-center">Visit my Profile <LuChevronsRight size={14} /></button>
+                    <div className="flex flex-col flex-1 overflow-hidden py-2 pr-3">
+                      <div className="flex justify-between items-center">
+                        <div className="flex gap-2 items-center truncate">
+                          <h2 className="text-[10px] font-black text-[#00004d] truncate">{app.fullName}</h2>
+                          <span className="text-[9px] font-bold text-[#00004d] bg-gray-100 px-1.5 py-0.5 rounded-md">Age {calculateAge(app.dob)}</span>
+                        </div>
+                        <button onClick={(e) => handleToggleSave(e, app._id)} className="p-1">
+                          <Heart size={18} className={app.savedBy?.includes(currentUserId) ? "fill-[#00004d] text-[#00004d]" : "text-[#00004d]"} />
+                        </button>
+                      </div>
+                      <p className="text-[9px] font-bold text-[#00004d] opacity-90 truncate">{app.category}</p>
+                      <p className="text-[9px] font-bold text-[#00004d] mt-0.5">{calculateTotalExperience(app.experience, app.isFresher)}</p>
+                      <div className="flex justify-between items-center mt-1">
+                        <div className="flex items-center gap-0 text-[#5DBB63] ml-[-3]">
+                          <IoIosPin size={13} />
+                          <span className="font-bold text-[10px]">{app.city}</span>
+                        </div>
+                        <button className="text-[#5DBB63] font-black text-[10px] flex items-center">
+                          Visit my Profile <LuChevronsRight size={14} />
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div className="text-center py-10 text-[#00004d] font-bold">No candidates found</div>
+              )}
 
               {filteredApplicants.length > itemsPerPage && (
-                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page: number) => { setCurrentPage(page); window.scrollTo(0, 0); }} />
+                <Pagination 
+                  currentPage={currentPage} 
+                  totalPages={totalPages} 
+                  onPageChange={(page: number) => { setCurrentPage(page); window.scrollTo(0, 0); }} 
+                />
               )}
             </>
           )}
