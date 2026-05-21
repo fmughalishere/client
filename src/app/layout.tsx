@@ -5,9 +5,13 @@ import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import { AuthProvider } from "../components/AuthProvider";
 import VisitorTracker from "../components/VisitorTracker";
+import localFont from 'next/font/local'
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
-
+const fontatica = localFont({
+  src: './fonts/Fontatica4F.ttf',
+  variable: '--font-fontatica'
+})
 export const metadata: Metadata = {
   title: "EasyJobs Pakistan",
   description: "Hire Easy, Get Hired Easy",

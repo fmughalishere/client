@@ -1,5 +1,8 @@
 @import "tailwindcss";
-
+@font-face {
+  font-family: 'Fontatica';
+  src: url('/fonts/Fontatica4F.ttf');
+}
 :root {
   --background: #ffffff;
   --foreground: #171717;
