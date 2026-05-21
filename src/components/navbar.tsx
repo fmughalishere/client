@@ -99,7 +99,7 @@ const Navbar = () => {
           <Image
             src="/images/easyjobs-pk-logo.png"
             alt="Logo"
-            width={170}
+            width={210}
             height={50}
             className="object-contain"
             priority
