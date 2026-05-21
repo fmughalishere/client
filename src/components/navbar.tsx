@@ -103,6 +103,8 @@ const Navbar = () => {
             height={50}
             className="object-contain"
             priority
+            quality={100}
+            unoptimized
           />
         </Link>
         <div className="hidden md:flex items-center gap-1">
