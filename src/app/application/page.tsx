@@ -337,6 +337,23 @@ export default function MobileResponsiveJobForm() {
                     </div>
                     <div className="absolute bottom-1 right-1 bg-[#00004d] text-white p-2.5 rounded-full shadow-lg"><Camera size={18} /></div>
                   </div>
+                  <div className="flex flex-col items-center gap-3 mt-2">
+
+                    <span className="px-4 py-1 rounded-full bg-[#eef4ff] text-[#00004d] text-[11px] font-semibold border border-[#d6e4ff] tracking-wide shadow-sm">
+                      Optional
+                    </span>
+
+                    <div className="flex items-center gap-2 w-full max-w-[260px]">
+                      <div className="flex-1 h-[1px] bg-gray-200" />
+
+                      <span className="text-[11px] font-bold tracking-[1px] text-gray-400">
+                        Or Choose an Icon
+                      </span>
+
+                      <div className="flex-1 h-[1px] bg-gray-200" />
+                    </div>
+
+                  </div>
                   <input type="file" ref={fileInputRef} className="hidden" onChange={handleImageChange} accept="image/*" />
                   <div className="flex gap-4 w-full justify-center">
                     <button type="button" onClick={() => setFormData({ ...formData, image: "male" })} className={`px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "male" ? 'border-[#00004d] bg-[#00004d] text-white' : 'border-gray-100 text-gray-400'}`}>

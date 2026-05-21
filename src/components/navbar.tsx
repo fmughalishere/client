@@ -93,47 +93,46 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full shadow-sm">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between bg-[#e1eaed]">
-        <Link href="/">
-          <Image
-            src="/images/easyjobs-pk-logo.png"
-            alt="Logo"
-            width={210}
-            height={50}
-            className="object-contain"
-            priority
-            quality={100}
-            unoptimized
-          />
-        </Link>
-        <div className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`px-4 py-2 rounded-full text-[14px] font-semibold transition ${pathname === link.href
-                ? "text-blue-900 bg-blue-50"
-                : "text-gray-500 hover:text-blue-800 hover:bg-gray-50"
-                }`}
-            >
-              {link.name}
-            </Link>
-          ))}
-        </div>
-        <div className="flex items-center gap-2">
-          <button className="relative p-2 mt-1 rounded-full hover:bg-gray-100 transition">
-            <Bell size={24} className="text-[#00004d]" />
-          </button>
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-[#00004d]"
+    <header className="sticky top-0 z-50 w-full bg-[#e1eaed] shadow-sm border-b border-gray-200 backdrop-blur-md">      <nav className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between bg-[#e1eaed]">
+      <Link href="/">
+        <Image
+          src="/images/easyjobs-pk-logo.png"
+          alt="Logo"
+          width={210}
+          height={50}
+          className="object-contain"
+          priority
+          quality={100}
+          unoptimized
+        />
+      </Link>
+      <div className="hidden md:flex items-center gap-1">
+        {navLinks.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className={`px-4 py-2 rounded-full text-[14px] font-semibold transition ${pathname === link.href
+              ? "text-blue-900 bg-blue-50"
+              : "text-gray-500 hover:text-blue-800 hover:bg-gray-50"
+              }`}
           >
-            {isOpen ? <X size={26} /> : <Menu size={26} />}
-          </button>
-        </div>
-      </nav>
-      <div className=" py-3">
+            {link.name}
+          </Link>
+        ))}
+      </div>
+      <div className="flex items-center gap-2">
+        <button className="relative p-2 mt-1 rounded-full hover:bg-gray-100 transition">
+          <Bell size={24} className="text-[#00004d]" />
+        </button>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="md:hidden p-2 text-[#00004d]"
+        >
+          {isOpen ? <X size={26} /> : <Menu size={26} />}
+        </button>
+      </div>
+    </nav>
+      <div className="py-3 bg-[#e1eaed]">
         <div className="flex items-center justify-center gap-3 px-3">
           <Link
             href="/"
