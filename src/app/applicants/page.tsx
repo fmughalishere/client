@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Search, User, Loader2, Bookmark } from "lucide-react";
+import { Search, User, Loader2, Bookmark, Heart } from "lucide-react";
 import { LuChevronsRight } from "react-icons/lu";
 import { IoIosPin } from "react-icons/io";
 import { MALE_ICON, FEMALE_ICON } from "../constants";
@@ -176,18 +176,18 @@ export default function ApplicantsPage() {
                   <div className="flex flex-col flex-1 overflow-hidden py-2 pr-3">
                     <div className="flex justify-between items-center">
                       <div className="flex gap-2 items-center truncate">
-                        <h2 className="text-[14px] font-black text-[#00004d] truncate">{app.fullName}</h2>
+                        <h2 className="text-[10px] font-black text-[#00004d] truncate">{app.fullName}</h2>
                         <span className="text-[9px] font-bold text-[#00004d] bg-gray-100 px-1.5 py-0.5 rounded-md">Age {calculateAge(app.dob)}</span>
                       </div>
                       <button onClick={(e) => handleToggleSave(e, app._id)} className="p-1">
-                        <Bookmark size={18} className={app.savedBy?.includes(currentUserId) ? "fill-[#00004d] text-[#00004d]" : "text-gray-400"} />
+                        <Heart size={18} className={app.savedBy?.includes(currentUserId) ? "fill-[#00004d] text-[#00004d]" : "text-[#00004d]"} />
                       </button>
                     </div>
-                    <p className="text-[11px] font-bold text-[#00004d] opacity-90 truncate">{app.category}</p>
-                    <p className="text-[10px] font-bold text-[#00004d] mt-0.5">{calculateTotalExperience(app.experience, app.isFresher)}</p>
+                    <p className="text-[9px] font-bold text-[#00004d] opacity-90 truncate">{app.category}</p>
+                    <p className="text-[9px] font-bold text-[#00004d] mt-0.5">{calculateTotalExperience(app.experience, app.isFresher)}</p>
                     <div className="flex justify-between items-center mt-1">
-                      <div className="flex items-center gap-1 text-[#5DBB63]"><IoIosPin size={13} /><span className="font-bold text-[10px]">{app.city}</span></div>
-                      <button className="text-[#5DBB63] font-black text-[10px] flex items-center">View Profile <LuChevronsRight size={14} /></button>
+                      <div className="flex items-center gap-0 text-[#5DBB63] ml-[-3]"><IoIosPin size={13} /><span className="font-bold text-[10px]">{app.city}</span></div>
+                      <button className="text-[#5DBB63] font-black text-[10px] flex items-center">Visit my Profile <LuChevronsRight size={14} /></button>
                     </div>
                   </div>
                 </div>
