@@ -133,7 +133,7 @@ const Navbar = () => {
       </div>
     </nav>
       <div className="py-3 bg-white">
-        <div className="flex items-center justify-center gap-3 px-3">
+        <div className="flex items-center justify-center gap-1 px-3">
           <Link
             href="/"
             className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[8px] px-3 h-[25px] shadow-md hover:shadow-lg transition"
