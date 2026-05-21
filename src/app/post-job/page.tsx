@@ -275,7 +275,7 @@ export default function PostJobPage() {
       </AnimatePresence>
 
       <div className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
-        <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-[#5DBB63] text-3xl font-bold">Post a Vacancy</motion.h1>
+        <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} style={{ fontFamily: 'Fontatica' }} className="text-[#5DBB63] text-[35px]">Post a Vacancy</motion.h1>
         <div className="flex gap-2 mt-4">
           {[1, 2, 3].map((s) => (
             <div key={s} className={`h-1.5 w-12 rounded-full transition-all duration-300 ${s <= currentStep ? 'bg-[#5DBB63]' : 'bg-gray-200'}`} />

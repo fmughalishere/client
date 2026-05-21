@@ -67,8 +67,7 @@ export default function JobsPage() {
     <main className="min-h-screen bg-[#e1eaed] pb-20 font-sans">
       <Toaster position="top-center" />
       <section className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative">
-        <Sparkles size={12} className="text-[#00004d]" />
-        <h1 className="text-[26px] font-black text-[#5DBB63] leading-tight text-center">Find Your Dream <br /> Career Today</h1>
+        <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] text-[#5DBB63] leading-tight text-center">Find Your Dream <br /> Career Today</h1>
       </section>
 
       <div className="relative -mt-7 flex justify-center px-6 z-30">
