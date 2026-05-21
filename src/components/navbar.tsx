@@ -97,7 +97,7 @@ const Navbar = () => {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between bg-[#e1eaed]">
         <Link href="/">
           <Image
-            src="/images/header-logo.png"
+            src="/images/easyjobspk-logo.png"
             alt="Logo"
             width={170}
             height={50}
