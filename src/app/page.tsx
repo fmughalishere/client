@@ -98,7 +98,7 @@ export default function HomePage() {
             </button>
           ))}
         </div>
-        <div className="mt-5 mb-1.5 rounded-2xl overflow-hidden shadow-lg">
+        <div className="mt-5 mb-3 rounded-2xl overflow-hidden shadow-lg">
           <Link href="https://successsignatures.com/elementor-2924/" target="_blank">
             <Image
               src="/images/banner-img.png"

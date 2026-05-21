@@ -26,7 +26,7 @@ const Footer = () => {
 
   return (
     <footer className="w-full flex flex-col">
-            <div className="w-full bg-white py-1 flex justify-center items-center px-4">
+      <div className="w-full bg-white py-1 flex justify-center items-center px-2">
         <div className="flex items-center justify-between w-full max-w-[320px] sm:max-w-[420px]">
           <Link href="https://facebook.com" target="_blank" className="text-[#1877F2] hover:scale-110 transition-transform">
             <FaFacebook size={20} />
