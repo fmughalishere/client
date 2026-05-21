@@ -132,7 +132,7 @@ const Navbar = () => {
         </button>
       </div>
     </nav>
-      <div className="py-3 bg-[#e1eaed]">
+      <div className="py-3 bg-white">
         <div className="flex items-center justify-center gap-3 px-3">
           <Link
             href="/"
