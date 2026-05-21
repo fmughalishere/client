@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Search, User, Loader2, Sparkles, Bookmark } from "lucide-react";
+import { Search, User, Loader2, Bookmark } from "lucide-react";
 import { LuChevronsRight } from "react-icons/lu";
 import { IoIosPin } from "react-icons/io";
 import { MALE_ICON, FEMALE_ICON } from "../constants";
@@ -17,7 +17,7 @@ export default function ApplicantsPage() {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 25;
-  
+
   const router = useRouter();
   const searchRef = useRef<HTMLDivElement>(null);
 
@@ -29,7 +29,7 @@ export default function ApplicantsPage() {
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
       const userData = typeof window !== "undefined" ? localStorage.getItem("user") : null;
-      
+
       if (userData) {
         const parsedUser = JSON.parse(userData);
         setCurrentUserId(parsedUser._id || parsedUser.id);
@@ -68,7 +68,7 @@ export default function ApplicantsPage() {
         const isCurrentlySaved = applicants.find(a => a._id === id)?.savedBy?.includes(currentUserId);
         setApplicants(prev => prev.map(app => {
           if (app._id === id) {
-            const newSavedBy = isCurrentlySaved 
+            const newSavedBy = isCurrentlySaved
               ? app.savedBy.filter((uid: string) => uid !== currentUserId)
               : [...(app.savedBy || []), currentUserId];
             return { ...app, savedBy: newSavedBy };
@@ -116,7 +116,7 @@ export default function ApplicantsPage() {
     <main className="min-h-screen bg-[#e1eaed] pb-20 font-sans">
       <Toaster position="top-center" />
       <section className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center relative">
-      <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] text-[#5DBB63] leading-tight text-center">Hire Experts <br /> Get Quality Work</h1>
+        <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] text-[#5DBB63] leading-tight text-center">Hire Experts <br /> Get Quality Work</h1>
       </section>
 
       <div className="relative -mt-7 flex justify-center px-6 z-30">
@@ -139,15 +139,41 @@ export default function ApplicantsPage() {
           ) : (
             <>
               {currentItems.map((app) => (
-                <div key={app._id} onClick={() => router.push(`/applicants/${app._id}`)} className="bg-white border border-gray-100 rounded-[15px] p-3 flex items-center gap-3 shadow-md h-[100px] cursor-pointer">
-                  <div className="w-16 h-16 rounded-full relative bg-[#f8fafc] border border-gray-100 flex items-center justify-center overflow-hidden shrink-0">
-                    {app.image === "male" ? <Image src={MALE_ICON} alt="M" fill className="object-contain p-1.5" style={navyBlueFilter} unoptimized /> 
-                    : app.image === "female" ? <Image src={FEMALE_ICON} alt="F" fill className="object-contain p-1.5" style={navyBlueFilter} unoptimized />
-                    : app.image?.length > 20 ? <Image src={app.image} alt="U" fill className="object-cover" unoptimized />
-                    : <User size={30} className="text-[#00004d]" />}
+                <div key={app._id} onClick={() => router.push(`/applicants/${app._id}`)} className="bg-white border border-gray-100 rounded-[15px] flex items-center gap-3 shadow-md h-[100px] cursor-pointer overflow-hidden">
+                  <div className="relative w-24 h-full shrink-0 bg-gray-200 shadow-sm">
+                    {app.image === "male" ? (
+                      <Image
+                        src={MALE_ICON}
+                        alt="M"
+                        fill
+                        className="object-cover"
+                        style={navyBlueFilter}
+                        unoptimized
+                      />
+                    ) : app.image === "female" ? (
+                      <Image
+                        src={FEMALE_ICON}
+                        alt="F"
+                        fill
+                        className="object-cover"
+                        style={navyBlueFilter}
+                        unoptimized
+                      />
+                    ) : app.image?.length > 20 ? (
+                      <Image
+                        src={app.image}
+                        alt="U"
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full w-full">
+                        <User size={30} className="text-[#00004d]" />
+                      </div>
+                    )}
                   </div>
-
-                  <div className="flex flex-col flex-1 overflow-hidden">
+                  <div className="flex flex-col flex-1 overflow-hidden py-2 pr-3">
                     <div className="flex justify-between items-center">
                       <div className="flex gap-2 items-center truncate">
                         <h2 className="text-[14px] font-black text-[#00004d] truncate">{app.fullName}</h2>
@@ -166,9 +192,9 @@ export default function ApplicantsPage() {
                   </div>
                 </div>
               ))}
-              
+
               {filteredApplicants.length > itemsPerPage && (
-                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page: number) => { setCurrentPage(page); window.scrollTo(0,0); }} />
+                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page: number) => { setCurrentPage(page); window.scrollTo(0, 0); }} />
               )}
             </>
           )}
