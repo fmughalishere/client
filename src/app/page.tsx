@@ -103,7 +103,7 @@ export default function HomePage() {
             <Image
               src="/images/banner-img.png"
               alt="US Visit Visa Banner"
-              width={800}
+              width={700}
               height={400}
               className="w-full h-auto object-cover cursor-pointer"
             />
