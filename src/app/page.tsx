@@ -53,8 +53,8 @@ export default function HomePage() {
       <section className="px-0 pt-0 relative">
         <div className="bg-white rounded-b-[40px] pt-6 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
           <div className="text-center mb-1 mt-0 relative z-10">
-            <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] font-black text-[#5DBB63] leading-none">Hire Easy</h1>
-            <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] font-black text-[#5DBB63] leading-tight">Get Hired Easy</h1>
+            <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] text-[#5DBB63] leading-none">HIRE EASY</h1>
+            <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] text-[#5DBB63] leading-tight">GET HIRED EASY</h1>
           </div>
         </div>
         <div className="relative -mt-8 flex justify-center px-6 z-30" ref={searchRef}>
