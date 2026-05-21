@@ -49,7 +49,7 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-[59vh] bg-[#e1eaed] font-sans">
+    <main className="min-h-screen bg-[#e1eaed] font-sans">
       <section className="px-0 pt-0 relative">
         <div className="bg-white rounded-b-[40px] pt-6 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
           <div className="text-center mb-1 mt-0 relative z-10">
@@ -76,7 +76,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section className="max-w-2xl mx-auto px-6 mt-10 relative z-10">
+      <section className="max-w-2xl mx-auto px-6 mt-4 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full justify-items-center">
           {quickActions.map((action, i) => (
             <button
