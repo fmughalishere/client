@@ -97,7 +97,7 @@ const Navbar = () => {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between bg-[#e1eaed]">
         <Link href="/">
           <Image
-            src="/images/easyjobspk-logo.png"
+            src="/images/easyjobs-pk-logo.png"
             alt="Logo"
             width={170}
             height={50}
@@ -132,33 +132,33 @@ const Navbar = () => {
         </div>
       </nav>
       <div className=" py-3">
-        <div className="flex items-center justify-center gap-1 px-3">
+        <div className="flex items-center justify-center gap-3 px-3">
           <Link
             href="/"
-            className="flex items-center justify-center gap-1 bg-white rounded-[13px] px-3 h-[42px] shadow-md hover:shadow-lg transition"
+            className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[13px] px-3 h-[30px] shadow-md hover:shadow-lg transition"
           >
             <AiFillHome size={20} style={{ color: "#5DBB63" }} />
-            <span className="font-bold text-[10px] text-[#00004d]">
+            <span className="font-bold text-[12px] text-[#00004d]">
               Home
             </span>
           </Link>
 
           <Link
             href={dashboardLink}
-            className="flex items-center justify-center gap-1 bg-white rounded-[13px] px-3 h-[42px] shadow-md hover:shadow-lg transition"
+            className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[13px] px-3 h-[30px] shadow-md hover:shadow-lg transition"
           >
             <FaUserGear size={20} style={{ color: "#5DBB63" }} />
-            <span className="font-bold text-[10px] text-[#00004d] whitespace-nowrap">
+            <span className="font-bold text-[12px] text-[#00004d] whitespace-nowrap">
               Control Panel
             </span>
           </Link>
 
           <button
             onClick={() => setShowInstallBox(true)}
-            className="flex items-center justify-center gap-1 bg-white rounded-[13px] px-3 h-[42px] shadow-md hover:shadow-lg transition"
+            className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[13px] px-3 h-[30px] shadow-md hover:shadow-lg transition"
           >
             <PlusCircle size={20} style={{ color: "#5DBB63" }} />
-            <span className="font-bold text-[10px] text-[#00004d] whitespace-nowrap">
+            <span className="font-bold text-[12px] text-[#00004d] whitespace-nowrap">
               Add to Home Screen
             </span>
           </button>
