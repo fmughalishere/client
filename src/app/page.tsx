@@ -98,12 +98,12 @@ export default function HomePage() {
             </button>
           ))}
         </div>
-        <div className="mt-5 mb-3 rounded-2xl overflow-hidden shadow-lg">
+        <div className="mt-5 mb-1 rounded-2xl overflow-hidden shadow-lg">
           <Link href="https://successsignatures.com/elementor-2924/" target="_blank">
             <Image
               src="/images/banner-img.png"
               alt="US Visit Visa Banner"
-              width={700}
+              width={650}
               height={400}
               className="w-full h-auto object-cover cursor-pointer"
             />
