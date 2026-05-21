@@ -136,7 +136,7 @@ const Navbar = () => {
         <div className="flex items-center justify-center gap-1 px-3">
           <Link
             href="/"
-            className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[8px] px-2 h-[25px] shadow-md hover:shadow-lg transition"
+            className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[8px] px-1 h-[25px] shadow-md hover:shadow-lg transition"
           >
             <AiFillHome size={20} style={{ color: "#5DBB63" }} />
             <span className="font-bold text-[12px] text-[#00004d]">
@@ -146,7 +146,7 @@ const Navbar = () => {
 
           <Link
             href={dashboardLink}
-            className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[8px] px-2 h-[25px] shadow-md hover:shadow-lg transition"
+            className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[8px] px-1 h-[25px] shadow-md hover:shadow-lg transition"
           >
             <FaUserGear size={20} style={{ color: "#5DBB63" }} />
             <span className="font-bold text-[12px] text-[#00004d] whitespace-nowrap">
@@ -156,7 +156,7 @@ const Navbar = () => {
 
           <button
             onClick={() => setShowInstallBox(true)}
-            className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[8px] px-2 h-[25px] shadow-md hover:shadow-lg transition"
+            className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[8px] px-1 h-[25px] shadow-md hover:shadow-lg transition"
           >
             <PlusCircle size={20} style={{ color: "#5DBB63" }} />
             <span className="font-bold text-[12px] text-[#00004d] whitespace-nowrap">
