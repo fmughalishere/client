@@ -5,6 +5,8 @@ import {
 } from "lucide-react";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function HomePage() {
   const [applicants, setApplicants] = useState<any[]>([]);
@@ -76,6 +78,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
       <section className="max-w-2xl mx-auto px-6 mt-4 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full justify-items-center">
           {quickActions.map((action, i) => (
@@ -83,7 +86,8 @@ export default function HomePage() {
               key={i}
               onClick={() => router.push(action.href)}
               className="w-full max-w-[140px] transition-transform active:scale-95 group"
-            >        <div className="relative flex flex-col items-center justify-center aspect-square bg-white rounded-2xl text-[#00004d] shadow-md border border-gray-50 p-4">
+            >
+              <div className="relative flex flex-col items-center justify-center aspect-square bg-white rounded-2xl text-[#00004d] shadow-md border border-gray-50 p-4">
                 <div className="mb-2 transform group-hover:scale-110 transition-transform">
                   {action.icon}
                 </div>
@@ -93,6 +97,17 @@ export default function HomePage() {
               </div>
             </button>
           ))}
+        </div>
+        <div className="mt-5 mb-1.5 rounded-2xl overflow-hidden shadow-lg">
+          <Link href="https://successsignatures.com/elementor-2924/" target="_blank">
+            <Image
+              src="/images/banner-img.png"
+              alt="US Visit Visa Banner"
+              width={800}
+              height={400}
+              className="w-full h-auto object-cover cursor-pointer"
+            />
+          </Link>
         </div>
       </section>
     </main>
