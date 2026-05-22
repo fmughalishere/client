@@ -286,6 +286,7 @@ export default function HomePage() {
             >
               Get Hired Easy
             </h1>
+            <h5 className="text-[16px] text-[#00004d] leading-tight">Totally <span className="font-bold">Free</span> for Job Seekers!</h5>
           </div>
         </div>
 
