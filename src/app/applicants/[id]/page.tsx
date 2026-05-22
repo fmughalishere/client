@@ -166,8 +166,8 @@ export default function ApplicantDetail() {
             )}
           </div>
           <div className="flex flex-col justify-center p-6 md:p-10 min-w-0">
-            <h1 className="text-2xl md:text-4xl font-black text-[#00004d] leading-tight truncate">{applicant.fullName}</h1>
-            <p className="text-sm md:text-lg font-bold text-[#5DBB63] mt-1 uppercase tracking-wider">{applicant.category}</p>
+            <h1 className=" font-black text-[#00004d] leading-tight truncate">{applicant.fullName}</h1>
+            <p className="text-sm md:text-lg font-bold text-[#5DBB63] mt-1 tracking-wider">{applicant.category}</p>
           </div>
         </div>
 
