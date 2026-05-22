@@ -299,13 +299,13 @@ export default function HomePage() {
                     </div>
                   );
                 })}
-                <div className="flex justify-center mt-6 mb-10">
+                <div className="flex justify-center mt-4 mb-5">
                   <button
                     onClick={() => router.push("/applicants")}
                     className="bg-[#5DBB63] font-bold text-white px-8 py-3 rounded-[12px] text-[14px] flex items-center gap-2 shadow-xl active:scale-95 transition-all"
                   >
                     Explore More Applicants
-                    <LuChevronsRight size={20} strokeWidth={3} className="animate-pulse" />
+                      <LuChevronsRight size={24} strokeWidth={3} className="animate-[moveRight_1s_ease-in-out_infinite]" />
                   </button>
                 </div>
               </>
