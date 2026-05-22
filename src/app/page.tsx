@@ -24,6 +24,7 @@ import {
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import toast, { Toaster } from "react-hot-toast";
 
 import { MALE_ICON, FEMALE_ICON } from "./constants";
 
@@ -42,10 +43,10 @@ export default function HomePage() {
 
   const searchRef = useRef<HTMLDivElement>(null);
 
-  const navyBlueFilter = {
-    filter:
-      "invert(8%) sepia(100%) saturate(2800%) hue-rotate(230deg) brightness(85%) contrast(120%)",
+  const whiteFilter = {
+    filter: "brightness(0) invert(1)",
   };
+
   const quickActions = [
     {
       label: "Apply for a Job",
@@ -145,6 +146,36 @@ export default function HomePage() {
     fetchApplicants();
   }, [fetchApplicants]);
 
+  const handleToggleSave = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    const token = localStorage.getItem("token");
+    if (!token || !currentUserId) {
+      toast.error("Please login to save applicants!");
+      return;
+    }
+    try {
+      const res = await fetch(`https://easyjobspk.onrender.com/api/applications/${id}/save`, {
+        method: "PATCH",
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
+      });
+      if (res.ok) {
+        const applicant = applicants.find(a => a._id === id);
+        const isCurrentlySaved = applicant?.savedBy?.includes(currentUserId);
+        
+        setApplicants(prev => prev.map(app => {
+          if (app._id === id) {
+            const newSavedBy = isCurrentlySaved
+              ? app.savedBy.filter((uid: string) => uid !== currentUserId)
+              : [...(app.savedBy || []), currentUserId];
+            return { ...app, savedBy: newSavedBy };
+          }
+          return app;
+        }));
+        isCurrentlySaved ? toast.success("Removed from saved") : toast.success("Applicant Saved!");
+      }
+    } catch (error) { toast.error("Error toggling save"); }
+  };
+
   const handleSearch = (
     selectedQuery?: string
   ) => {
@@ -233,7 +264,8 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f7fafa] font-sans">
+    <main className="min-h-screen bg-[#e6e8e8] font-sans">
+      <Toaster position="top-center" />
       <section className="px-0 pt-0 relative">
         <div className="bg-white rounded-b-[40px] pt-6 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
           <div className="text-center mb-1 mt-0 relative z-10">
@@ -296,30 +328,6 @@ export default function HomePage() {
                 Go
               </button>
             </div>
-
-            {showSuggestions &&
-              suggestions.length > 0 && (
-                <div className="absolute top-[110%] left-0 w-full bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50">
-                  {suggestions.map(
-                    (
-                      suggestion,
-                      index
-                    ) => (
-                      <button
-                        key={index}
-                        onClick={() =>
-                          handleSearch(
-                            suggestion
-                          )
-                        }
-                        className="w-full text-left px-4 py-3 text-sm font-bold text-[#00004d] hover:bg-gray-50 border-b last:border-0 border-gray-100"
-                      >
-                        {suggestion}
-                      </button>
-                    )
-                  )}
-                </div>
-              )}
           </div>
         </div>
       </section>
@@ -358,16 +366,8 @@ export default function HomePage() {
             </span>
 
             <div className="flex flex-col items-center mt-2 -space-y-3 animate-bounce">
-              <ChevronDown
-                size={20}
-                strokeWidth={4}
-              />
-
-              <ChevronDown
-                size={20}
-                strokeWidth={4}
-                className="opacity-40"
-              />
+              <ChevronDown size={20} strokeWidth={4} />
+              <ChevronDown size={20} strokeWidth={4} className="opacity-40" />
             </div>
           </div>
         </section>
@@ -386,163 +386,87 @@ export default function HomePage() {
                     (
                       app: any,
                       idx: number
-                    ) => (
-                      <div
-                        key={idx}
-                        onClick={() =>
-                          router.push(
-                            `/applicants/${app._id}`
-                          )
-                        }
-                        className="bg-white border border-gray-100 rounded-[15px] flex items-stretch shadow-md min-h-[50px] cursor-pointer overflow-hidden transition-transform active:scale-95"
-                      >
-                        <div className="relative w-24 shrink-0 bg-gray-100 overflow-hidden flex items-center justify-center">
-                          {app.image ===
-                            "male" ? (
-                            <Image
-                              src={
-                                MALE_ICON
-                              }
-                              alt="M"
-                              width={52}
-                              height={52}
-                              className="object-contain"
-                              style={
-                                navyBlueFilter
-                              }
-                              unoptimized
-                            />
-                          ) : app.image ===
-                            "female" ? (
-                            <Image
-                              src={
-                                FEMALE_ICON
-                              }
-                              alt="F"
-                              width={52}
-                              height={52}
-                              className="object-contain"
-                              style={
-                                navyBlueFilter
-                              }
-                              unoptimized
-                            />
-                          ) : app.image &&
-                            app.image.length >
-                            20 ? (
-                            <Image
-                              src={
-                                app.image
-                              }
-                              alt="U"
-                              fill
-                              className="object-cover"
-                              unoptimized
-                            />
-                          ) : (
-                            <div className="bg-[#00004d] h-full w-full flex items-center justify-center">
-                              <User
-                                size={24}
-                                strokeWidth={2.5}
-                                className="text-white"
+                    ) => {
+                      const isSaved = currentUserId && app.savedBy?.includes(currentUserId);
+
+                      return (
+                        <div
+                          key={idx}
+                          onClick={() =>
+                            router.push(
+                              `/applicants/${app._id}`
+                            )
+                          }
+                          className="bg-white border border-gray-100 rounded-[15px] flex items-stretch shadow-md min-h-[50px] cursor-pointer overflow-hidden transition-transform active:scale-95"
+                        >
+                          <div className={`relative w-24 shrink-0 overflow-hidden flex items-center justify-center ${
+                            app.image === "male" ? "bg-[#00004d]" : 
+                            app.image === "female" ? "bg-[#5DBB63]" : 
+                            "bg-gray-100"
+                          }`}>
+                            {app.image === "male" ? (
+                              <Image src={MALE_ICON} alt="M" width={52} height={52} className="object-contain" style={whiteFilter} unoptimized />
+                            ) : app.image === "female" ? (
+                              <Image src={FEMALE_ICON} alt="F" width={52} height={52} className="object-contain" style={whiteFilter} unoptimized />
+                            ) : app.image && app.image.length > 20 ? (
+                              <Image src={app.image} alt="U" fill className="object-cover" unoptimized />
+                            ) : (
+                              <div className="bg-[#00004d] h-full w-full flex items-center justify-center">
+                                <User size={24} strokeWidth={2.5} className="text-white" />
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex flex-col flex-1 p-2 justify-between min-w-0">
+                            <div className="flex justify-between items-start">
+                              <div className="flex items-center gap-2 min-w-0">
+                                <h2 className="text-[13px] font-black text-[#00004d] truncate">{app.fullName}</h2>
+                                <span className="text-[9px] font-bold text-[#00004d] bg-gray-100 px-1.5 py-[2px] rounded-md whitespace-nowrap">
+                                  Age {calculateAge(app.dob)}
+                                </span>
+                              </div>
+                              <Heart
+                                size={16}
+                                className={`shrink-0 transition-all duration-300 ${isSaved ? "text-[#00004d] fill-[#00004d]" : "text-[#00004d]"}`}
+                                onClick={(e) => handleToggleSave(e, app._id)}
                               />
                             </div>
-                          )}
-                        </div>
 
-                        <div className="flex flex-col flex-1 p-2 justify-between min-w-0">
-                          <div className="flex justify-between items-start">
-                            <div className="flex items-center gap-2 min-w-0">
-                              <h2 className="text-[13px] font-black text-[#00004d] truncate">
-                                {
-                                  app.fullName
-                                }
-                              </h2>
-
-                              <span className="text-[9px] font-bold text-[#00004d] bg-gray-100 px-1.5 py-[2px] rounded-md whitespace-nowrap">
-                                Age{" "}
-                                {calculateAge(
-                                  app.dob
-                                )}
-                              </span>
+                            <div className="space-y-0">
+                              <p className="text-[10px] font-bold text-[#00004d] opacity-90 truncate">Profession: {app.category || "Consultant"}</p>
+                              <p className="text-[10px] font-bold text-[#00004d] opacity-90 truncate">Edu. {app.education || "N/A"}</p>
+                              <p className="text-[10px] font-bold text-[#00004d]">{calculateTotalExperience(app.experience, app.isFresher)}</p>
                             </div>
 
-                            <Heart
-                              size={16}
-                              className="text-[#00004d] shrink-0"
-                            />
-                          </div>
-
-                          <div className="space-y-0">
-                            <p className="text-[10px] font-bold text-[#00004d] opacity-90 truncate">
-                              Profession:{" "}
-                              {app.category ||
-                                "Consultant"}
-                            </p>
-
-                            <p className="text-[10px] font-bold text-[#00004d] opacity-90 truncate">
-                              Edu.{" "}
-                              {app.education ||
-                                "N/A"}
-                            </p>
-
-                            <p className="text-[10px] font-bold text-[#00004d]">
-                              {calculateTotalExperience(
-                                app.experience,
-                                app.isFresher
-                              )}
-                            </p>
-                          </div>
-
-                          <div className="flex justify-between items-center mt-1">
-                            <div className="flex items-center gap-0.5 text-[#5DBB63] ml-[-4]">
-                              <IoIosPin size={12} />
-
-                              <span className="font-bold text-[10px]">
-                                {app.city}
+                            <div className="flex justify-between items-center mt-1">
+                              <div className="flex items-center gap-0.5 text-[#5DBB63] ml-[-4]">
+                                <IoIosPin size={12} />
+                                <span className="font-bold text-[10px]">{app.city}</span>
+                              </div>
+                              <span className="text-[#5DBB63] font-black text-[10px] flex items-center">
+                                Visit my profile <LuChevronsRight size={14} strokeWidth={3} />
                               </span>
                             </div>
-
-                            <span className="text-[#5DBB63] font-black text-[10px] flex items-center">
-                              Visit my profile{" "}
-                              <LuChevronsRight
-                                size={14}
-                                strokeWidth={3}
-                              />
-                            </span>
                           </div>
                         </div>
-                      </div>
-                    )
+                      );
+                    }
                   )}
 
-                {applicants.length >
-                  10 && (
-                    <div className="flex justify-center mt-4 mb-5">
-                      <button
-                        onClick={() =>
-                          router.push(
-                            "/applicants"
-                          )
-                        }
-                        className="bg-[#5DBB63] text-white px-5 py-2.5 rounded-[9px] text-[14px] flex items-center gap-2 shadow-lg active:scale-95 transition-transform"
-                      >
-                        Explore More
-                        Applicants{" "}
-                        <div className="flex flex-col items-center mt-1 -space-y-3">
-                          <LuChevronsRight
-                            size={24}
-                            strokeWidth={3}
-                          />
-                        </div>
-                      </button>
-                    </div>
-                  )}
+                {applicants.length > 10 && (
+                  <div className="flex justify-center mt-4 mb-5">
+                    <button
+                      onClick={() => router.push("/applicants")}
+                      className="bg-[#5DBB63] font-bold text-white px-5 py-2.5 rounded-[9px] text-[14px] flex items-center gap-2 shadow-lg active:scale-95 transition-transform"
+                    >
+                      Explore More Applicants{" "}
+                      <LuChevronsRight size={24} strokeWidth={3} className="animate-[moveRight_1s_ease-in-out_infinite]" />
+                    </button>
+                  </div>
+                )}
               </>
             ) : (
-              <p className="text-center text-gray-400 font-bold py-10">
-                No applicants found yet.
-              </p>
+              <p className="text-center text-gray-400 font-bold py-10">No applicants found yet.</p>
             )}
           </div>
         </section>

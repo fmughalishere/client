@@ -2,26 +2,33 @@
 import Link from 'next/link';
 import { GrLinkedin } from "react-icons/gr";
 import { 
-  FaTiktok, FaInstagram, FaFacebook, FaHeadset, 
-  FaUserTie, FaScrewdriverWrench, FaChalkboardUser,
-  FaBolt,
-  FaUserDoctor
+  FaTiktok, FaInstagram, FaFacebook,
+  FaUserDoctor,
+  FaChalkboardUser,
+  FaUserGear,
+  FaUserTie,
+  FaUserNurse,
+  FaUserGraduate,
+  FaUserShield,
+  FaUserAstronaut,
+  FaUserNinja,
+  FaUserSecret,
+  FaUserPen
 } from "react-icons/fa6";
-import { GiChefToque, GiSteeringWheel } from "react-icons/gi";
-import { MdDeveloperBoard, MdEngineering, MdManageAccounts, MdPlumbing } from "react-icons/md";
 
 const Footer = () => {
   const professions = [
-    <MdEngineering key="6" />,
-    <FaHeadset key="1" />,
-    <GiChefToque key="3" />,
-    <FaChalkboardUser key="7" />,
-    <FaScrewdriverWrench key="4" />,
-    <MdManageAccounts key="5" />,
-    <GiSteeringWheel key="2" />,
-    <MdPlumbing key="8" />,
-    <MdDeveloperBoard key="9"/>,
-    <FaUserDoctor key="10"/>
+    <FaUserDoctor key="1" title="Doctor" />,
+    <FaChalkboardUser key="2" title="Teacher" />,
+    <FaUserGear key="3" title="Engineer" />,
+    <FaUserTie key="4" title="Manager" />,
+    <FaUserNurse key="5" title="Nurse" />,
+    <FaUserGraduate key="6" title="Graduate" />,
+    <FaUserShield key="7" title="Security" />,
+    <FaUserAstronaut key="8" title="Science" />,
+    <FaUserNinja key="9" title="Developer" />,
+    <FaUserSecret key="10" title="Legal" />,
+    <FaUserPen key="12" title="Writer" />
   ];
 
   return (
@@ -58,8 +65,9 @@ const Footer = () => {
           </Link>
         </div>
       </div>
-      <div className="w-full bg-[#f7fafa] pt-8 flex flex-col items-center">
-          <div className="text-center mb-6 px-4">
+
+      <div className="w-full bg-[#e6e8e8] pt-8 flex flex-col items-center">
+        <div className="text-center px-4">
           <p className="text-[#1e3a8a] text-[10px] sm:text-[16px] font-bold leading-tight">
             Copyright © 2026 <span className="underline decoration-green-400 decoration-2">easyjobs.pk</span>
           </p>
@@ -67,18 +75,17 @@ const Footer = () => {
             A project of Success Signatures (SMC Pvt) Ltd. Lahore–Pakistan
           </p>
         </div>
-        <div className="w-full flex justify-around items-end px-1 sm:px-10 overflow-hidden">
+        <div className="w-full flex justify-around items-end px-2 sm:px-10 overflow-hidden h-14 sm:h-20">
           {professions.map((icon, index) => (
             <div 
               key={index} 
-              className="text-[#98BCC4] opacity-50 text-4xl sm:text-6xl md:text-7xl lg:text-6xl mb-[-5px] hover:opacity-100 hover:text-[#5DBB63] transition-all duration-300 cursor-default"
+              className="text-[#98BCC4] opacity-40 text-3xl sm:text-5xl md:text-6xl hover:opacity-100 hover:text-[#5DBB63] transition-all duration-300 cursor-default hover:scale-110"
             >
               {icon}
             </div>
           ))}
         </div>
       </div>
-
     </footer>
   );
 };

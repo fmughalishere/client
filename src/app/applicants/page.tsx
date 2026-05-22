@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Search, User, Loader2, Heart } from "lucide-react";
+import { Search, User, Loader2, Heart } from "lucide-react"; // Heart import as it is
 import { LuChevronsRight } from "react-icons/lu";
 import { IoIosPin } from "react-icons/io";
 import { MALE_ICON, FEMALE_ICON } from "../constants";
@@ -23,9 +23,8 @@ export default function ApplicantsPage() {
   const router = useRouter();
   const searchRef = useRef<HTMLDivElement>(null);
 
-  const navyBlueFilter = {
-    filter:
-      "invert(8%) sepia(100%) saturate(2800%) hue-rotate(230deg) brightness(85%) contrast(120%)",
+  const whiteFilter = {
+    filter: "brightness(0) invert(1)",
   };
 
   useEffect(() => {
@@ -106,7 +105,9 @@ export default function ApplicantsPage() {
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
       });
       if (res.ok) {
-        const isCurrentlySaved = applicants.find(a => a._id === id)?.savedBy?.includes(currentUserId);
+        const applicant = applicants.find(a => a._id === id);
+        const isCurrentlySaved = applicant?.savedBy?.includes(currentUserId);
+        
         setApplicants(prev => prev.map(app => {
           if (app._id === id) {
             const newSavedBy = isCurrentlySaved
@@ -158,13 +159,15 @@ export default function ApplicantsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f7fafa] pb-20 font-sans">
+    <main className="min-h-screen bg-[#e6e8e8] pb-20 font-sans">
       <Toaster position="top-center" />
       <section className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center relative shadow-sm">
         <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] text-[#5DBB63] leading-tight text-center">
           Hire Experts <br /> Get Quality Work
         </h1>
       </section>
+      
+      {/* Search Section */}
       <div className="relative -mt-8 flex justify-center px-6 z-30" ref={searchRef}>
         <div className="relative w-full max-w-[280px]">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -174,34 +177,18 @@ export default function ApplicantsPage() {
             type="text"
             value={searchQuery}
             onChange={handleInputChange}
-            onFocus={() => searchQuery.trim().length > 0 && setShowSuggestions(true)}
             placeholder="Search candidates..."
             className="block w-full pl-11 pr-14 py-3 bg-[#e1eaed] rounded-[15px] shadow-lg text-sm text-[#00004d] font-bold outline-none"
           />
           <div className="absolute inset-y-0 right-0 flex items-center pr-4 gap-2">
             <div className="h-5 w-[1.5px] bg-[#00004d]"></div>
-            <button
-              onClick={() => handleSearch()}
-              className="text-[#00004d] font-black text-[15px] hover:opacity-70"
-            >
+            <button onClick={() => handleSearch()} className="text-[#00004d] font-black text-[15px] hover:opacity-70">
               Go
             </button>
           </div>
-          {showSuggestions && suggestions.length > 0 && (
-            <div className="absolute mt-2 w-full bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50">
-              {suggestions.map((suggestion, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleSearch(suggestion)}
-                  className="w-full text-left px-4 py-3 text-sm font-bold text-[#00004d] hover:bg-gray-50 border-b last:border-0 border-gray-100"
-                >
-                  {suggestion}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
       </div>
+
       <section className="max-w-[360px] mx-auto px-4 mt-10">
         <div className="flex flex-col gap-3">
           {loading ? (
@@ -209,105 +196,68 @@ export default function ApplicantsPage() {
           ) : (
             <>
               {currentItems.length > 0 ? (
-                currentItems.map((app) => (
-                  <div
-                    key={app._id}
-                    onClick={() => router.push(`/applicants/${app._id}`)}
-                    className="bg-white border border-gray-100 rounded-[15px] flex items-stretch gap-3 shadow-md h-[100px] cursor-pointer overflow-hidden transition-transform active:scale-95"
-                  >
-                    <div className="relative w-24 shrink-0 bg-gray-100 overflow-hidden flex items-center justify-center">
-                      {app.image === "male" ? (
-                        <Image
-                          src={MALE_ICON}
-                          alt="M"
-                          className="object-cover"
-                          width={52}
-                          height={52}
-                          style={navyBlueFilter}
-                          unoptimized
-                        />
-                      ) : app.image === "female" ? (
-                        <Image
-                          src={FEMALE_ICON}
-                          alt="F"
-                          className="object-cover"
-                          width={52}
-                          height={52}
-                          style={navyBlueFilter}
-                          unoptimized
-                        />
-                      ) : app.image?.length > 20 ? (
-                        <Image src={app.image} alt="U" fill className="object-cover" unoptimized />
-                      ) : (
-                        <div className="flex items-center justify-center h-full w-full">
-                          <User size={30} className="text-[#00004d]" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex flex-col flex-1 p-2 justify-between min-w-0">
-                      <div className="flex justify-between items-start">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <h2 className="text-[13px] font-black text-[#00004d] truncate">
-                            {
-                              app.fullName
-                            }
-                          </h2>
+                currentItems.map((app) => {
+                  {/* Logic to check if saved */}
+                  const isSaved = currentUserId && app.savedBy?.includes(currentUserId);
 
-                          <span className="text-[9px] font-bold text-[#00004d] bg-gray-100 px-1.5 py-[2px] rounded-md whitespace-nowrap">
-                            Age{" "}
-                            {calculateAge(
-                              app.dob
-                            )}
-                          </span>
-                        </div>
-
-                        <Heart
-                          size={16}
-                          className="text-[#00004d] shrink-0"
-                        />
-                      </div>
-
-                      <div className="space-y-0">
-                        <p className="text-[10px] font-bold text-[#00004d] opacity-90 truncate">
-                          Profession:{" "}
-                          {app.category ||
-                            "Consultant"}
-                        </p>
-
-                        <p className="text-[10px] font-bold text-[#00004d] opacity-90 truncate">
-                          Edu.{" "}
-                          {app.education ||
-                            "N/A"}
-                        </p>
-
-                        <p className="text-[10px] font-bold text-[#00004d]">
-                          {calculateTotalExperience(
-                            app.experience,
-                            app.isFresher
-                          )}
-                        </p>
-                      </div>
-
-                      <div className="flex justify-between items-center mt-1">
-                        <div className="flex items-center gap-0.5 text-[#5DBB63] ml-[-4]">
-                          <IoIosPin size={12} />
-
-                          <span className="font-bold text-[10px]">
-                            {app.city}
-                          </span>
-                        </div>
-
-                        <span className="text-[#5DBB63] font-black text-[10px] flex items-center">
-                          Visit my profile{" "}
-                          <LuChevronsRight
-                            size={14}
-                            strokeWidth={3}
+                  return (
+                    <div
+                      key={app._id}
+                      onClick={() => router.push(`/applicants/${app._id}`)}
+                      className="bg-white border border-gray-100 rounded-[15px] flex items-stretch shadow-md h-[100px] cursor-pointer overflow-hidden transition-transform active:scale-95"
+                    >
+                      <div className={`relative w-24 shrink-0 overflow-hidden flex items-center justify-center ${
+                        app.image === "male" ? "bg-[#00004d]" : 
+                        app.image === "female" ? "bg-[#5DBB63]" : 
+                        "bg-gray-100"
+                      }`}>
+                        {app.image === "male" ? (
+                          <Image src={MALE_ICON} alt="M" className="object-contain" width={52} height={52} style={whiteFilter} unoptimized />
+                        ) : app.image === "female" ? (
+                          <Image src={FEMALE_ICON} alt="F" className="object-contain" width={52} height={52} style={whiteFilter} unoptimized />
+                        ) : app.image?.length > 20 ? (
+                          <Image src={app.image} alt="U" fill className="object-cover" unoptimized />
+                        ) : (
+                          <div className="flex items-center justify-center h-full w-full">
+                            <User size={30} className="text-[#00004d]" />
+                          </div>
+                        )}
+                      </div>              
+                      
+                      <div className="flex flex-col flex-1 p-2 justify-between min-w-0">
+                        <div className="flex justify-between items-start">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <h2 className="text-[13px] font-black text-[#00004d] truncate">{app.fullName}</h2>
+                            <span className="text-[9px] font-bold text-[#00004d] bg-gray-100 px-1.5 py-[2px] rounded-md whitespace-nowrap">
+                              Age {calculateAge(app.dob)}
+                            </span>
+                          </div>
+                            <Heart
+                            size={16}
+                            className={`shrink-0 transition-all duration-300 ${isSaved ? "text-[#00004d] fill-[#00004d]" : "text-[#00004d]"}`}
+                            onClick={(e) => handleToggleSave(e, app._id)}
                           />
-                        </span>
+                        </div>
+
+                        <div className="space-y-0">
+                          <p className="text-[10px] font-bold text-[#00004d] opacity-90 truncate">Profession: {app.category || "Consultant"}</p>
+                          <p className="text-[10px] font-bold text-[#00004d] opacity-90 truncate">Edu. {app.education || "N/A"}</p>
+                          <p className="text-[10px] font-bold text-[#00004d]">{calculateTotalExperience(app.experience, app.isFresher)}</p>
+                        </div>
+
+                        <div className="flex justify-between items-center mt-1">
+                          <div className="flex items-center gap-0.5 text-[#5DBB63] ml-[-4]">
+                            <IoIosPin size={12} />
+                            <span className="font-bold text-[10px]">{app.city}</span>
+                          </div>
+                          <span className="text-[#5DBB63] font-black text-[10px] flex items-center">
+                            Visit my profile <LuChevronsRight size={14} strokeWidth={3} />
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               ) : (
                 <div className="text-center py-10 text-[#00004d] font-bold">No candidates found</div>
               )}

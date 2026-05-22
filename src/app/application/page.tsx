@@ -33,8 +33,9 @@ async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> 
   return canvas.toDataURL("image/jpeg", 0.7);
 }
 
-const navyBlueFilter = {
-  filter: "invert(7%) sepia(76%) saturate(5793%) hue-rotate(241deg) brightness(91%) contrast(108%)"
+// Icon ko white karne ke liye filter
+const whiteFilter = {
+  filter: "brightness(0) invert(1)",
 };
 
 interface ExperienceEntry {
@@ -286,7 +287,7 @@ export default function MobileResponsiveJobForm() {
   };
 
   return (
-    <div className="min-h-[60vh] bg-[#f7fafa] pb-10 font-sans">
+    <div className="min-h-[60vh] bg-[#e6e8e8] pb-10 font-sans">
       <Toaster position="top-center" reverseOrder={false} />
       <AuthRequiredModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onAction={handleAuthNavigation} />
       <SuccessModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAction={() => router.push("/")} />
@@ -328,38 +329,42 @@ export default function MobileResponsiveJobForm() {
                       {formData.image.length > 20 ? (
                         <img src={formData.image} className="w-full h-full object-cover" alt="Profile" />
                       ) : formData.image === "male" ? (
-                        <img src={MALE_ICON} className="w-[80%] h-[80%] object-contain" style={navyBlueFilter} alt="Male" />
+                        <div className="bg-[#00004d] w-full h-full flex items-center justify-center">
+                          <img src={MALE_ICON} className="w-[80%] h-[80%] object-contain" style={whiteFilter} alt="Male" />
+                        </div>
                       ) : formData.image === "female" ? (
-                        <img src={FEMALE_ICON} className="w-[80%] h-[80%] object-contain" style={navyBlueFilter} alt="Female" />
+                        <div className="bg-[#5DBB63] w-full h-full flex items-center justify-center">
+                          <img src={FEMALE_ICON} className="w-[80%] h-[80%] object-contain" style={whiteFilter} alt="Female" />
+                        </div>
                       ) : (
                         <div className="bg-[#00004d] w-full h-full flex items-center justify-center"><User className="w-16 h-16 text-white" /></div>
                       )}
                     </div>
                     <div className="absolute bottom-1 right-1 bg-[#00004d] text-white p-2.5 rounded-full shadow-lg"><Camera size={18} /></div>
                   </div>
+                  
                   <div className="flex flex-col items-center gap-3 mt-2">
-
                     <span className="px-4 py-1 rounded-full bg-[#eef4ff] text-[#00004d] text-[11px] font-semibold border border-[#d6e4ff] tracking-wide shadow-sm">
                       Optional
                     </span>
-
                     <div className="flex items-center gap-2 w-full max-w-[260px]">
                       <div className="flex-1 h-[1px] bg-gray-200" />
-
                       <span className="text-[11px] font-bold tracking-[1px] text-gray-400">
                         Or Choose an Icon
                       </span>
-
                       <div className="flex-1 h-[1px] bg-gray-200" />
                     </div>
-
                   </div>
+
                   <input type="file" ref={fileInputRef} className="hidden" onChange={handleImageChange} accept="image/*" />
+                  
                   <div className="flex gap-4 w-full justify-center">
+                    {/* Male Selection Button: Blue Theme */}
                     <button type="button" onClick={() => setFormData({ ...formData, image: "male" })} className={`px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "male" ? 'border-[#00004d] bg-[#00004d] text-white' : 'border-gray-100 text-gray-400'}`}>
                       <span className="text-[10px] font-bold">Male Icon</span>
                     </button>
-                    <button type="button" onClick={() => setFormData({ ...formData, image: "female" })} className={`px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "female" ? 'border-[#00004d] bg-[#00004d] text-white' : 'border-gray-100 text-gray-400'}`}>
+                    {/* Female Selection Button: Green Theme */}
+                    <button type="button" onClick={() => setFormData({ ...formData, image: "female" })} className={`px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "female" ? 'border-[#5DBB63] bg-[#5DBB63] text-white' : 'border-gray-100 text-gray-400'}`}>
                       <span className="text-[10px] font-bold">Female Icon</span>
                     </button>
                   </div>
@@ -393,6 +398,7 @@ export default function MobileResponsiveJobForm() {
               </motion.div>
             )}
 
+            {/* Rest of the steps (2, 3, 4, 5) remains exactly the same as in your original file */}
             {currentStep === 2 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Profession & Type</h2></div>

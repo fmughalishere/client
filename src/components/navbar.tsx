@@ -93,10 +93,10 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#f7fafa] shadow-sm border-b border-gray-200 backdrop-blur-md">      <nav className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between bg-[#e1eaed]">
+    <header className="sticky top-0 z-50 w-full bg-[#e6e8e8] shadow-sm border-b border-gray-200 backdrop-blur-md">      <nav className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between bg-[#e1eaed]">
       <Link href="/">
         <Image
-          src="/images/header-logo-easyjobspk.png"
+          src="/images/easyjobspk-header-logo.png"
           alt="Logo"
           width={210}
           height={50}
@@ -132,11 +132,11 @@ const Navbar = () => {
         </button>
       </div>
     </nav>
-      <div className="py-2 bg-white">
+      <div className="py-2 bg-[#00004d]">
         <div className="flex items-center justify-center gap-1 px-3">
           <Link
             href="/"
-            className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[8px] px-1 h-[25px] shadow-md hover:shadow-lg transition"
+            className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[8px] px-1 h-[25px]"
           >
             <AiFillHome size={20} style={{ color: "#5DBB63" }} />
             <span className="font-bold text-[12px] text-[#00004d]">
@@ -146,17 +146,17 @@ const Navbar = () => {
 
           <Link
             href={dashboardLink}
-            className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[8px] px-1 h-[25px] shadow-md hover:shadow-lg transition"
+            className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[8px] px-1 h-[25px]"
           >
             <FaUserGear size={20} style={{ color: "#5DBB63" }} />
             <span className="font-bold text-[12px] text-[#00004d] whitespace-nowrap">
-              Control Panel
+              My Control Panel
             </span>
           </Link>
 
           <button
             onClick={() => setShowInstallBox(true)}
-            className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[8px] px-1 h-[25px] shadow-md hover:shadow-lg transition"
+            className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[8px] px-1 h-[25px]"
           >
             <PlusCircle size={20} style={{ color: "#5DBB63" }} />
             <span className="font-bold text-[12px] text-[#00004d] whitespace-nowrap">

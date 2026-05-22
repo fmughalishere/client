@@ -55,7 +55,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#f7fafa] overflow-hidden relative">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#e6e8e8] overflow-hidden relative">
       <Toaster position="top-center" />
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
         <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-[#e2f2f5] rounded-full blur-[100px] opacity-60"></div>
