@@ -44,9 +44,8 @@ export default function HomePage() {
 
   const navyBlueFilter = {
     filter:
-      "invert(7%) sepia(76%) saturate(5793%) hue-rotate(241deg) brightness(91%) contrast(108%)",
+      "invert(8%) sepia(100%) saturate(2800%) hue-rotate(230deg) brightness(85%) contrast(120%)",
   };
-
   const quickActions = [
     {
       label: "Apply for a Job",
@@ -126,9 +125,9 @@ export default function HomePage() {
 
       const approvedOnly = Array.isArray(data)
         ? data.filter(
-            (app: any) =>
-              app.status === "shortlisted"
-          )
+          (app: any) =>
+            app.status === "shortlisted"
+        )
         : [];
 
       setApplicants(approvedOnly);
@@ -171,11 +170,11 @@ export default function HomePage() {
 
     if (
       today.getMonth() <
-        birthDate.getMonth() ||
+      birthDate.getMonth() ||
       (today.getMonth() ===
         birthDate.getMonth() &&
         today.getDate() <
-          birthDate.getDate())
+        birthDate.getDate())
     ) {
       age--;
     }
@@ -213,7 +212,7 @@ export default function HomePage() {
         const diff =
           (end.getFullYear() -
             start.getFullYear()) *
-            12 +
+          12 +
           (end.getMonth() -
             start.getMonth());
 
@@ -229,9 +228,8 @@ export default function HomePage() {
 
     return yrs > 0
       ? `Experience: ${yrs} Years`
-      : `Experience: ${
-          totalMonths % 12
-        } Months`;
+      : `Experience: ${totalMonths % 12
+      } Months`;
   };
 
   return (
@@ -353,9 +351,9 @@ export default function HomePage() {
           )}
         </div>
 
-        <section className="max-w-[360px] mx-auto px-4 mt-6 mb-4 relative z-10">
-          <div className="bg-white text-[#5DBB63] rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm">
-            <span className="text-[16px] font-black leading-none mt-3 animate-bounce">
+        <section className="max-w-[360px] mx-auto mt-6 mb-4 relative z-10">
+          <div className="bg-[#00004d] text-[#5DBB63] rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm">
+            <span className="text-[18px] font-black leading-none mt-3 animate-bounce">
               I am seeking for a job
             </span>
 
@@ -374,7 +372,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="max-w-[360px] mx-auto mt-1 mb-2">
+        <section className="max-w-[360px] mx-auto mt-1 mb-1">
           <div className="flex flex-col gap-3">
             {loading ? (
               <div className="flex justify-center p-10">
@@ -396,18 +394,19 @@ export default function HomePage() {
                             `/applicants/${app._id}`
                           )
                         }
-                        className="bg-white border border-gray-100 rounded-[18px] flex items-stretch shadow-md min-h-[50px] cursor-pointer overflow-hidden transition-transform active:scale-95"
+                        className="bg-white border border-gray-100 rounded-[15px] flex items-stretch shadow-md min-h-[50px] cursor-pointer overflow-hidden transition-transform active:scale-95"
                       >
-                        <div className="relative w-24 shrink-0 bg-gray-100 overflow-hidden">
+                        <div className="relative w-24 shrink-0 bg-gray-100 overflow-hidden flex items-center justify-center">
                           {app.image ===
-                          "male" ? (
+                            "male" ? (
                             <Image
                               src={
                                 MALE_ICON
                               }
                               alt="M"
-                              fill
-                              className="object-cover"
+                              width={52}
+                              height={52}
+                              className="object-contain"
                               style={
                                 navyBlueFilter
                               }
@@ -420,8 +419,9 @@ export default function HomePage() {
                                 FEMALE_ICON
                               }
                               alt="F"
-                              fill
-                              className="object-cover"
+                              width={52}
+                              height={52}
+                              className="object-contain"
                               style={
                                 navyBlueFilter
                               }
@@ -429,7 +429,7 @@ export default function HomePage() {
                             />
                           ) : app.image &&
                             app.image.length >
-                              20 ? (
+                            20 ? (
                             <Image
                               src={
                                 app.image
@@ -442,7 +442,8 @@ export default function HomePage() {
                           ) : (
                             <div className="bg-[#00004d] h-full w-full flex items-center justify-center">
                               <User
-                                size={35}
+                                size={24}
+                                strokeWidth={2.5}
                                 className="text-white"
                               />
                             </div>
@@ -480,7 +481,7 @@ export default function HomePage() {
                             </p>
 
                             <p className="text-[10px] font-bold text-[#00004d] opacity-90 truncate">
-                              Education:{" "}
+                              Edu.{" "}
                               {app.education ||
                                 "N/A"}
                             </p>
@@ -503,7 +504,7 @@ export default function HomePage() {
                             </div>
 
                             <span className="text-[#5DBB63] font-black text-[10px] flex items-center">
-                              Visit profile{" "}
+                              Visit my profile{" "}
                               <LuChevronsRight
                                 size={14}
                                 strokeWidth={3}
@@ -517,23 +518,26 @@ export default function HomePage() {
 
                 {applicants.length >
                   10 && (
-                  <div className="flex justify-center mt-6">
-                    <button
-                      onClick={() =>
-                        router.push(
-                          "/applicants"
-                        )
-                      }
-                      className="bg-[#00004d] text-white px-8 py-2.5 rounded-full font-black text-[14px] flex items-center gap-2 shadow-lg active:scale-95 transition-transform"
-                    >
-                      Explore More
-                      Applicants{" "}
-                      <LuChevronsRight
-                        size={20}
-                      />
-                    </button>
-                  </div>
-                )}
+                    <div className="flex justify-center mt-4 mb-5">
+                      <button
+                        onClick={() =>
+                          router.push(
+                            "/applicants"
+                          )
+                        }
+                        className="bg-[#5DBB63] text-white px-5 py-2.5 rounded-[9px] text-[14px] flex items-center gap-2 shadow-lg active:scale-95 transition-transform"
+                      >
+                        Explore More
+                        Applicants{" "}
+                        <div className="flex flex-col items-center mt-1 -space-y-3">
+                          <LuChevronsRight
+                            size={24}
+                            strokeWidth={3}
+                          />
+                        </div>
+                      </button>
+                    </div>
+                  )}
               </>
             ) : (
               <p className="text-center text-gray-400 font-bold py-10">

@@ -24,7 +24,8 @@ export default function ApplicantsPage() {
   const searchRef = useRef<HTMLDivElement>(null);
 
   const navyBlueFilter = {
-    filter: "invert(7%) sepia(76%) saturate(5793%) hue-rotate(241deg) brightness(91%) contrast(108%)"
+    filter:
+      "invert(8%) sepia(100%) saturate(2800%) hue-rotate(230deg) brightness(85%) contrast(120%)",
   };
 
   useEffect(() => {
@@ -76,7 +77,7 @@ export default function ApplicantsPage() {
           (app.category && app.category.toLowerCase().includes(value.toLowerCase()))
         )
         .map((app) => (app.category && app.category.toLowerCase().includes(value.toLowerCase()) ? app.category : app.fullName));
-      
+
       const uniqueSuggestions = Array.from(new Set(filtered)).slice(0, 5);
       setSuggestions(uniqueSuggestions as string[]);
       setShowSuggestions(true);
@@ -123,8 +124,8 @@ export default function ApplicantsPage() {
   const filteredApplicants = applicants.filter((app) => {
     const query = searchQuery.toLowerCase();
     return (
-      app.fullName?.toLowerCase().includes(query) || 
-      app.category?.toLowerCase().includes(query) || 
+      app.fullName?.toLowerCase().includes(query) ||
+      app.category?.toLowerCase().includes(query) ||
       app.city?.toLowerCase().includes(query)
     );
   });
@@ -159,7 +160,7 @@ export default function ApplicantsPage() {
   return (
     <main className="min-h-screen bg-[#f7fafa] pb-20 font-sans">
       <Toaster position="top-center" />
-            <section className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center relative shadow-sm">
+      <section className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center relative shadow-sm">
         <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] text-[#5DBB63] leading-tight text-center">
           Hire Experts <br /> Get Quality Work
         </h1>
@@ -179,8 +180,8 @@ export default function ApplicantsPage() {
           />
           <div className="absolute inset-y-0 right-0 flex items-center pr-4 gap-2">
             <div className="h-5 w-[1.5px] bg-[#00004d]"></div>
-            <button 
-              onClick={() => handleSearch()} 
+            <button
+              onClick={() => handleSearch()}
               className="text-[#00004d] font-black text-[15px] hover:opacity-70"
             >
               Go
@@ -209,16 +210,32 @@ export default function ApplicantsPage() {
             <>
               {currentItems.length > 0 ? (
                 currentItems.map((app) => (
-                  <div 
-                    key={app._id} 
-                    onClick={() => router.push(`/applicants/${app._id}`)} 
-                    className="bg-white border border-gray-100 rounded-[15px] flex items-center gap-3 shadow-md h-[100px] cursor-pointer overflow-hidden transition-transform active:scale-95"
+                  <div
+                    key={app._id}
+                    onClick={() => router.push(`/applicants/${app._id}`)}
+                    className="bg-white border border-gray-100 rounded-[15px] flex items-stretch gap-3 shadow-md h-[100px] cursor-pointer overflow-hidden transition-transform active:scale-95"
                   >
-                    <div className="relative w-24 h-full shrink-0 bg-gray-200 shadow-sm">
+                    <div className="relative w-24 shrink-0 bg-gray-100 overflow-hidden flex items-center justify-center">
                       {app.image === "male" ? (
-                        <Image src={MALE_ICON} alt="M" fill className="object-cover" style={navyBlueFilter} unoptimized />
+                        <Image
+                          src={MALE_ICON}
+                          alt="M"
+                          className="object-cover"
+                          width={52}
+                          height={52}
+                          style={navyBlueFilter}
+                          unoptimized
+                        />
                       ) : app.image === "female" ? (
-                        <Image src={FEMALE_ICON} alt="F" fill className="object-cover" style={navyBlueFilter} unoptimized />
+                        <Image
+                          src={FEMALE_ICON}
+                          alt="F"
+                          className="object-cover"
+                          width={52}
+                          height={52}
+                          style={navyBlueFilter}
+                          unoptimized
+                        />
                       ) : app.image?.length > 20 ? (
                         <Image src={app.image} alt="U" fill className="object-cover" unoptimized />
                       ) : (
@@ -227,26 +244,66 @@ export default function ApplicantsPage() {
                         </div>
                       )}
                     </div>
-                    <div className="flex flex-col flex-1 overflow-hidden py-2 pr-3">
-                      <div className="flex justify-between items-center">
-                        <div className="flex gap-2 items-center truncate">
-                          <h2 className="text-[10px] font-black text-[#00004d] truncate">{app.fullName}</h2>
-                          <span className="text-[9px] font-bold text-[#00004d] bg-gray-100 px-1.5 py-0.5 rounded-md">Age {calculateAge(app.dob)}</span>
+                    <div className="flex flex-col flex-1 p-2 justify-between min-w-0">
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <h2 className="text-[13px] font-black text-[#00004d] truncate">
+                            {
+                              app.fullName
+                            }
+                          </h2>
+
+                          <span className="text-[9px] font-bold text-[#00004d] bg-gray-100 px-1.5 py-[2px] rounded-md whitespace-nowrap">
+                            Age{" "}
+                            {calculateAge(
+                              app.dob
+                            )}
+                          </span>
                         </div>
-                        <button onClick={(e) => handleToggleSave(e, app._id)} className="p-1">
-                          <Heart size={18} className={app.savedBy?.includes(currentUserId) ? "fill-[#00004d] text-[#00004d]" : "text-[#00004d]"} />
-                        </button>
+
+                        <Heart
+                          size={16}
+                          className="text-[#00004d] shrink-0"
+                        />
                       </div>
-                      <p className="text-[9px] font-bold text-[#00004d] opacity-90 truncate">{app.category}</p>
-                      <p className="text-[9px] font-bold text-[#00004d] mt-0.5">{calculateTotalExperience(app.experience, app.isFresher)}</p>
+
+                      <div className="space-y-0">
+                        <p className="text-[10px] font-bold text-[#00004d] opacity-90 truncate">
+                          Profession:{" "}
+                          {app.category ||
+                            "Consultant"}
+                        </p>
+
+                        <p className="text-[10px] font-bold text-[#00004d] opacity-90 truncate">
+                          Edu.{" "}
+                          {app.education ||
+                            "N/A"}
+                        </p>
+
+                        <p className="text-[10px] font-bold text-[#00004d]">
+                          {calculateTotalExperience(
+                            app.experience,
+                            app.isFresher
+                          )}
+                        </p>
+                      </div>
+
                       <div className="flex justify-between items-center mt-1">
-                        <div className="flex items-center gap-0 text-[#5DBB63] ml-[-3]">
-                          <IoIosPin size={13} />
-                          <span className="font-bold text-[10px]">{app.city}</span>
+                        <div className="flex items-center gap-0.5 text-[#5DBB63] ml-[-4]">
+                          <IoIosPin size={12} />
+
+                          <span className="font-bold text-[10px]">
+                            {app.city}
+                          </span>
                         </div>
-                        <button className="text-[#5DBB63] font-black text-[10px] flex items-center">
-                          Visit my Profile <LuChevronsRight size={14} />
-                        </button>
+
+                        <span className="text-[#5DBB63] font-black text-[10px] flex items-center">
+                          Visit my profile{" "}
+                          <LuChevronsRight
+                            size={14}
+                            strokeWidth={3}
+                          />
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -256,10 +313,10 @@ export default function ApplicantsPage() {
               )}
 
               {filteredApplicants.length > itemsPerPage && (
-                <Pagination 
-                  currentPage={currentPage} 
-                  totalPages={totalPages} 
-                  onPageChange={(page: number) => { setCurrentPage(page); window.scrollTo(0, 0); }} 
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={(page: number) => { setCurrentPage(page); window.scrollTo(0, 0); }}
                 />
               )}
             </>
