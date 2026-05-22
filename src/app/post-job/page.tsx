@@ -8,7 +8,8 @@ import toast, { Toaster } from "react-hot-toast";
 import {
   MapPin, DollarSign, Info, FileText, Award, Search,
   ChevronDown, Lock, Camera, Check, X,
-  Building2, Briefcase, Globe, ArrowRight, ArrowLeft, Loader2, CheckCircle2
+  Building2, Briefcase, Globe, ArrowRight, ArrowLeft, Loader2, CheckCircle2,
+  ShieldAlert
 } from "lucide-react";
 
 import { JOB_CATEGORIES, JOB_TYPES, CITIES, EDUCATION_OPTIONS } from "../constants";
@@ -81,23 +82,13 @@ export default function PostJobPage() {
   const totalSteps = 3;
 
   const [formData, setFormData] = useState({
-    companyLogo: "",
-    category: "",
-    otherCategory: "",
-    city: "",
-    salary: "",
-    type: "Full-Time",
-    experience: "",
-    description: "",
-    skills: "",
-    education: "",
-    otherEducation: "",
+    companyLogo: "", category: "", otherCategory: "", city: "", salary: "", type: "Full-Time", experience: "", description: "", skills: "", education: "", otherEducation: "",
   });
 
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [userStatus, setUserStatus] = useState<"guest" | "jobseeker" | "employer" | null>(null);
+  const [userStatus, setUserStatus] = useState<"guest" | "jobseeker" | "employer" | "admin" | null>(null);
   
   const [isCatOpen, setIsCatOpen] = useState(false);
   const [isEduOpen, setIsEduOpen] = useState(false);
@@ -117,17 +108,26 @@ export default function PostJobPage() {
   const cityRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
     const token = localStorage.getItem("token");
-    if (!token) setUserStatus("guest");
-    else if (user.role === "jobseeker") setUserStatus("jobseeker");
-    else if (user.role === "employer") setUserStatus("employer");
+    const userStr = localStorage.getItem("user");
+
+    if (!token || !userStr) {
+      setUserStatus("guest");
+    } else {
+      try {
+        const user = JSON.parse(userStr);
+        if (user.role === "jobseeker") setUserStatus("jobseeker");
+        else if (user.role === "employer") setUserStatus("employer");
+        else if (user.role === "cheifAdmin") setUserStatus("admin");
+        else if (user.role === "subAdmin") setUserStatus("employer");
+        else setUserStatus("guest");
+      } catch (e) {
+        setUserStatus("guest");
+      }
+    }
 
     const savedData = localStorage.getItem("pendingJobPost");
-    if (savedData) {
-      setFormData(JSON.parse(savedData));
-      if (token && user.role === "employer") localStorage.removeItem("pendingJobPost");
-    }
+    if (savedData) setFormData(prev => ({...prev, ...JSON.parse(savedData)}));
 
     const handleClickOutside = (event: MouseEvent) => {
       if (catRef.current && !catRef.current.contains(event.target as Node)) setIsCatOpen(false);
@@ -150,15 +150,11 @@ export default function PostJobPage() {
   };
 
   const nextStep = () => {
-    if (validateStep()) {
-      if (currentStep < totalSteps) setCurrentStep(prev => prev + 1);
-      window.scrollTo(0, 0);
-    } else {
-      toast.error("Please fill required fields", { position: "top-center" });
-    }
+    if (validateStep()) { setCurrentStep(prev => Math.min(prev + 1, totalSteps)); window.scrollTo(0, 0); }
+    else toast.error("Please fill required fields");
   };
 
-  const prevStep = () => { if (currentStep > 1) setCurrentStep(prev => prev - 1); window.scrollTo(0, 0); };
+  const prevStep = () => { setCurrentStep(prev => Math.max(prev - 1, 1)); window.scrollTo(0, 0); };
 
   const handleAuthNavigation = () => {
     localStorage.setItem("pendingJobPost", JSON.stringify(formData));
@@ -191,23 +187,13 @@ export default function PostJobPage() {
       setFormData({ ...formData, companyLogo: croppedImage });
       setIsCropping(false);
       setImageToCrop(null);
-      toast.success("Logo updated!");
     }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
-    if (userStatus === "guest") {
-      setIsAuthModalOpen(true);
-      return;
-    }
-
-    if (!validateStep()) {
-      toast.error("Please complete all required fields");
-      return;
-    }
-
+    if (userStatus === "guest") { setIsAuthModalOpen(true); return; }
+    if (!validateStep()) return;
     setLoading(true);
     const token = localStorage.getItem("token");
     const finalCategory = formData.category === "Other" ? formData.otherCategory : formData.category;
@@ -216,47 +202,37 @@ export default function PostJobPage() {
       const res = await fetch("https://easyjobspk.onrender.com/api/jobs", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-        body: JSON.stringify({
-          ...formData,
-          category: finalCategory,
-          education: finalEducation,
-          skills: formData.skills ? formData.skills.split(",").map(s => s.trim()) : []
-        }),
+        body: JSON.stringify({ ...formData, category: finalCategory, education: finalEducation, skills: formData.skills ? formData.skills.split(",").map(s => s.trim()) : [] }),
       });
-
-      if (res.ok) {
-        setShowSuccess(true);
-      } else {
-        const errorData = await res.json();
-        toast.error(errorData.message || "Failed to post job");
-      }
-    } catch (err) {
-      toast.error("Server error. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+      if (res.ok) { setShowSuccess(true); localStorage.removeItem("pendingJobPost"); }
+      else { const errorData = await res.json(); toast.error(errorData.message || "Failed to post job"); }
+    } catch (err) { toast.error("Server error. Please try again."); } finally { setLoading(false); }
   };
 
-  if (userStatus === "jobseeker") {
+  if (userStatus === null) return <div className="min-h-[60vh] flex items-center justify-center"><Loader2 className="animate-spin text-[#00004d]" size={40} /></div>;
+
+  if (userStatus === "jobseeker" || userStatus === "admin") {
     return (
-      <div className="min-h-screen bg-[#f4f7f9] flex items-center justify-center p-6 text-center">
-        <div className="bg-white p-10 rounded-[30px] shadow-2xl border border-red-100 max-w-sm w-full">
-          <div className="bg-red-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"><Lock size={40} className="text-red-500" /></div>
-          <h1 className="text-2xl font-bold text-[#00004d] mb-4">Employer Only</h1>
-          <p className="text-gray-500 text-sm mb-10 leading-relaxed">You are logged in as a Job Seeker. Please use an Employer account to post vacancies.</p>
-          <button onClick={() => router.push("/")} className="w-full bg-[#00004d] text-white py-4 rounded-xl font-bold text-sm">Back to Home</button>
-        </div>
+      <div className="w-full bg-[#e6e8e8] py-20 px-6 flex items-center justify-center min-h-[70vh]">
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white max-w-md w-full rounded-[40px] p-10 shadow-2xl text-center relative border border-white">
+          <div className="w-24 h-24 bg-[#f8fafc] rounded-3xl flex items-center justify-center mx-auto mb-6 transform rotate-6 shadow-sm border border-gray-50"><ShieldAlert size={48} className="text-[#00004d] -rotate-6" /></div>
+          <h1 className="text-2xl font-bold text-[#00004d] mb-3">Access Restricted</h1>
+          <p className="text-gray-500 text-sm mb-8 leading-relaxed">You are logged in as a <span className="font-bold text-[#5DBB63] uppercase">{userStatus}</span>. To post a job, please use an Employer account.<br/><span className="text-xs font-bold text-[#00004d] mt-2 block">یہ صفحہ صرف ایمپلائرز کے لیے ہے۔</span></p>
+          <div className="space-y-3">
+            <button onClick={() => router.push("/jobs")} className="w-full bg-[#00004d] text-white py-4 rounded-2xl font-bold text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"><Search size={18} /> Find Jobs</button>
+            <button onClick={() => router.push("/")} className="w-full bg-gray-50 text-gray-500 py-4 rounded-2xl font-bold text-sm">Back to Home</button>
+          </div>
+        </motion.div>
       </div>
     );
   }
-
-  if (userStatus === null) return null;
 
   return (
     <div className="min-h-[70vh] bg-[#e6e8e8] pb-10 font-sans">
       <Toaster position="top-center" />
       <AuthRequiredModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onAction={handleAuthNavigation} />
       <CustomSuccessModal isOpen={showSuccess} onClose={() => setShowSuccess(false)} onAction={() => router.push("/dashboard/employer/my-jobs")} />
+      
       <AnimatePresence>
         {isCropping && (
           <div className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-black p-4">
@@ -283,7 +259,7 @@ export default function PostJobPage() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-4xl mx-auto px-4 mt-6">
         <div className="bg-white rounded-[35px] shadow-xl overflow-hidden border border-white">
           <form onSubmit={handleSubmit} className="p-6 md:p-14">
             {currentStep === 1 && (
@@ -291,11 +267,7 @@ export default function PostJobPage() {
                 <section className="flex flex-col items-center gap-6">
                   <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
                     <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-[#f8fcfd] shadow-lg bg-gray-50 flex items-center justify-center overflow-hidden">
-                      {formData.companyLogo ? (
-                        <img src={formData.companyLogo} className="w-full h-full object-cover" alt="Logo" />
-                      ) : (
-                        <div className="bg-[#00004d] w-full h-full flex items-center justify-center"><Building2 className="w-12 h-12 text-white" /></div>
-                      )}
+                      {formData.companyLogo ? <img src={formData.companyLogo} className="w-full h-full object-cover" alt="Logo" /> : <div className="bg-[#00004d] w-full h-full flex items-center justify-center"><Building2 className="w-12 h-12 text-white" /></div>}
                     </div>
                     <div className="absolute bottom-1 right-1 bg-[#00004d] text-white p-2.5 rounded-full shadow-lg"><Camera size={18} /></div>
                   </div>
@@ -315,9 +287,7 @@ export default function PostJobPage() {
                       {isCityOpen && (
                         <div className="absolute z-50 w-full mt-2 bg-white border rounded-2xl shadow-xl overflow-hidden">
                           <div className="p-2 bg-gray-50"><input placeholder="Search city..." className="w-full p-2 text-xs border rounded-lg outline-none" value={citySearch} onChange={(e) => setCitySearch(e.target.value)} /></div>
-                          <div className="max-h-60 overflow-y-auto">
-                            {filteredCities.map(c => <div key={c} onClick={() => { setFormData({ ...formData, city: c }); setIsCityOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{c}</div>)}
-                          </div>
+                          <div className="max-h-60 overflow-y-auto">{filteredCities.map(c => <div key={c} onClick={() => { setFormData({ ...formData, city: c }); setIsCityOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{c}</div>)}</div>
                         </div>
                       )}
                     </div>
@@ -326,21 +296,19 @@ export default function PostJobPage() {
                 </section>
               </motion.div>
             )}
+
             {currentStep === 2 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Job Information</h2></div>
                 <div className="space-y-4" ref={catRef}>
                   <label className="text-[10px] font-bold text-[#00004d] block uppercase tracking-tight">Job Title / Category *</label>
                   <div onClick={() => setIsCatOpen(!isCatOpen)} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold text-[#00004d] flex justify-between items-center cursor-pointer">
-                    {formData.category || "Select Category"}
-                    <ChevronDown size={16} className={isCatOpen ? 'rotate-180' : ''} />
+                    {formData.category || "Select Category"} <ChevronDown size={16} className={isCatOpen ? 'rotate-180' : ''} />
                   </div>
                   {isCatOpen && (
                     <div className="absolute z-50 w-full bg-white border rounded-2xl shadow-xl overflow-hidden">
                       <div className="p-2 bg-gray-50"><input placeholder="Search title..." className="w-full p-2 text-xs border rounded-lg outline-none" value={catSearch} onChange={(e) => setCatSearch(e.target.value)} /></div>
-                      <div className="max-h-60 overflow-y-auto">
-                        {filteredCategories.map(cat => <div key={cat} onClick={() => { setFormData({ ...formData, category: cat }); setIsCatOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{cat}</div>)}
-                      </div>
+                      <div className="max-h-60 overflow-y-auto">{filteredCategories.map(cat => <div key={cat} onClick={() => { setFormData({ ...formData, category: cat }); setIsCatOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{cat}</div>)}</div>
                     </div>
                   )}
                   {formData.category === "Other" && <input placeholder="Specify Job Title" className="w-full mt-2 bg-[#f8fafc] border-2 border-blue-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.otherCategory} onChange={(e) => setFormData({ ...formData, otherCategory: e.target.value })} />}
@@ -349,15 +317,12 @@ export default function PostJobPage() {
                 <div className="space-y-4" ref={eduRef}>
                   <label className="text-[10px] font-bold text-[#00004d] block uppercase tracking-tight">Required Education *</label>
                   <div onClick={() => setIsEduOpen(!isEduOpen)} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold text-[#00004d] flex justify-between items-center cursor-pointer">
-                    {formData.education || "Select Education"}
-                    <ChevronDown size={16} className={isEduOpen ? 'rotate-180' : ''} />
+                    {formData.education || "Select Education"} <ChevronDown size={16} className={isEduOpen ? 'rotate-180' : ''} />
                   </div>
                   {isEduOpen && (
                     <div className="absolute z-50 w-full bg-white border rounded-2xl shadow-xl overflow-hidden">
                       <div className="p-2 bg-gray-50"><input placeholder="Search education..." className="w-full p-2 text-xs border rounded-lg outline-none" value={eduSearch} onChange={(e) => setEduSearch(e.target.value)} /></div>
-                      <div className="max-h-60 overflow-y-auto">
-                        {filteredEducation.map(edu => <div key={edu} onClick={() => { setFormData({ ...formData, education: edu }); setIsEduOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{edu}</div>)}
-                      </div>
+                      <div className="max-h-60 overflow-y-auto">{filteredEducation.map(edu => <div key={edu} onClick={() => { setFormData({ ...formData, education: edu }); setIsEduOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{edu}</div>)}</div>
                     </div>
                   )}
                   {formData.education === "Other" && <input placeholder="Specify Education" className="w-full mt-2 bg-[#f8fafc] border-2 border-blue-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.otherEducation} onChange={(e) => setFormData({ ...formData, otherEducation: e.target.value })} />}
@@ -365,9 +330,7 @@ export default function PostJobPage() {
 
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold text-[#00004d] block">Job Type</label>
-                  <select className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value })}>
-                    {JOB_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                  </select>
+                  <select className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value })}>{JOB_TYPES.map(t => <option key={t} value={t}>{t}</option>)}</select>
                 </div>
               </motion.div>
             )}
@@ -376,45 +339,24 @@ export default function PostJobPage() {
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Salary & Requirements</h2></div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><DollarSign size={12} /> Monthly Salary *</label>
-                    <input placeholder="e.g. 40k - 60k" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.salary} onChange={(e) => setFormData({ ...formData, salary: e.target.value })} />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Briefcase size={12} /> Experience *</label>
-                    <input placeholder="e.g. 1 Year / Fresh" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.experience} onChange={(e) => setFormData({ ...formData, experience: e.target.value })} />
-                  </div>
-                  <div className="space-y-1.5 md:col-span-2">
-                    <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Award size={12} /> Skills</label>
-                    <input placeholder="Comma separated skills" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.skills} onChange={(e) => setFormData({ ...formData, skills: e.target.value })} />
-                  </div>
-                  <div className="space-y-1.5 md:col-span-2">
-                    <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><FileText size={12} /> Description (Optional)</label>
-                    <textarea rows={4} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none resize-none" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
-                  </div>
+                  <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><DollarSign size={12} /> Monthly Salary *</label><input placeholder="e.g. 40k - 60k" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.salary} onChange={(e) => setFormData({ ...formData, salary: e.target.value })} /></div>
+                  <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Briefcase size={12} /> Experience *</label><input placeholder="e.g. 1 Year / Fresh" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.experience} onChange={(e) => setFormData({ ...formData, experience: e.target.value })} /></div>
+                  <div className="space-y-1.5 md:col-span-2"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Award size={12} /> Skills</label><input placeholder="Comma separated skills" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.skills} onChange={(e) => setFormData({ ...formData, skills: e.target.value })} /></div>
+                  <div className="space-y-1.5 md:col-span-2"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><FileText size={12} /> Description (Optional)</label><textarea rows={4} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none resize-none" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} /></div>
                 </div>
               </motion.div>
             )}
 
             <div className="flex items-center justify-between mt-12 gap-4">
-              {currentStep > 1 && (
-                <button type="button" onClick={prevStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-gray-100 text-[#00004d] font-bold text-sm">
-                  <ArrowLeft size={18} /> Back
-                </button>
-              )}
-
+              {currentStep > 1 && <button type="button" onClick={prevStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-gray-100 text-[#00004d] font-bold text-sm"><ArrowLeft size={18} /> Back</button>}
               {currentStep < totalSteps ? (
-                <button type="button" onClick={nextStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#00004d] text-white font-bold text-sm">
-                  Next Step <ArrowRight size={18} />
-                </button>
+                <button type="button" onClick={nextStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#00004d] text-white font-bold text-sm">Next Step <ArrowRight size={18} /></button>
               ) : (
                 <button type="submit" disabled={loading} className="flex-[2] flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#5DBB63] text-white font-bold text-sm shadow-lg active:scale-95 transition-transform">
-                  {loading ? <Loader2 className="animate-spin" /> : <CheckCircle2 size={18} />}
-                  {loading ? "Publishing..." : "Publish Vacancy"}
+                  {loading ? <Loader2 className="animate-spin" /> : <CheckCircle2 size={18} />} {loading ? "Publishing..." : "Publish Vacancy"}
                 </button>
               )}
             </div>
-
           </form>
         </div>
       </div>
