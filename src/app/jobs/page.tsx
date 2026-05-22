@@ -107,7 +107,7 @@ export default function JobsPage() {
   const currentItems = filteredJobs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
-    <main className="min-h-screen bg-[#e1eaed] pb-20 font-sans">
+    <main className="min-h-screen bg-[#f7fafa] pb-20 font-sans">
       <Toaster position="top-center" />
       
       <section className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative">

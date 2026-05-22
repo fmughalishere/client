@@ -1,114 +1,547 @@
 "use client";
 
 import {
-  Search, PlusCircle, Briefcase, Users, ClipboardList,
+  Search,
+  PlusCircle,
+  Briefcase,
+  Users,
+  ClipboardList,
+  ChevronDown,
+  Loader2,
+  User,
+  Heart,
 } from "lucide-react";
-import { useState, useRef } from "react";
+
+import { IoIosPin } from "react-icons/io";
+import { LuChevronsRight } from "react-icons/lu";
+
+import {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+} from "react";
+
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
+
+import { MALE_ICON, FEMALE_ICON } from "./constants";
 
 export default function HomePage() {
   const [applicants, setApplicants] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
+
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const [currentUserId, setCurrentUserId] =
+    useState<string | null>(null);
+
   const router = useRouter();
+
   const searchRef = useRef<HTMLDivElement>(null);
 
-  const quickActions = [
-    { label: "Apply for a Job", icon: <Briefcase size={28} style={{ color: "#5DBB63" }} />, href: "/application" },
-    { label: "Post a Job", icon: <PlusCircle size={28} style={{ color: "#5DBB63" }} />, href: "/post-job" },
-    { label: "Job Seekers", icon: <Users size={28} style={{ color: "#5DBB63" }} />, href: "/applicants" },
-    { label: "Job Offers", icon: <ClipboardList size={28} style={{ color: "#5DBB63" }} />, href: "/jobs" },
-  ];
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-    if (value.trim().length > 0) {
-      const filtered = applicants
-        .filter((app) =>
-          app.fullName.toLowerCase().includes(value.toLowerCase()) ||
-          (app.category && app.category.toLowerCase().includes(value.toLowerCase()))
-        )
-        .map((app) => (app.category && app.category.toLowerCase().includes(value.toLowerCase()) ? app.category : app.fullName));
-      const uniqueSuggestions = Array.from(new Set(filtered)).slice(0, 5);
-      setSuggestions(uniqueSuggestions as string[]);
-      setShowSuggestions(true);
-    } else {
-      setSuggestions([]);
-      setShowSuggestions(false);
-    }
+  const navyBlueFilter = {
+    filter:
+      "invert(7%) sepia(76%) saturate(5793%) hue-rotate(241deg) brightness(91%) contrast(108%)",
   };
 
-  const handleSearch = (selectedQuery?: string) => {
-    const finalQuery = selectedQuery || searchQuery;
-    if (finalQuery.trim()) {
-      setShowSuggestions(false);
-      router.push(`/jobs?search=${finalQuery}`);
+  const quickActions = [
+    {
+      label: "Apply for a Job",
+      icon: (
+        <Briefcase
+          size={28}
+          style={{ color: "#5DBB63" }}
+        />
+      ),
+      href: "/application",
+    },
+
+    {
+      label: "Post a Job",
+      icon: (
+        <PlusCircle
+          size={28}
+          style={{ color: "#5DBB63" }}
+        />
+      ),
+      href: "/post-job",
+    },
+
+    {
+      label: "Job Seekers",
+      icon: (
+        <Users
+          size={28}
+          style={{ color: "#5DBB63" }}
+        />
+      ),
+      href: "/applicants",
+    },
+
+    {
+      label: "Job Offers",
+      icon: (
+        <ClipboardList
+          size={28}
+          style={{ color: "#5DBB63" }}
+        />
+      ),
+      href: "/jobs",
+    },
+  ];
+
+  const fetchApplicants = useCallback(async () => {
+    try {
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("token")
+          : null;
+
+      const userData =
+        typeof window !== "undefined"
+          ? localStorage.getItem("user")
+          : null;
+
+      if (userData) {
+        const parsedUser = JSON.parse(userData);
+
+        setCurrentUserId(
+          parsedUser._id || parsedUser.id
+        );
+      }
+
+      const res = await fetch(
+        "https://easyjobspk.onrender.com/api/applications/all-applicants",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+
+      const approvedOnly = Array.isArray(data)
+        ? data.filter(
+            (app: any) =>
+              app.status === "shortlisted"
+          )
+        : [];
+
+      setApplicants(approvedOnly);
+    } catch (error) {
+      console.error(
+        "Error fetching applicants:",
+        error
+      );
+    } finally {
+      setLoading(false);
     }
+  }, []);
+
+  useEffect(() => {
+    fetchApplicants();
+  }, [fetchApplicants]);
+
+  const handleSearch = (
+    selectedQuery?: string
+  ) => {
+    const finalQuery =
+      selectedQuery || searchQuery;
+
+    setSearchQuery(finalQuery);
+
+    setShowSuggestions(false);
+
+    console.log("Searching:", finalQuery);
+  };
+
+  const calculateAge = (dob: string) => {
+    if (!dob) return "N/A";
+
+    const birthDate = new Date(dob);
+    const today = new Date();
+
+    let age =
+      today.getFullYear() -
+      birthDate.getFullYear();
+
+    if (
+      today.getMonth() <
+        birthDate.getMonth() ||
+      (today.getMonth() ===
+        birthDate.getMonth() &&
+        today.getDate() <
+          birthDate.getDate())
+    ) {
+      age--;
+    }
+
+    return age;
+  };
+
+  const calculateTotalExperience = (
+    expArray: any[],
+    isFresher: boolean
+  ) => {
+    if (
+      isFresher ||
+      !expArray ||
+      expArray.length === 0
+    ) {
+      return "Fresher";
+    }
+
+    let totalMonths = 0;
+
+    expArray.forEach((exp) => {
+      const start = new Date(
+        exp.startDate
+      );
+
+      const end = exp.isCurrentJob
+        ? new Date()
+        : new Date(exp.endDate);
+
+      if (
+        !isNaN(start.getTime()) &&
+        !isNaN(end.getTime())
+      ) {
+        const diff =
+          (end.getFullYear() -
+            start.getFullYear()) *
+            12 +
+          (end.getMonth() -
+            start.getMonth());
+
+        if (diff > 0) {
+          totalMonths += diff;
+        }
+      }
+    });
+
+    const yrs = Math.floor(
+      totalMonths / 12
+    );
+
+    return yrs > 0
+      ? `Experience: ${yrs} Years`
+      : `Experience: ${
+          totalMonths % 12
+        } Months`;
   };
 
   return (
-    <main className="min-h-screen bg-[#e1eaed] font-sans">
+    <main className="min-h-screen bg-[#f7fafa] font-sans">
       <section className="px-0 pt-0 relative">
         <div className="bg-white rounded-b-[40px] pt-6 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
           <div className="text-center mb-1 mt-0 relative z-10">
-            <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] text-[#5DBB63] leading-none">Hire Easy</h1>
-            <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] text-[#5DBB63] leading-tight">Get Hired Easy</h1>
+            <h1
+              style={{
+                fontFamily: "Fontatica",
+              }}
+              className="text-[35px] text-[#5DBB63] leading-none"
+            >
+              Hire Easy
+            </h1>
+
+            <h1
+              style={{
+                fontFamily: "Fontatica",
+              }}
+              className="text-[35px] text-[#5DBB63] leading-tight"
+            >
+              Get Hired Easy
+            </h1>
           </div>
         </div>
-        <div className="relative -mt-8 flex justify-center px-6 z-30" ref={searchRef}>
-          <div className="relative w-full max-w-[280px]">
+
+        <div className="relative -mt-8 flex justify-center px-6 z-30">
+          <div
+            ref={searchRef}
+            className="relative w-full max-w-[320px]"
+          >
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-[#00004d]" strokeWidth={3} />
+              <Search
+                className="h-5 w-5 text-[#00004d]"
+                strokeWidth={3}
+              />
             </div>
+
             <input
               type="text"
               value={searchQuery}
-              onChange={handleInputChange}
+              onChange={(e) =>
+                setSearchQuery(
+                  e.target.value
+                )
+              }
+              onFocus={() =>
+                setShowSuggestions(true)
+              }
               placeholder="Search jobs/employees"
-              className="block w-full pl-11 pr-14 py-3 bg-[#e1eaed] rounded-[15px] shadow-lg text-sm text-[#00004d] font-bold outline-none"
+              className="block w-full pl-11 pr-16 py-3 bg-[#e1eaed] rounded-[15px] shadow-lg text-sm text-[#00004d] font-bold outline-none"
             />
+
             <div className="absolute inset-y-0 right-0 flex items-center pr-4 gap-2">
-              <div className="h-5 w-[1.5px] bg-[#00004d]"></div>
-              <button onClick={() => handleSearch()} className="text-[#00004d] font-black text-[15px] hover:opacity-70">Go</button>
+              <div className="h-5 w-[1.5px] bg-[#00004d]" />
+
+              <button
+                onClick={() =>
+                  handleSearch()
+                }
+                className="text-[#00004d] font-black text-[15px] hover:opacity-70"
+              >
+                Go
+              </button>
             </div>
+
+            {showSuggestions &&
+              suggestions.length > 0 && (
+                <div className="absolute top-[110%] left-0 w-full bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                  {suggestions.map(
+                    (
+                      suggestion,
+                      index
+                    ) => (
+                      <button
+                        key={index}
+                        onClick={() =>
+                          handleSearch(
+                            suggestion
+                          )
+                        }
+                        className="w-full text-left px-4 py-3 text-sm font-bold text-[#00004d] hover:bg-gray-50 border-b last:border-0 border-gray-100"
+                      >
+                        {suggestion}
+                      </button>
+                    )
+                  )}
+                </div>
+              )}
           </div>
         </div>
       </section>
 
       <section className="max-w-2xl mx-auto px-6 mt-4 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full justify-items-center">
-          {quickActions.map((action, i) => (
-            <button
-              key={i}
-              onClick={() => router.push(action.href)}
-              className="w-full max-w-[140px] transition-transform active:scale-95 group"
-            >
-              <div className="relative flex flex-col items-center justify-center aspect-square bg-white rounded-2xl text-[#00004d] shadow-md border border-gray-50 p-4">
-                <div className="mb-2 transform group-hover:scale-110 transition-transform">
-                  {action.icon}
+          {quickActions.map(
+            (action, i) => (
+              <button
+                key={i}
+                onClick={() =>
+                  router.push(
+                    action.href
+                  )
+                }
+                className="w-full max-w-[140px] transition-transform active:scale-95"
+              >
+                <div className="flex flex-col items-center justify-center aspect-square bg-white rounded-2xl text-[#00004d] shadow-md border border-gray-50 p-4">
+                  <div className="mb-2">
+                    {action.icon}
+                  </div>
+
+                  <span className="text-[13px] font-black text-[#00004d] text-center leading-tight">
+                    {action.label}
+                  </span>
                 </div>
-                <span className="text-[13px] font-black text-[#00004d] text-center leading-tight">
-                  {action.label}
-                </span>
+              </button>
+            )
+          )}
+        </div>
+
+        <section className="max-w-[360px] mx-auto px-4 mt-6 mb-4 relative z-10">
+          <div className="bg-white text-[#5DBB63] rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm">
+            <span className="text-[16px] font-black leading-none mt-3 animate-bounce">
+              I am seeking for a job
+            </span>
+
+            <div className="flex flex-col items-center mt-2 -space-y-3 animate-bounce">
+              <ChevronDown
+                size={20}
+                strokeWidth={4}
+              />
+
+              <ChevronDown
+                size={20}
+                strokeWidth={4}
+                className="opacity-40"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="max-w-[360px] mx-auto mt-1 mb-2">
+          <div className="flex flex-col gap-3">
+            {loading ? (
+              <div className="flex justify-center p-10">
+                <Loader2 className="animate-spin text-[#00004d]" />
               </div>
-            </button>
-          ))}
-        </div>
-        <div className="mt-5 mb-1 rounded-2xl overflow-hidden shadow-lg">
-          <Link href="https://successsignatures.com/elementor-2924/" target="_blank">
-            <Image
-              src="/images/banner-img.png"
-              alt="US Visit Visa Banner"
-              width={650}
-              height={400}
-              className="w-full h-auto object-cover cursor-pointer"
-            />
-          </Link>
-        </div>
+            ) : applicants.length > 0 ? (
+              <>
+                {applicants
+                  .slice(0, 10)
+                  .map(
+                    (
+                      app: any,
+                      idx: number
+                    ) => (
+                      <div
+                        key={idx}
+                        onClick={() =>
+                          router.push(
+                            `/applicants/${app._id}`
+                          )
+                        }
+                        className="bg-white border border-gray-100 rounded-[18px] flex items-stretch shadow-md min-h-[50px] cursor-pointer overflow-hidden transition-transform active:scale-95"
+                      >
+                        <div className="relative w-24 shrink-0 bg-gray-100 overflow-hidden">
+                          {app.image ===
+                          "male" ? (
+                            <Image
+                              src={
+                                MALE_ICON
+                              }
+                              alt="M"
+                              fill
+                              className="object-cover"
+                              style={
+                                navyBlueFilter
+                              }
+                              unoptimized
+                            />
+                          ) : app.image ===
+                            "female" ? (
+                            <Image
+                              src={
+                                FEMALE_ICON
+                              }
+                              alt="F"
+                              fill
+                              className="object-cover"
+                              style={
+                                navyBlueFilter
+                              }
+                              unoptimized
+                            />
+                          ) : app.image &&
+                            app.image.length >
+                              20 ? (
+                            <Image
+                              src={
+                                app.image
+                              }
+                              alt="U"
+                              fill
+                              className="object-cover"
+                              unoptimized
+                            />
+                          ) : (
+                            <div className="bg-[#00004d] h-full w-full flex items-center justify-center">
+                              <User
+                                size={35}
+                                className="text-white"
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex flex-col flex-1 p-2 justify-between min-w-0">
+                          <div className="flex justify-between items-start">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <h2 className="text-[13px] font-black text-[#00004d] truncate">
+                                {
+                                  app.fullName
+                                }
+                              </h2>
+
+                              <span className="text-[9px] font-bold text-[#00004d] bg-gray-100 px-1.5 py-[2px] rounded-md whitespace-nowrap">
+                                Age{" "}
+                                {calculateAge(
+                                  app.dob
+                                )}
+                              </span>
+                            </div>
+
+                            <Heart
+                              size={16}
+                              className="text-[#00004d] shrink-0"
+                            />
+                          </div>
+
+                          <div className="space-y-0">
+                            <p className="text-[10px] font-bold text-[#00004d] opacity-90 truncate">
+                              Profession:{" "}
+                              {app.category ||
+                                "Consultant"}
+                            </p>
+
+                            <p className="text-[10px] font-bold text-[#00004d] opacity-90 truncate">
+                              Education:{" "}
+                              {app.education ||
+                                "N/A"}
+                            </p>
+
+                            <p className="text-[10px] font-bold text-[#00004d]">
+                              {calculateTotalExperience(
+                                app.experience,
+                                app.isFresher
+                              )}
+                            </p>
+                          </div>
+
+                          <div className="flex justify-between items-center mt-1">
+                            <div className="flex items-center gap-0.5 text-[#5DBB63] ml-[-4]">
+                              <IoIosPin size={12} />
+
+                              <span className="font-bold text-[10px]">
+                                {app.city}
+                              </span>
+                            </div>
+
+                            <span className="text-[#5DBB63] font-black text-[10px] flex items-center">
+                              Visit profile{" "}
+                              <LuChevronsRight
+                                size={14}
+                                strokeWidth={3}
+                              />
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  )}
+
+                {applicants.length >
+                  10 && (
+                  <div className="flex justify-center mt-6">
+                    <button
+                      onClick={() =>
+                        router.push(
+                          "/applicants"
+                        )
+                      }
+                      className="bg-[#00004d] text-white px-8 py-2.5 rounded-full font-black text-[14px] flex items-center gap-2 shadow-lg active:scale-95 transition-transform"
+                    >
+                      Explore More
+                      Applicants{" "}
+                      <LuChevronsRight
+                        size={20}
+                      />
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <p className="text-center text-gray-400 font-bold py-10">
+                No applicants found yet.
+              </p>
+            )}
+          </div>
+        </section>
       </section>
     </main>
   );

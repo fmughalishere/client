@@ -93,7 +93,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#e1eaed] shadow-sm border-b border-gray-200 backdrop-blur-md">      <nav className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between bg-[#e1eaed]">
+    <header className="sticky top-0 z-50 w-full bg-[#f7fafa] shadow-sm border-b border-gray-200 backdrop-blur-md">      <nav className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between bg-[#e1eaed]">
       <Link href="/">
         <Image
           src="/images/easyjobs-pk-logo.png"

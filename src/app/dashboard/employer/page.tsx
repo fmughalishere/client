@@ -63,7 +63,7 @@ export default function EmployerDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#e1eaed] flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#f7fafa] flex flex-col md:flex-row">
       <aside className="w-full md:w-72 bg-white border-r border-slate-100 p-6 md:p-8 flex flex-col justify-between md:min-h-screen">
         <div className="flex flex-col gap-8">
           <div className="flex items-center gap-3 px-2">

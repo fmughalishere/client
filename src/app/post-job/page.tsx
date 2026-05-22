@@ -253,7 +253,7 @@ export default function PostJobPage() {
   if (userStatus === null) return null;
 
   return (
-    <div className="min-h-[70vh] bg-[#e1eaed] pb-10 font-sans">
+    <div className="min-h-[70vh] bg-[#f7fafa] pb-10 font-sans">
       <Toaster position="top-center" />
       <AuthRequiredModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onAction={handleAuthNavigation} />
       <CustomSuccessModal isOpen={showSuccess} onClose={() => setShowSuccess(false)} onAction={() => router.push("/dashboard/employer/my-jobs")} />

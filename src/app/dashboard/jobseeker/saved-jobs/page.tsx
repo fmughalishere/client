@@ -36,7 +36,7 @@ export default function SavedJobs() {
   };
 
   return (
-    <div className="min-h-screen bg-[#e1eaed] p-6 md:p-16">
+    <div className="min-h-screen bg-[#f7fafa] p-6 md:p-16">
       <Toaster position="top-center" />
             <Link 
         href="/dashboard/jobseeker" 

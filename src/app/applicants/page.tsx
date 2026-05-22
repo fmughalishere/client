@@ -157,7 +157,7 @@ export default function ApplicantsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#e1eaed] pb-20 font-sans">
+    <main className="min-h-screen bg-[#f7fafa] pb-20 font-sans">
       <Toaster position="top-center" />
             <section className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center relative shadow-sm">
         <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] text-[#5DBB63] leading-tight text-center">

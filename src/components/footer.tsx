@@ -58,7 +58,7 @@ const Footer = () => {
           </Link>
         </div>
       </div>
-      <div className="w-full bg-[#E1EAED] pt-8 flex flex-col items-center">
+      <div className="w-full bg-[#f7fafa] pt-8 flex flex-col items-center">
           <div className="text-center mb-6 px-4">
           <p className="text-[#1e3a8a] text-[10px] sm:text-[16px] font-bold leading-tight">
             Copyright © 2026 <span className="underline decoration-green-400 decoration-2">easyjobs.pk</span>

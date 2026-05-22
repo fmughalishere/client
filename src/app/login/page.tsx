@@ -83,7 +83,7 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#e1eaed] relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#f7fafa] relative overflow-hidden">
       <Toaster position="top-center" />
             <div className="absolute top-[-10%] right-[-5%] w-[300px] h-[300px] bg-[#e2f2f5] rounded-full blur-[100px] opacity-60"></div>
       <div className="absolute bottom-[-10%] left-[-5%] w-[300px] h-[300px] bg-[#f0fdf4] rounded-full blur-[100px] opacity-60"></div>

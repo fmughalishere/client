@@ -119,7 +119,7 @@ export default function ApplicantsPage() {
   const totalPages = Math.ceil(filteredApplicants.length / itemsPerPage);
 
   return (
-    <main className="min-h-screen bg-[#e1eaed] pb-20 font-sans">
+    <main className="min-h-screen bg-[#f7fafa] pb-20 font-sans">
       <section className="bg-[#5DBB63] rounded-b-[35px] pt-10 pb-12 px-6 shadow-sm relative z-30">
         <div className="max-w-2xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full mb-3 shadow-sm border border-[#00004d]/10">

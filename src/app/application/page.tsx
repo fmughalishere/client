@@ -286,7 +286,7 @@ export default function MobileResponsiveJobForm() {
   };
 
   return (
-    <div className="min-h-[60vh] bg-[#e1eaed] pb-10 font-sans">
+    <div className="min-h-[60vh] bg-[#f7fafa] pb-10 font-sans">
       <Toaster position="top-center" reverseOrder={false} />
       <AuthRequiredModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onAction={handleAuthNavigation} />
       <SuccessModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAction={() => router.push("/")} />

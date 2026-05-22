@@ -14,7 +14,7 @@ const PrivacyPolicy: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#e1eaed] py-10 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-[#f7fafa] py-10 px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden">
                 <div className="bg-[#5DBB63] py-6 px-8 text-white text-center">
                     <h1 className="text-2xl sm:text-3xl font-bold">Privacy Policy & User Consent</h1>

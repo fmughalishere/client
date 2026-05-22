@@ -25,7 +25,7 @@ export default function MyProfile() {
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin" size={40}/></div>;
 
   return (
-    <div className="min-h-screen bg-[#e1eaed] p-6 md:p-12">
+    <div className="min-h-screen bg-[#f7fafa] p-6 md:p-12">
       <Link href="/dashboard/jobseeker" className="flex items-center gap-2 text-gray-400 font-bold mb-8 hover:text-[#1e3a8a]">
         <ArrowLeft size={20} /> Dashboard
       </Link>
