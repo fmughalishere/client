@@ -259,7 +259,7 @@ export default function HomePage() {
               <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#00004d]" /></div>
             ) : applicants.length > 0 ? (
               <>
-                {applicants.slice(0, 10).map((app, idx) => {
+                {applicants.slice(0, 25).map((app, idx) => {
                   const isSaved = currentUserId && app.savedBy?.includes(currentUserId);
                   return (
                     <div key={idx} onClick={() => router.push(`/applicants/${app._id}`)} className="bg-white border border-gray-100 rounded-[15px] flex items-stretch shadow-md min-h-[50px] cursor-pointer overflow-hidden transition-transform active:scale-95">
