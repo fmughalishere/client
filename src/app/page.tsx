@@ -309,7 +309,7 @@ export default function HomePage() {
               Get Hired Easy
             </h1>
             <h1 className="text-[18px] text-[#00004d]">
-              Totally for <span className="font-bold">FREE</span> JobSeekers
+              Totally <span className="font-bold">FREE</span> for JobSeekers
             </h1>
           </div>
         </div>
