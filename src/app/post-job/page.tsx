@@ -82,21 +82,19 @@ export default function PostJobPage() {
   const totalSteps = 3;
 
   const [formData, setFormData] = useState({
-    companyLogo: "", category: "", otherCategory: "", city: "", salary: "", type: "Full-Time", experience: "", description: "", skills: "", education: "", otherEducation: "",
+    companyLogo: "", companyName: "", contactPerson: "", companyAddress: "", phone: "", designation: "", companyEmail: "", category: "", otherCategory: "", city: "", salary: "", type: "Full-Time", experience: "", description: "", skills: "", education: "", otherEducation: "",
   });
 
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [userStatus, setUserStatus] = useState<"guest" | "jobseeker" | "employer" | "admin" | null>(null);
-  
   const [isCatOpen, setIsCatOpen] = useState(false);
   const [isEduOpen, setIsEduOpen] = useState(false);
   const [isCityOpen, setIsCityOpen] = useState(false);
   const [catSearch, setCatSearch] = useState("");
   const [eduSearch, setEduSearch] = useState("");
   const [citySearch, setCitySearch] = useState("");
-  
+
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -108,26 +106,9 @@ export default function PostJobPage() {
   const cityRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userStr = localStorage.getItem("user");
-
-    if (!token || !userStr) {
-      setUserStatus("guest");
-    } else {
-      try {
-        const user = JSON.parse(userStr);
-        if (user.role === "jobseeker") setUserStatus("jobseeker");
-        else if (user.role === "employer") setUserStatus("employer");
-        else if (user.role === "cheifAdmin") setUserStatus("admin");
-        else if (user.role === "subAdmin") setUserStatus("employer");
-        else setUserStatus("guest");
-      } catch (e) {
-        setUserStatus("guest");
-      }
-    }
 
     const savedData = localStorage.getItem("pendingJobPost");
-    if (savedData) setFormData(prev => ({...prev, ...JSON.parse(savedData)}));
+    if (savedData) setFormData(prev => ({ ...prev, ...JSON.parse(savedData) }));
 
     const handleClickOutside = (event: MouseEvent) => {
       if (catRef.current && !catRef.current.contains(event.target as Node)) setIsCatOpen(false);
@@ -192,7 +173,6 @@ export default function PostJobPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (userStatus === "guest") { setIsAuthModalOpen(true); return; }
     if (!validateStep()) return;
     setLoading(true);
     const token = localStorage.getItem("token");
@@ -209,30 +189,12 @@ export default function PostJobPage() {
     } catch (err) { toast.error("Server error. Please try again."); } finally { setLoading(false); }
   };
 
-  if (userStatus === null) return <div className="min-h-[60vh] flex items-center justify-center"><Loader2 className="animate-spin text-[#00004d]" size={40} /></div>;
-
-  if (userStatus === "jobseeker" || userStatus === "admin") {
-    return (
-      <div className="w-full bg-[#e6e8e8] py-20 px-6 flex items-center justify-center min-h-[70vh]">
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white max-w-md w-full rounded-[40px] p-10 shadow-2xl text-center relative border border-white">
-          <div className="w-24 h-24 bg-[#f8fafc] rounded-3xl flex items-center justify-center mx-auto mb-6 transform rotate-6 shadow-sm border border-gray-50"><ShieldAlert size={48} className="text-[#00004d] -rotate-6" /></div>
-          <h1 className="text-2xl font-bold text-[#00004d] mb-3">Access Restricted</h1>
-          <p className="text-gray-500 text-sm mb-8 leading-relaxed">You are logged in as a <span className="font-bold text-[#5DBB63] uppercase">{userStatus}</span>. To post a job, please use an Employer account.<br/><span className="text-xs font-bold text-[#00004d] mt-2 block">یہ صفحہ صرف ایمپلائرز کے لیے ہے۔</span></p>
-          <div className="space-y-3">
-            <button onClick={() => router.push("/jobs")} className="w-full bg-[#00004d] text-white py-4 rounded-2xl font-bold text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"><Search size={18} /> Find Jobs</button>
-            <button onClick={() => router.push("/")} className="w-full bg-gray-50 text-gray-500 py-4 rounded-2xl font-bold text-sm">Back to Home</button>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-[70vh] bg-[#e6e8e8] pb-10 font-sans">
       <Toaster position="top-center" />
       <AuthRequiredModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onAction={handleAuthNavigation} />
       <CustomSuccessModal isOpen={showSuccess} onClose={() => setShowSuccess(false)} onAction={() => router.push("/dashboard/employer/my-jobs")} />
-      
+
       <AnimatePresence>
         {isCropping && (
           <div className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-black p-4">
@@ -251,9 +213,9 @@ export default function PostJobPage() {
       </AnimatePresence>
 
       <div className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
-        <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} style={{ fontFamily: 'Fontatica' }} className="text-[#5DBB63] text-[35px]">Post a Vacancy</motion.h1>
+        <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-[#5DBB63] text-[25px] font-bold">Post a Vacancy</motion.h1>
         <div className="flex gap-2 mt-4">
-          {[1, 2, 3].map((s) => (
+          {[1, 2, 3, 4].map((s) => (
             <div key={s} className={`h-1.5 w-12 rounded-full transition-all duration-300 ${s <= currentStep ? 'bg-[#5DBB63]' : 'bg-gray-200'}`} />
           ))}
         </div>
@@ -292,12 +254,24 @@ export default function PostJobPage() {
                       )}
                     </div>
                     <div className="flex items-end"><div className="w-full bg-gray-100 rounded-xl p-4 text-sm font-bold text-gray-500 flex items-center gap-2 h-[54px]"><Globe size={14} /> Pakistan</div></div>
+                    <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"> Company Name *</label><input placeholder="Company or Bussiness Name" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyName} onChange={(e) => setFormData({ ...formData, companyName: e.target.value })} /></div>
                   </div>
                 </section>
               </motion.div>
             )}
 
             {currentStep === 2 && (
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
+                <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Contact Information</h2></div>
+                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"> Contact Person *</label><input placeholder="Contact Person Name" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.contactPerson} onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })} /></div>
+                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"> Designation *</label><input placeholder="Contact Person's Designation" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.designation} onChange={(e) => setFormData({ ...formData, designation: e.target.value })} /></div>
+                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"> Phone Number *</label><input placeholder="Enter your phone no." required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} /></div>
+                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"> Company Email *</label><input placeholder="Enter company email" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyEmail} onChange={(e) => setFormData({ ...formData, companyEmail: e.target.value })} /></div>
+                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"> Address </label><input placeholder="Add Company Address" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyAddress} onChange={(e) => setFormData({ ...formData, companyAddress: e.target.value })} /></div>
+              </motion.div>
+            )}
+
+            {currentStep === 3 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Job Information</h2></div>
                 <div className="space-y-4" ref={catRef}>
@@ -335,7 +309,7 @@ export default function PostJobPage() {
               </motion.div>
             )}
 
-            {currentStep === 3 && (
+            {currentStep === 4 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Salary & Requirements</h2></div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

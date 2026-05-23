@@ -96,7 +96,7 @@ const Navbar = () => {
     <header className="sticky top-0 z-50 w-full bg-[#e6e8e8] shadow-sm border-b border-gray-200 backdrop-blur-md">      <nav className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between bg-[#e1eaed]">
       <Link href="/">
         <Image
-          src="/images/easyjobspk-header-logo.png"
+          src="/images/navbar-logo-easyjobspk.png"
           alt="Logo"
           width={210}
           height={50}
@@ -133,7 +133,7 @@ const Navbar = () => {
       </div>
     </nav>
       <div className="py-2 bg-white">
-        <div className="flex items-center justify-center gap-1 px-3">
+        <div className="flex items-center justify-center gap-2 px-3">
           <Link
             href="/"
             className="flex items-center justify-center gap-1 bg-[#e1eaed] rounded-[8px] px-1 h-[25px]"

@@ -160,7 +160,7 @@ export default function HomePage() {
       if (res.ok) {
         const applicant = applicants.find(a => a._id === id);
         const isCurrentlySaved = applicant?.savedBy?.includes(currentUserId);
-        
+
         setApplicants(prev => prev.map(app => {
           if (app._id === id) {
             const newSavedBy = isCurrentlySaved
@@ -205,9 +205,8 @@ export default function HomePage() {
       <section className="px-0 pt-0 relative">
         <div className="bg-white rounded-b-[40px] pt-6 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
           <div className="text-center mb-1 mt-0 relative z-10">
-            <h1 style={{ fontFamily: "Fontatica" }} className="text-[35px] text-[#5DBB63] leading-none">Hire Easy</h1>
-            <h1 style={{ fontFamily: "Fontatica" }} className="text-[35px] text-[#5DBB63] leading-tight">Get Hired Easy</h1>
-            <h5 className="text-[16px] text-[#00004d] leading-tight">Totally <span className="font-bold">FREE</span> for Job Seekers!</h5>
+            <h1 className="font-bold text-[25px] text-[#5DBB63] leading-none">Hire Easy</h1>
+            <h1 className="font-bold text-[25px] text-[#5DBB63] leading-tight">Get Hired Easy</h1>
           </div>
         </div>
 
@@ -231,7 +230,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="max-w-2xl mx-auto px-6 mt-4 relative z-10">
+      <section className="max-w-2xl mx-auto px-9 mt-4 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full justify-items-center">
           {quickActions.map((action, i) => (
             <button key={i} onClick={() => router.push(action.href)} className="w-full max-w-[140px] transition-transform active:scale-95">
@@ -242,7 +241,16 @@ export default function HomePage() {
             </button>
           ))}
         </div>
-
+        <div> <Image
+          src="/images/totally-free-banner.png"
+          alt="Banner"
+          width={360}
+          height={20}
+          className="object-contain items-center justify-center mt-6"
+          priority
+          quality={100}
+          unoptimized
+        /></div>
         <section className="max-w-[360px] mx-auto mt-6 mb-4 relative z-10">
           <div className="bg-[#00004d] text-[#5DBB63] rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm">
             <span className="text-[18px] font-black leading-none mt-3 animate-bounce">I am seeking for a job</span>
@@ -263,9 +271,8 @@ export default function HomePage() {
                   const isSaved = currentUserId && app.savedBy?.includes(currentUserId);
                   return (
                     <div key={idx} onClick={() => router.push(`/applicants/${app._id}`)} className="bg-white border border-gray-100 rounded-[15px] flex items-stretch shadow-md min-h-[50px] cursor-pointer overflow-hidden transition-transform active:scale-95">
-                      <div className={`relative w-24 shrink-0 overflow-hidden flex items-center justify-center ${
-                        app.image === "male" ? "bg-[#00004d]" : app.image === "female" ? "bg-[#5DBB63]" : "bg-gray-100"
-                      }`}>
+                      <div className={`relative w-24 shrink-0 overflow-hidden flex items-center justify-center ${app.image === "male" ? "bg-[#00004d]" : app.image === "female" ? "bg-[#5DBB63]" : "bg-gray-100"
+                        }`}>
                         {app.image === "male" ? (
                           <Image src={MALE_ICON} alt="M" width={52} height={52} className="object-contain" style={whiteFilter} unoptimized />
                         ) : app.image === "female" ? (
@@ -305,7 +312,7 @@ export default function HomePage() {
                     className="bg-[#5DBB63] font-bold text-white px-8 py-3 rounded-[12px] text-[14px] flex items-center gap-2 shadow-xl active:scale-95 transition-all"
                   >
                     Explore More Applicants
-                      <LuChevronsRight size={24} strokeWidth={3} className="animate-[moveRight_1s_ease-in-out_infinite]" />
+                    <LuChevronsRight size={24} strokeWidth={3} className="animate-[moveRight_1s_ease-in-out_infinite]" />
                   </button>
                 </div>
               </>
