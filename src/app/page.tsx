@@ -64,9 +64,8 @@ function CustomDropdown({
 
         <ChevronDown
           size={16}
-          className={`transition-transform duration-200 ${
-            open ? "rotate-180" : ""
-          }`}
+          className={`transition-transform duration-200 ${open ? "rotate-180" : ""
+            }`}
         />
       </button>
 
@@ -92,11 +91,10 @@ function CustomDropdown({
                 onChange(item);
                 setOpen(false);
               }}
-              className={`w-full text-left px-3 py-2 text-xs font-bold transition-all ${
-                value === item
-                  ? "bg-[#00004d] text-white"
-                  : "text-[#00004d] hover:bg-[#5DBB63] hover:text-white"
-              }`}
+              className={`w-full text-left px-3 py-2 text-xs font-bold transition-all ${value === item
+                ? "bg-[#00004d] text-white"
+                : "text-[#00004d] hover:bg-[#5DBB63] hover:text-white"
+                }`}
             >
               {item}
             </button>
@@ -217,9 +215,9 @@ export default function HomePage() {
 
       const approvedOnly = Array.isArray(data)
         ? data.filter(
-            (app: any) =>
-              app.status === "shortlisted"
-          )
+          (app: any) =>
+            app.status === "shortlisted"
+        )
         : [];
 
       setApplicants(approvedOnly.reverse());
@@ -256,11 +254,11 @@ export default function HomePage() {
 
     if (
       today.getMonth() <
-        birthDate.getMonth() ||
+      birthDate.getMonth() ||
       (today.getMonth() ===
         birthDate.getMonth() &&
         today.getDate() <
-          birthDate.getDate())
+        birthDate.getDate())
     ) {
       age--;
     }
@@ -402,13 +400,13 @@ export default function HomePage() {
               const newSavedBy =
                 isCurrentlySaved
                   ? app.savedBy.filter(
-                      (uid: string) =>
-                        uid !== currentUserId
-                    )
+                    (uid: string) =>
+                      uid !== currentUserId
+                  )
                   : [
-                      ...(app.savedBy || []),
-                      currentUserId,
-                    ];
+                    ...(app.savedBy || []),
+                    currentUserId,
+                  ];
 
               return {
                 ...app,
@@ -461,7 +459,7 @@ export default function HomePage() {
         const diff =
           (end.getFullYear() -
             start.getFullYear()) *
-            12 +
+          12 +
           (end.getMonth() -
             start.getMonth());
 
@@ -476,9 +474,8 @@ export default function HomePage() {
 
     return yrs > 0
       ? `Exp: ${yrs} Years`
-      : `Exp: ${
-          totalMonths % 12
-        } Months`;
+      : `Exp: ${totalMonths % 12
+      } Months`;
   };
 
   return (
@@ -498,7 +495,7 @@ export default function HomePage() {
             <div className="pl-4">
               <Search className="h-5 w-5 text-white" strokeWidth={3} />
             </div>
-            <input 
+            <input
               type="text"
               placeholder="Search by Name, Age, or Category..."
               value={searchQuery}
@@ -506,7 +503,7 @@ export default function HomePage() {
               className="flex-1 bg-transparent py-3 px-3 text-sm text-white font-bold outline-none placeholder:text-gray-400"
             />
             <div className="h-5 w-[1.5px] bg-white mx-2" />
-            <button 
+            <button
               onClick={() => setShowFilters(!showFilters)}
               className="text-white font-black text-[15px] px-4 hover:opacity-70"
             >
@@ -532,21 +529,26 @@ export default function HomePage() {
               </div>
 
               <div className="space-y-3">
-                <select value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)} className="w-full p-2.5 rounded-xl border border-gray-200 text-xs font-bold text-[#00004d] outline-none bg-gray-50">
-                  <option value="">All Cities</option>
-                  {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
+                <CustomDropdown
+                  options={CITIES}
+                  value={selectedCity}
+                  onChange={setSelectedCity}
+                  placeholder="All Cities"
+                />
 
-                <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="w-full p-2.5 rounded-xl border border-gray-200 text-xs font-bold text-[#00004d] outline-none bg-gray-50">
-                  <option value="">All Categories</option>
-                  {JOB_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                </select>
+                <CustomDropdown
+                  options={JOB_CATEGORIES}
+                  value={selectedCategory}
+                  onChange={setSelectedCategory}
+                  placeholder="All Categories"
+                />
 
-                <select value={selectedEducation} onChange={(e) => setSelectedEducation(e.target.value)} className="w-full p-2.5 rounded-xl border border-gray-200 text-xs font-bold text-[#00004d] outline-none bg-gray-50">
-                  <option value="">All Education Levels</option>
-                  {EDUCATION_OPTIONS.map(edu => <option key={edu} value={edu}>{edu}</option>)}
-                </select>
-
+                <CustomDropdown
+                  options={EDUCATION_OPTIONS}
+                  value={selectedEducation}
+                  onChange={setSelectedEducation}
+                  placeholder="All Education Levels"
+                />
                 <div className="pt-2 border-t border-gray-100">
                   <p className="text-[10px] font-bold text-gray-400 mb-2 uppercase">Sort By</p>
                   <div className="flex flex-wrap gap-2">
@@ -567,8 +569,8 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <button 
-                onClick={() => {setSelectedCity(""); setSelectedCategory(""); setSelectedEducation(""); setSortBy("none"); setSearchQuery("");}}
+              <button
+                onClick={() => { setSelectedCity(""); setSelectedCategory(""); setSelectedEducation(""); setSortBy("none"); setSearchQuery(""); }}
                 className="w-full mt-4 text-[10px] font-bold text-red-500 text-center"
               >
                 Clear All
