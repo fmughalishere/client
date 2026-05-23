@@ -308,6 +308,9 @@ export default function HomePage() {
             <h1 className="font-bold text-[25px] text-[#5DBB63] leading-tight">
               Get Hired Easy
             </h1>
+            <h1 className="text-[18px] text-[#00004d]">
+              Totally for <span className="font-bold">FREE</span> JobSeekers
+            </h1>
           </div>
         </div>
 
@@ -371,7 +374,7 @@ export default function HomePage() {
                 <div
                   className={`flex flex-col items-center justify-center aspect-square rounded-2xl p-4 border
                   ${isPostJob
-                      ? "bg-[#5DBB63] shadow-[0_0_30px_rgba(93,187,99,0.9)] border-[#5DBB63]"
+                      ? "bg-[#5DBB63] border-[#5DBB63]"
                       : "bg-white shadow-md border-gray-50"
                     }
                 `}
@@ -402,25 +405,11 @@ export default function HomePage() {
         </div>
       </section>
       <section className="max-w-2xl mx-auto px-6 mt-4 relative z-10">
-        <div>
-          <Image
-            src="/images/totally-free-banner.png"
-            alt="Banner"
-            width={360}
-            height={20}
-            className="object-contain items-center justify-center mt-6"
-            priority
-            quality={100}
-            unoptimized
-          />
-        </div>
-
-        <section className="max-w-[360px] mx-auto mt-6 mb-4 relative z-10">
+          <section className="max-w-[360px] mx-auto mt-4 mb-4 relative z-10">
           <div className="bg-[#00004d] text-[#5DBB63] rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm">
             <span className="text-[18px] font-black leading-none mt-3 animate-bounce">
               I am seeking for a job
             </span>
-
             <div className="flex flex-col items-center mt-2 -space-y-3 animate-bounce">
               <ChevronDown
                 size={20}
