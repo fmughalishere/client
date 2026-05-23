@@ -9,7 +9,7 @@ import {
   MapPin, DollarSign, Info, FileText, Award, Search,
   ChevronDown, Lock, Camera, Check, X,
   Building2, Briefcase, Globe, ArrowRight, ArrowLeft, Loader2, CheckCircle2,
-  ShieldAlert
+  Clock
 } from "lucide-react";
 
 import { JOB_CATEGORIES, JOB_TYPES, CITIES, EDUCATION_OPTIONS } from "../constants";
@@ -57,17 +57,48 @@ function AuthRequiredModal({ isOpen, onClose, onAction }: { isOpen: boolean; onC
   );
 }
 
-function CustomSuccessModal({ isOpen, onClose, onAction }: { isOpen: boolean, onClose: () => void, onAction: () => void }) {
+function JobPendingModal({ isOpen, onAction }: { isOpen: boolean, onAction: () => void }) {
   return (
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-          <motion.div initial={{ scale: 0.9, opacity: 0, y: 50 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 50 }} className="relative w-full max-w-md bg-white rounded-[30px] p-8 text-center shadow-2xl">
-            <div className="flex justify-center mb-4"><div className="bg-green-100 p-4 rounded-full"><CheckCircle2 size={50} className="text-green-500" /></div></div>
-            <h3 className="text-2xl font-bold text-[#00004d] mb-3">Job Submitted Successfully!</h3>
-            <p className="text-gray-600 text-sm mb-8 leading-relaxed">Your vacancy has been sent for approval.<br /><span className="text-[12px] text-gray-400 mt-2 block">آپ کی جاب ایڈمن کی منظوری کے بعد لائیو کر دی جائے گی۔</span></p>
-            <button onClick={onAction} className="w-full bg-[#00004d] text-white py-4 rounded-full font-bold text-sm active:scale-95 transition-transform shadow-lg">Go to My Jobs</button>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/70 backdrop-blur-md" />
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0, y: 20 }} 
+            animate={{ scale: 1, opacity: 1, y: 0 }} 
+            exit={{ scale: 0.8, opacity: 0, y: 20 }} 
+            className="relative w-full max-w-md bg-white rounded-[40px] p-10 text-center shadow-2xl border border-gray-100"
+          >
+            <div className="flex justify-center mb-6">
+              <div className="bg-yellow-50 p-6 rounded-full relative">
+                <Clock size={60} className="text-yellow-600 animate-pulse" />
+                <div className="absolute -right-1 -bottom-1 bg-green-500 rounded-full p-1 border-4 border-white">
+                    <Check size={20} className="text-white" />
+                </div>
+              </div>
+            </div>
+            
+            <h3 className="text-2xl font-extrabold text-[#00004d] mb-3 uppercase tracking-tight">Job Submitted!</h3>
+            
+            <div className="space-y-4 mb-8">
+                <p className="text-gray-700 font-medium leading-relaxed">
+                    Your vacancy has been successfully sent for <span className="text-[#5DBB63] font-bold underline">Admin Approval</span>.
+                </p>
+                <div className="bg-blue-50 p-4 rounded-2xl">
+                    <p className="text-[#00004d] text-sm font-bold leading-relaxed">
+                        آپ کی جاب ایڈمن کی منظوری کے لیے بھیج دی گئی ہے۔ ریویو مکمل ہونے کے بعد اسے لائیو کر دیا جائے گا۔
+                    </p>
+                </div>
+            </div>
+
+            <button 
+              onClick={onAction} 
+              className="w-full bg-[#00004d] text-white py-5 rounded-2xl font-bold text-lg active:scale-95 transition-all shadow-xl hover:shadow-2xl flex items-center justify-center gap-3"
+            >
+              Go to Dashboard <ArrowRight size={20} />
+            </button>
+            
+            <p className="text-[10px] text-gray-400 mt-6 uppercase tracking-widest font-bold">Process usually takes 2-4 hours</p>
           </motion.div>
         </div>
       )}
@@ -119,25 +150,14 @@ export default function PostJobPage() {
   }, []);
 
   const validateStep = () => {
-    if (currentStep === 1) {
-      return formData.city !== "" && formData.companyName.trim() !== "";
-    }
-    if (currentStep === 2) {
-      return (
-        formData.contactPerson.trim() !== "" &&
-        formData.designation.trim() !== "" &&
-        formData.phone.trim() !== "" &&
-        formData.companyEmail.trim() !== ""
-      );
-    }
+    if (currentStep === 1) return formData.city !== "" && formData.companyName.trim() !== "";
+    if (currentStep === 2) return formData.contactPerson.trim() !== "" && formData.designation.trim() !== "" && formData.phone.trim() !== "" && formData.companyEmail.trim() !== "";
     if (currentStep === 3) {
       const isCatOk = formData.category !== "" && (formData.category === "Other" ? formData.otherCategory.trim() !== "" : true);
       const isEduOk = formData.education !== "" && (formData.education === "Other" ? formData.otherEducation.trim() !== "" : true);
       return isCatOk && isEduOk;
     }
-    if (currentStep === 4) {
-      return formData.salary.trim() !== "" && formData.experience.trim() !== "";
-    }
+    if (currentStep === 4) return formData.salary.trim() !== "" && formData.experience.trim() !== "";
     return true;
   };
 
@@ -212,7 +232,7 @@ export default function PostJobPage() {
         }),
       });
       if (res.ok) { 
-        setShowSuccess(true); 
+        setShowSuccess(true);
         localStorage.removeItem("pendingJobPost"); 
       } else { 
         const errorData = await res.json(); 
@@ -228,8 +248,8 @@ export default function PostJobPage() {
   return (
     <div className="min-h-[70vh] bg-[#e6e8e8] pb-10 font-sans">
       <Toaster position="top-center" />
-      <AuthRequiredModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onAction={handleAuthNavigation} />
-      <CustomSuccessModal isOpen={showSuccess} onClose={() => setShowSuccess(false)} onAction={() => router.push("/dashboard/employer/my-jobs")} />
+            <AuthRequiredModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onAction={handleAuthNavigation} />
+            <JobPendingModal isOpen={showSuccess} onAction={() => router.push("/jobs")} />
 
       <AnimatePresence>
         {isCropping && (
@@ -306,7 +326,7 @@ export default function PostJobPage() {
                 <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Designation *</label><input placeholder="Contact Person's Designation" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.designation} onChange={(e) => setFormData({ ...formData, designation: e.target.value })} /></div>
                 <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Phone Number *</label><input placeholder="Enter your phone no." required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} /></div>
                 <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Company Email *</label><input placeholder="Enter company email" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyEmail} onChange={(e) => setFormData({ ...formData, companyEmail: e.target.value })} /></div>
-                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Address </label><input placeholder="Add Company Address" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyAddress} onChange={(e) => setFormData({ ...formData, companyAddress: e.target.value })} /></div>
+                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Address </label><input placeholder="Company Address (Optional)" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyAddress} onChange={(e) => setFormData({ ...formData, companyAddress: e.target.value })} /></div>
               </motion.div>
             )}
 

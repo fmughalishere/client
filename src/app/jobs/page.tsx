@@ -38,10 +38,10 @@ export default function JobsPage() {
       const data = await res.json();
       const activeJobs = Array.isArray(data) ? data.filter((job: any) => job.status === "active") : [];
       setJobs(activeJobs);
-    } catch (error) { 
-      console.error(error); 
-    } finally { 
-      setLoading(false); 
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -59,7 +59,7 @@ export default function JobsPage() {
           job.city?.toLowerCase().includes(value.toLowerCase())
         )
         .map((job) => (job.category?.toLowerCase().includes(value.toLowerCase()) ? job.category : job.city));
-      
+
       const uniqueSuggestions = Array.from(new Set(filtered)).slice(0, 5);
       setSuggestions(uniqueSuggestions as string[]);
       setShowSuggestions(true);
@@ -109,7 +109,6 @@ export default function JobsPage() {
   return (
     <main className="min-h-screen bg-[#e6e8e8] pb-20 font-sans">
       <Toaster position="top-center" />
-      
       <section className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative">
         <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] text-[#5DBB63] leading-tight text-center">
           Find Your Dream <br /> Career Today
@@ -131,8 +130,8 @@ export default function JobsPage() {
           />
           <div className="absolute inset-y-0 right-0 flex items-center pr-4 gap-2">
             <div className="h-5 w-[1.5px] bg-[#00004d]"></div>
-            <button 
-              onClick={() => handleSearch()} 
+            <button
+              onClick={() => handleSearch()}
               className="text-[#00004d] font-black text-[15px] hover:opacity-70"
             >
               Go
@@ -154,7 +153,7 @@ export default function JobsPage() {
           )}
         </div>
       </div>
-      
+
       <section className="max-w-[360px] mx-auto px-4 mt-10">
         <div className="flex flex-col gap-3">
           {loading ? (
@@ -163,9 +162,9 @@ export default function JobsPage() {
             <>
               {currentItems.length > 0 ? (
                 currentItems.map((job) => (
-                  <div 
-                    key={job._id} 
-                    onClick={() => router.push(`/jobs/${job._id}`)} 
+                  <div
+                    key={job._id}
+                    onClick={() => router.push(`/jobs/${job._id}`)}
                     className="bg-white border border-gray-100 rounded-[15px] flex items-center gap-3 shadow-md h-[95px] cursor-pointer transition-transform active:scale-95 overflow-hidden"
                   >
                     <div className="relative w-20 h-full shrink-0 bg-gray-50 flex items-center justify-center border-r border-gray-50">
@@ -195,12 +194,12 @@ export default function JobsPage() {
               ) : (
                 <div className="text-center py-10 text-[#00004d] font-bold">No jobs found</div>
               )}
-              
+
               {filteredJobs.length > itemsPerPage && (
-                <Pagination 
-                  currentPage={currentPage} 
-                  totalPages={totalPages} 
-                  onPageChange={(page: number) => { setCurrentPage(page); window.scrollTo(0,0); }} 
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={(page: number) => { setCurrentPage(page); window.scrollTo(0, 0); }}
                 />
               )}
             </>
