@@ -366,8 +366,8 @@ export default function HomePage() {
                 }
                 className={`w-full max-w-[145px] transition-all duration-300 active:scale-95
                 ${isPostJob
-                    ? "animate-pulse scale-105"
-                    : "hover:scale-105"
+                    ? "animate-pulse"
+                    : "hover"
                   }
               `}
               >
