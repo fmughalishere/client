@@ -49,7 +49,7 @@ export default function HomePage() {
       label: "Apply for a Job",
       icon: (
         <Briefcase
-          size={28}
+          size={30}
           style={{ color: "#5DBB63" }}
         />
       ),
@@ -60,8 +60,8 @@ export default function HomePage() {
       label: "Post a Job",
       icon: (
         <PlusCircle
-          size={28}
-          style={{ color: "#5DBB63" }}
+          size={30}
+          style={{ color: "white" }}
         />
       ),
       href: "/post-job",
@@ -71,7 +71,7 @@ export default function HomePage() {
       label: "Job Seekers",
       icon: (
         <Users
-          size={28}
+          size={30}
           style={{ color: "#5DBB63" }}
         />
       ),
@@ -82,7 +82,7 @@ export default function HomePage() {
       label: "Job Offers",
       icon: (
         <ClipboardList
-          size={28}
+          size={30}
           style={{ color: "#5DBB63" }}
         />
       ),
@@ -123,9 +123,9 @@ export default function HomePage() {
 
       const approvedOnly = Array.isArray(data)
         ? data.filter(
-          (app: any) =>
-            app.status === "shortlisted"
-        )
+            (app: any) =>
+              app.status === "shortlisted"
+          )
         : [];
 
       const latestApplicants = approvedOnly.reverse();
@@ -145,86 +145,203 @@ export default function HomePage() {
     fetchApplicants();
   }, [fetchApplicants]);
 
-  const handleToggleSave = async (e: React.MouseEvent, id: string) => {
+  const handleToggleSave = async (
+    e: React.MouseEvent,
+    id: string
+  ) => {
     e.stopPropagation();
+
     const token = localStorage.getItem("token");
+
     if (!token || !currentUserId) {
-      toast.error("Please login to save applicants!");
+      toast.error(
+        "Please login to save applicants!"
+      );
       return;
     }
-    try {
-      const res = await fetch(`https://easyjobspk.onrender.com/api/applications/${id}/save`, {
-        method: "PATCH",
-        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
-      });
-      if (res.ok) {
-        const applicant = applicants.find(a => a._id === id);
-        const isCurrentlySaved = applicant?.savedBy?.includes(currentUserId);
 
-        setApplicants(prev => prev.map(app => {
-          if (app._id === id) {
-            const newSavedBy = isCurrentlySaved
-              ? app.savedBy.filter((uid: string) => uid !== currentUserId)
-              : [...(app.savedBy || []), currentUserId];
-            return { ...app, savedBy: newSavedBy };
-          }
-          return app;
-        }));
-        isCurrentlySaved ? toast.success("Removed from saved") : toast.success("Applicant Saved!");
+    try {
+      const res = await fetch(
+        `https://easyjobspk.onrender.com/api/applications/${id}/save`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type":
+              "application/json",
+          },
+        }
+      );
+
+      if (res.ok) {
+        const applicant = applicants.find(
+          (a) => a._id === id
+        );
+
+        const isCurrentlySaved =
+          applicant?.savedBy?.includes(
+            currentUserId
+          );
+
+        setApplicants((prev) =>
+          prev.map((app) => {
+            if (app._id === id) {
+              const newSavedBy =
+                isCurrentlySaved
+                  ? app.savedBy.filter(
+                      (uid: string) =>
+                        uid !== currentUserId
+                    )
+                  : [
+                      ...(app.savedBy || []),
+                      currentUserId,
+                    ];
+
+              return {
+                ...app,
+                savedBy: newSavedBy,
+              };
+            }
+
+            return app;
+          })
+        );
+
+        isCurrentlySaved
+          ? toast.success(
+              "Removed from saved"
+            )
+          : toast.success(
+              "Applicant Saved!"
+            );
       }
-    } catch (error) { toast.error("Error toggling save"); }
+    } catch (error) {
+      toast.error(
+        "Error toggling save"
+      );
+    }
   };
 
   const calculateAge = (dob: string) => {
     if (!dob) return "N/A";
+
     const birthDate = new Date(dob);
     const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    if (today.getMonth() < birthDate.getMonth() || (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())) age--;
+
+    let age =
+      today.getFullYear() -
+      birthDate.getFullYear();
+
+    if (
+      today.getMonth() <
+        birthDate.getMonth() ||
+      (today.getMonth() ===
+        birthDate.getMonth() &&
+        today.getDate() <
+          birthDate.getDate())
+    ) {
+      age--;
+    }
+
     return age;
   };
 
-  const calculateTotalExperience = (expArray: any[], isFresher: boolean) => {
-    if (isFresher || !expArray || expArray.length === 0) return "Fresher";
+  const calculateTotalExperience = (
+    expArray: any[],
+    isFresher: boolean
+  ) => {
+    if (
+      isFresher ||
+      !expArray ||
+      expArray.length === 0
+    )
+      return "Fresher";
+
     let totalMonths = 0;
+
     expArray.forEach((exp) => {
-      const start = new Date(exp.startDate);
-      const end = exp.isCurrentJob ? new Date() : new Date(exp.endDate);
-      if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
-        const diff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
-        if (diff > 0) totalMonths += diff;
+      const start = new Date(
+        exp.startDate
+      );
+
+      const end = exp.isCurrentJob
+        ? new Date()
+        : new Date(exp.endDate);
+
+      if (
+        !isNaN(start.getTime()) &&
+        !isNaN(end.getTime())
+      ) {
+        const diff =
+          (end.getFullYear() -
+            start.getFullYear()) *
+            12 +
+          (end.getMonth() -
+            start.getMonth());
+
+        if (diff > 0)
+          totalMonths += diff;
       }
     });
-    const yrs = Math.floor(totalMonths / 12);
-    return yrs > 0 ? `Exp: ${yrs} Years` : `Exp: ${totalMonths % 12} Months`;
+
+    const yrs = Math.floor(
+      totalMonths / 12
+    );
+
+    return yrs > 0
+      ? `Exp: ${yrs} Years`
+      : `Exp: ${
+          totalMonths % 12
+        } Months`;
   };
 
   return (
     <main className="min-h-screen bg-[#e6e8e8] font-sans pb-20">
       <Toaster position="top-center" />
+
       <section className="px-0 pt-0 relative">
         <div className="bg-white rounded-b-[40px] pt-6 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
           <div className="text-center mb-1 mt-0 relative z-10">
-            <h1 className="font-bold text-[25px] text-[#5DBB63] leading-none">Hire Easy</h1>
-            <h1 className="font-bold text-[25px] text-[#5DBB63] leading-tight">Get Hired Easy</h1>
+            <h1 className="font-bold text-[25px] text-[#5DBB63] leading-none">
+              Hire Easy
+            </h1>
+
+            <h1 className="font-bold text-[25px] text-[#5DBB63] leading-tight">
+              Get Hired Easy
+            </h1>
           </div>
         </div>
 
         <div className="relative -mt-8 flex justify-center px-6 z-30">
-          <div ref={searchRef} className="relative w-full max-w-[320px]">
+          <div
+            ref={searchRef}
+            className="relative w-full max-w-[320px]"
+          >
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-[#00004d]" strokeWidth={3} />
+              <Search
+                className="h-5 w-5 text-[#00004d]"
+                strokeWidth={3}
+              />
             </div>
+
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) =>
+                setSearchQuery(
+                  e.target.value
+                )
+              }
               placeholder="Search jobs/employees"
               className="block w-full pl-11 pr-16 py-3 bg-[#e1eaed] rounded-[15px] shadow-lg text-sm text-[#00004d] font-bold outline-none"
             />
+
             <div className="absolute inset-y-0 right-0 flex items-center pr-4 gap-2">
               <div className="h-5 w-[1.5px] bg-[#00004d]" />
-              <button className="text-[#00004d] font-black text-[15px] hover:opacity-70">Go</button>
+
+              <button className="text-[#00004d] font-black text-[15px] hover:opacity-70">
+                Go
+              </button>
             </div>
           </div>
         </div>
@@ -232,31 +349,99 @@ export default function HomePage() {
 
       <section className="max-w-2xl mx-auto px-9 mt-4 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full justify-items-center">
-          {quickActions.map((action, i) => (
-            <button key={i} onClick={() => router.push(action.href)} className="w-full max-w-[140px] transition-transform active:scale-95">
-              <div className="flex flex-col items-center justify-center aspect-square bg-white rounded-2xl text-[#00004d] shadow-md border border-gray-50 p-4">
-                <div className="mb-2">{action.icon}</div>
-                <span className="text-[13px] font-black text-[#00004d] text-center leading-tight">{action.label}</span>
-              </div>
-            </button>
-          ))}
+          {quickActions.map((action, i) => {
+            const isPostJob =
+              action.label ===
+              "Post a Job";
+
+            return (
+              <button
+                key={i}
+                onClick={() =>
+                  router.push(
+                    action.href
+                  )
+                }
+                className={`w-full max-w-[145px] transition-all duration-300 active:scale-95
+                ${
+                  isPostJob
+                    ? "animate-pulse scale-105"
+                    : "hover:scale-105"
+                }
+              `}
+              >
+                <div
+                  className={`flex flex-col items-center justify-center aspect-square rounded-2xl p-4 border
+                  ${
+                    isPostJob
+                      ? "bg-[#5DBB63] shadow-[0_0_30px_rgba(93,187,99,0.9)] border-[#5DBB63]"
+                      : "bg-white shadow-md border-gray-50"
+                  }
+                `}
+                >
+                  <div
+                    className={`mb-2 ${
+                      isPostJob
+                        ? "animate-bounce"
+                        : ""
+                    }`}
+                  >
+                    {action.icon}
+                  </div>
+
+                  <span
+                    className={`font-black text-center leading-tight
+                    ${
+                      isPostJob
+                        ? "text-white text-[17px]"
+                        : "text-[#00004d] text-[15px]"
+                    }
+                  `}
+                  >
+                    {action.label}
+                  </span>
+
+                  {isPostJob && (
+                    <span className="mt-1 text-[11px] font-extrabold text-white animate-pulse tracking-wide">
+                      POST NOW
+                    </span>
+                  )}
+                </div>
+              </button>
+            );
+          })}
         </div>
-        <div> <Image
-          src="/images/totally-free-banner.png"
-          alt="Banner"
-          width={360}
-          height={20}
-          className="object-contain items-center justify-center mt-6"
-          priority
-          quality={100}
-          unoptimized
-        /></div>
+
+        <div>
+          <Image
+            src="/images/totally-free-banner.png"
+            alt="Banner"
+            width={360}
+            height={20}
+            className="object-contain items-center justify-center mt-6"
+            priority
+            quality={100}
+            unoptimized
+          />
+        </div>
+
         <section className="max-w-[360px] mx-auto mt-6 mb-4 relative z-10">
           <div className="bg-[#00004d] text-[#5DBB63] rounded-2xl flex flex-col items-center justify-center h-16 shadow-sm">
-            <span className="text-[18px] font-black leading-none mt-3 animate-bounce">I am seeking for a job</span>
+            <span className="text-[18px] font-black leading-none mt-3 animate-bounce">
+              I am seeking for a job
+            </span>
+
             <div className="flex flex-col items-center mt-2 -space-y-3 animate-bounce">
-              <ChevronDown size={20} strokeWidth={4} />
-              <ChevronDown size={20} strokeWidth={4} className="opacity-40" />
+              <ChevronDown
+                size={20}
+                strokeWidth={4}
+              />
+
+              <ChevronDown
+                size={20}
+                strokeWidth={4}
+                className="opacity-40"
+              />
             </div>
           </div>
         </section>
@@ -264,60 +449,198 @@ export default function HomePage() {
         <section className="max-w-[360px] mx-auto mt-1 mb-1">
           <div className="flex flex-col gap-3">
             {loading ? (
-              <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#00004d]" /></div>
+              <div className="flex justify-center p-10">
+                <Loader2 className="animate-spin text-[#00004d]" />
+              </div>
             ) : applicants.length > 0 ? (
               <>
-                {applicants.slice(0, 25).map((app, idx) => {
-                  const isSaved = currentUserId && app.savedBy?.includes(currentUserId);
-                  return (
-                    <div key={idx} onClick={() => router.push(`/applicants/${app._id}`)} className="bg-white border border-gray-100 rounded-[15px] flex items-stretch shadow-md min-h-[50px] cursor-pointer overflow-hidden transition-transform active:scale-95">
-                      <div className={`relative w-24 shrink-0 overflow-hidden flex items-center justify-center ${app.image === "male" ? "bg-[#00004d]" : app.image === "female" ? "bg-[#5DBB63]" : "bg-gray-100"
-                        }`}>
-                        {app.image === "male" ? (
-                          <Image src={MALE_ICON} alt="M" width={52} height={52} className="object-contain" style={whiteFilter} unoptimized />
-                        ) : app.image === "female" ? (
-                          <Image src={FEMALE_ICON} alt="F" width={52} height={52} className="object-contain" style={whiteFilter} unoptimized />
-                        ) : app.image && app.image.length > 20 ? (
-                          <Image src={app.image} alt="U" fill className="object-cover" unoptimized />
-                        ) : (
-                          <div className="bg-[#00004d] h-full w-full flex items-center justify-center">
-                            <User size={24} strokeWidth={2.5} className="text-white" />
+                {applicants
+                  .slice(0, 25)
+                  .map((app, idx) => {
+                    const isSaved =
+                      currentUserId &&
+                      app.savedBy?.includes(
+                        currentUserId
+                      );
+
+                    return (
+                      <div
+                        key={idx}
+                        onClick={() =>
+                          router.push(
+                            `/applicants/${app._id}`
+                          )
+                        }
+                        className="bg-white border border-gray-100 rounded-[15px] flex items-stretch shadow-md min-h-[50px] cursor-pointer overflow-hidden transition-transform active:scale-95"
+                      >
+                        <div
+                          className={`relative w-24 shrink-0 overflow-hidden flex items-center justify-center ${
+                            app.image ===
+                            "male"
+                              ? "bg-[#00004d]"
+                              : app.image ===
+                                "female"
+                              ? "bg-[#5DBB63]"
+                              : "bg-gray-100"
+                          }`}
+                        >
+                          {app.image ===
+                          "male" ? (
+                            <Image
+                              src={MALE_ICON}
+                              alt="M"
+                              width={52}
+                              height={52}
+                              className="object-contain"
+                              style={
+                                whiteFilter
+                              }
+                              unoptimized
+                            />
+                          ) : app.image ===
+                            "female" ? (
+                            <Image
+                              src={
+                                FEMALE_ICON
+                              }
+                              alt="F"
+                              width={52}
+                              height={52}
+                              className="object-contain"
+                              style={
+                                whiteFilter
+                              }
+                              unoptimized
+                            />
+                          ) : app.image &&
+                            app.image.length >
+                              20 ? (
+                            <Image
+                              src={app.image}
+                              alt="U"
+                              fill
+                              className="object-cover"
+                              unoptimized
+                            />
+                          ) : (
+                            <div className="bg-[#00004d] h-full w-full flex items-center justify-center">
+                              <User
+                                size={24}
+                                strokeWidth={
+                                  2.5
+                                }
+                                className="text-white"
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex flex-col flex-1 p-2 justify-between min-w-0">
+                          <div className="flex justify-between items-start">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <h2 className="text-[13px] font-black text-[#00004d] truncate">
+                                {
+                                  app.fullName
+                                }
+                              </h2>
+
+                              <span className="text-[9px] font-bold text-[#00004d] bg-gray-100 px-1.5 py-[2px] rounded-md whitespace-nowrap">
+                                Age{" "}
+                                {calculateAge(
+                                  app.dob
+                                )}
+                              </span>
+                            </div>
+
+                            <Heart
+                              size={16}
+                              className={`shrink-0 transition-all duration-300 ${
+                                isSaved
+                                  ? "text-[#00004d] fill-[#00004d]"
+                                  : "text-[#00004d]"
+                              }`}
+                              onClick={(e) =>
+                                handleToggleSave(
+                                  e,
+                                  app._id
+                                )
+                              }
+                            />
                           </div>
-                        )}
-                      </div>
-                      <div className="flex flex-col flex-1 p-2 justify-between min-w-0">
-                        <div className="flex justify-between items-start">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <h2 className="text-[13px] font-black text-[#00004d] truncate">{app.fullName}</h2>
-                            <span className="text-[9px] font-bold text-[#00004d] bg-gray-100 px-1.5 py-[2px] rounded-md whitespace-nowrap">Age {calculateAge(app.dob)}</span>
+
+                          <div className="space-y-0 text-[10px] font-bold text-[#00004d] opacity-90">
+                            <p className="truncate">
+                              Profession:{" "}
+                              {app.category ||
+                                "Consultant"}
+                            </p>
+
+                            <p className="truncate">
+                              Edu.{" "}
+                              {app.education ||
+                                "N/A"}
+                            </p>
+
+                            <p>
+                              {calculateTotalExperience(
+                                app.experience,
+                                app.isFresher
+                              )}
+                            </p>
                           </div>
-                          <Heart size={16} className={`shrink-0 transition-all duration-300 ${isSaved ? "text-[#00004d] fill-[#00004d]" : "text-[#00004d]"}`} onClick={(e) => handleToggleSave(e, app._id)} />
-                        </div>
-                        <div className="space-y-0 text-[10px] font-bold text-[#00004d] opacity-90">
-                          <p className="truncate">Profession: {app.category || "Consultant"}</p>
-                          <p className="truncate">Edu. {app.education || "N/A"}</p>
-                          <p>{calculateTotalExperience(app.experience, app.isFresher)}</p>
-                        </div>
-                        <div className="flex justify-between items-center mt-1">
-                          <div className="flex items-center gap-0.5 text-[#5DBB63]"><IoIosPin size={12} /><span className="font-bold text-[10px]">{app.city}</span></div>
-                          <span className="text-[#5DBB63] font-black text-[10px] flex items-center">Visit my profile <LuChevronsRight size={14} strokeWidth={3} /></span>
+
+                          <div className="flex justify-between items-center mt-1">
+                            <div className="flex items-center gap-0.5 text-[#5DBB63]">
+                              <IoIosPin
+                                size={12}
+                              />
+
+                              <span className="font-bold text-[10px]">
+                                {app.city}
+                              </span>
+                            </div>
+
+                            <span className="text-[#5DBB63] font-black text-[10px] flex items-center">
+                              Visit my
+                              profile
+                              <LuChevronsRight
+                                size={14}
+                                strokeWidth={
+                                  3
+                                }
+                              />
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+
                 <div className="flex justify-center mt-4 mb-5">
                   <button
-                    onClick={() => router.push("/applicants")}
+                    onClick={() =>
+                      router.push(
+                        "/applicants"
+                      )
+                    }
                     className="bg-[#5DBB63] font-bold text-white px-8 py-3 rounded-[12px] text-[14px] flex items-center gap-2 shadow-xl active:scale-95 transition-all"
                   >
-                    Explore More Applicants
-                    <LuChevronsRight size={24} strokeWidth={3} className="animate-[moveRight_1s_ease-in-out_infinite]" />
+                    Explore More
+                    Applicants
+
+                    <LuChevronsRight
+                      size={24}
+                      strokeWidth={3}
+                      className="animate-[moveRight_1s_ease-in-out_infinite]"
+                    />
                   </button>
                 </div>
               </>
             ) : (
-              <p className="text-center text-gray-400 font-bold py-10">No applicants found yet.</p>
+              <p className="text-center text-gray-400 font-bold py-10">
+                No applicants found
+                yet.
+              </p>
             )}
           </div>
         </section>
