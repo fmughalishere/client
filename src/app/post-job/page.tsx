@@ -45,7 +45,7 @@ function AuthRequiredModal({ isOpen, onClose, onAction }: { isOpen: boolean; onC
               <Lock className="text-[#00004d]" size={30} />
             </div>
             <h3 className="text-xl font-bold text-[#00004d] mb-2">Authentication Required</h3>
-            <p className="text-gray-600 text-sm mb-6 leading-relaxed">Please login or create an Employer account to post this job vacancy.<br /><span className="text-[12px] text-gray-400 mt-2 block">جاب پوسٹ کرنے کے لیے لاگ ان کریں۔</span></p>
+            <p className="text-gray-600 text-sm mb-6 leading-relaxed">Please login or create an Employer account to post this job.<br /><span className="text-[12px] text-gray-400 mt-2 block">جاب پوسٹ کرنے کے لیے لاگ ان کریں۔</span></p>
             <div className="space-y-3">
               <button onClick={onAction} className="w-full bg-[#00004d] text-white py-4 rounded-xl font-bold text-sm active:scale-95 transition-transform">Continue to Login</button>
               <button onClick={onClose} className="w-full bg-gray-100 text-gray-500 py-3 rounded-xl font-bold text-sm">Cancel</button>
@@ -66,8 +66,8 @@ function CustomSuccessModal({ isOpen, onClose, onAction }: { isOpen: boolean, on
           <motion.div initial={{ scale: 0.9, opacity: 0, y: 50 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 50 }} className="relative w-full max-w-md bg-white rounded-[30px] p-8 text-center shadow-2xl">
             <div className="flex justify-center mb-4"><div className="bg-green-100 p-4 rounded-full"><CheckCircle2 size={50} className="text-green-500" /></div></div>
             <h3 className="text-2xl font-bold text-[#00004d] mb-3">Job Submitted Successfully!</h3>
-            <p className="text-gray-600 text-sm mb-8 leading-relaxed">Your vacancy has been sent for approval. It will be live on the platform once the admin reviews it.<br /><span className="text-[12px] text-gray-400 mt-2 block">آپ کی جاب ایڈمن کی منظوری کے بعد لائیو کر دی جائے گی۔</span></p>
-            <button onClick={onAction} className="w-full bg-[#00004d] text-white py-4 rounded-full font-bold text-sm active:scale-95 transition-transform shadow-lg shadow-blue-900/20">Go to My Jobs</button>
+            <p className="text-gray-600 text-sm mb-8 leading-relaxed">Your vacancy has been sent for approval.<br /><span className="text-[12px] text-gray-400 mt-2 block">آپ کی جاب ایڈمن کی منظوری کے بعد لائیو کر دی جائے گی۔</span></p>
+            <button onClick={onAction} className="w-full bg-[#00004d] text-white py-4 rounded-full font-bold text-sm active:scale-95 transition-transform shadow-lg">Go to My Jobs</button>
           </motion.div>
         </div>
       )}
@@ -79,7 +79,7 @@ export default function PostJobPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 3;
+  const totalSteps = 4;
 
   const [formData, setFormData] = useState({
     companyLogo: "", companyName: "", contactPerson: "", companyAddress: "", phone: "", designation: "", companyEmail: "", category: "", otherCategory: "", city: "", salary: "", type: "Full-Time", experience: "", description: "", skills: "", education: "", otherEducation: "",
@@ -106,7 +106,6 @@ export default function PostJobPage() {
   const cityRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-
     const savedData = localStorage.getItem("pendingJobPost");
     if (savedData) setFormData(prev => ({ ...prev, ...JSON.parse(savedData) }));
 
@@ -120,18 +119,33 @@ export default function PostJobPage() {
   }, []);
 
   const validateStep = () => {
-    if (currentStep === 1) return formData.city !== "";
+    if (currentStep === 1) {
+      return formData.city !== "" && formData.companyName.trim() !== "";
+    }
     if (currentStep === 2) {
+      return (
+        formData.contactPerson.trim() !== "" &&
+        formData.designation.trim() !== "" &&
+        formData.phone.trim() !== "" &&
+        formData.companyEmail.trim() !== ""
+      );
+    }
+    if (currentStep === 3) {
       const isCatOk = formData.category !== "" && (formData.category === "Other" ? formData.otherCategory.trim() !== "" : true);
       const isEduOk = formData.education !== "" && (formData.education === "Other" ? formData.otherEducation.trim() !== "" : true);
       return isCatOk && isEduOk;
     }
-    if (currentStep === 3) return formData.salary.trim() !== "" && formData.experience.trim() !== "";
+    if (currentStep === 4) {
+      return formData.salary.trim() !== "" && formData.experience.trim() !== "";
+    }
     return true;
   };
 
   const nextStep = () => {
-    if (validateStep()) { setCurrentStep(prev => Math.min(prev + 1, totalSteps)); window.scrollTo(0, 0); }
+    if (validateStep()) { 
+      setCurrentStep(prev => Math.min(prev + 1, totalSteps)); 
+      window.scrollTo(0, 0); 
+    }
     else toast.error("Please fill required fields");
   };
 
@@ -173,20 +187,42 @@ export default function PostJobPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+        setIsAuthModalOpen(true);
+        return;
+    }
+
     if (!validateStep()) return;
     setLoading(true);
-    const token = localStorage.getItem("token");
+    
     const finalCategory = formData.category === "Other" ? formData.otherCategory : formData.category;
     const finalEducation = formData.education === "Other" ? formData.otherEducation : formData.education;
+    
     try {
       const res = await fetch("https://easyjobspk.onrender.com/api/jobs", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-        body: JSON.stringify({ ...formData, category: finalCategory, education: finalEducation, skills: formData.skills ? formData.skills.split(",").map(s => s.trim()) : [] }),
+        body: JSON.stringify({ 
+            ...formData, 
+            category: finalCategory, 
+            education: finalEducation, 
+            skills: formData.skills ? formData.skills.split(",").map(s => s.trim()) : [] 
+        }),
       });
-      if (res.ok) { setShowSuccess(true); localStorage.removeItem("pendingJobPost"); }
-      else { const errorData = await res.json(); toast.error(errorData.message || "Failed to post job"); }
-    } catch (err) { toast.error("Server error. Please try again."); } finally { setLoading(false); }
+      if (res.ok) { 
+        setShowSuccess(true); 
+        localStorage.removeItem("pendingJobPost"); 
+      } else { 
+        const errorData = await res.json(); 
+        toast.error(errorData.message || "Failed to post job"); 
+      }
+    } catch (err) { 
+      toast.error("Server error. Please try again."); 
+    } finally { 
+      setLoading(false); 
+    }
   };
 
   return (
@@ -254,7 +290,10 @@ export default function PostJobPage() {
                       )}
                     </div>
                     <div className="flex items-end"><div className="w-full bg-gray-100 rounded-xl p-4 text-sm font-bold text-gray-500 flex items-center gap-2 h-[54px]"><Globe size={14} /> Pakistan</div></div>
-                    <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"> Company Name *</label><input placeholder="Company or Bussiness Name" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyName} onChange={(e) => setFormData({ ...formData, companyName: e.target.value })} /></div>
+                    <div className="space-y-1.5 md:col-span-2">
+                        <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"> Company Name *</label>
+                        <input placeholder="Company or Business Name" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyName} onChange={(e) => setFormData({ ...formData, companyName: e.target.value })} />
+                    </div>
                   </div>
                 </section>
               </motion.div>
@@ -263,11 +302,11 @@ export default function PostJobPage() {
             {currentStep === 2 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Contact Information</h2></div>
-                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"> Contact Person *</label><input placeholder="Contact Person Name" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.contactPerson} onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })} /></div>
-                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"> Designation *</label><input placeholder="Contact Person's Designation" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.designation} onChange={(e) => setFormData({ ...formData, designation: e.target.value })} /></div>
-                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"> Phone Number *</label><input placeholder="Enter your phone no." required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} /></div>
-                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"> Company Email *</label><input placeholder="Enter company email" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyEmail} onChange={(e) => setFormData({ ...formData, companyEmail: e.target.value })} /></div>
-                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"> Address </label><input placeholder="Add Company Address" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyAddress} onChange={(e) => setFormData({ ...formData, companyAddress: e.target.value })} /></div>
+                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Contact Person *</label><input placeholder="Contact Person Name" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.contactPerson} onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })} /></div>
+                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Designation *</label><input placeholder="Contact Person's Designation" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.designation} onChange={(e) => setFormData({ ...formData, designation: e.target.value })} /></div>
+                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Phone Number *</label><input placeholder="Enter your phone no." required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} /></div>
+                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Company Email *</label><input placeholder="Enter company email" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyEmail} onChange={(e) => setFormData({ ...formData, companyEmail: e.target.value })} /></div>
+                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Address </label><input placeholder="Add Company Address" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyAddress} onChange={(e) => setFormData({ ...formData, companyAddress: e.target.value })} /></div>
               </motion.div>
             )}
 
@@ -275,12 +314,12 @@ export default function PostJobPage() {
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Job Information</h2></div>
                 <div className="space-y-4" ref={catRef}>
-                  <label className="text-[10px] font-bold text-[#00004d] block uppercase tracking-tight">Job Title / Category *</label>
+                  <label className="text-[10px] font-bold text-[#00004d] block uppercase">Job Title / Category *</label>
                   <div onClick={() => setIsCatOpen(!isCatOpen)} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold text-[#00004d] flex justify-between items-center cursor-pointer">
                     {formData.category || "Select Category"} <ChevronDown size={16} className={isCatOpen ? 'rotate-180' : ''} />
                   </div>
                   {isCatOpen && (
-                    <div className="absolute z-50 w-full bg-white border rounded-2xl shadow-xl overflow-hidden">
+                    <div className="absolute z-50 w-full bg-white border rounded-2xl shadow-xl overflow-hidden mt-1">
                       <div className="p-2 bg-gray-50"><input placeholder="Search title..." className="w-full p-2 text-xs border rounded-lg outline-none" value={catSearch} onChange={(e) => setCatSearch(e.target.value)} /></div>
                       <div className="max-h-60 overflow-y-auto">{filteredCategories.map(cat => <div key={cat} onClick={() => { setFormData({ ...formData, category: cat }); setIsCatOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{cat}</div>)}</div>
                     </div>
@@ -289,12 +328,12 @@ export default function PostJobPage() {
                 </div>
 
                 <div className="space-y-4" ref={eduRef}>
-                  <label className="text-[10px] font-bold text-[#00004d] block uppercase tracking-tight">Required Education *</label>
+                  <label className="text-[10px] font-bold text-[#00004d] block uppercase">Required Education *</label>
                   <div onClick={() => setIsEduOpen(!isEduOpen)} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold text-[#00004d] flex justify-between items-center cursor-pointer">
                     {formData.education || "Select Education"} <ChevronDown size={16} className={isEduOpen ? 'rotate-180' : ''} />
                   </div>
                   {isEduOpen && (
-                    <div className="absolute z-50 w-full bg-white border rounded-2xl shadow-xl overflow-hidden">
+                    <div className="absolute z-50 w-full bg-white border rounded-2xl shadow-xl overflow-hidden mt-1">
                       <div className="p-2 bg-gray-50"><input placeholder="Search education..." className="w-full p-2 text-xs border rounded-lg outline-none" value={eduSearch} onChange={(e) => setEduSearch(e.target.value)} /></div>
                       <div className="max-h-60 overflow-y-auto">{filteredEducation.map(edu => <div key={edu} onClick={() => { setFormData({ ...formData, education: edu }); setIsEduOpen(false); }} className="px-4 py-3 text-xs font-bold hover:bg-blue-50 cursor-pointer">{edu}</div>)}</div>
                     </div>
@@ -303,7 +342,7 @@ export default function PostJobPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-[#00004d] block">Job Type</label>
+                  <label className="text-[10px] font-bold text-[#00004d] block uppercase">Job Type</label>
                   <select className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value })}>{JOB_TYPES.map(t => <option key={t} value={t}>{t}</option>)}</select>
                 </div>
               </motion.div>
@@ -313,20 +352,20 @@ export default function PostJobPage() {
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Salary & Requirements</h2></div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><DollarSign size={12} /> Monthly Salary *</label><input placeholder="e.g. 40k - 60k" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.salary} onChange={(e) => setFormData({ ...formData, salary: e.target.value })} /></div>
-                  <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Briefcase size={12} /> Experience *</label><input placeholder="e.g. 1 Year / Fresh" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.experience} onChange={(e) => setFormData({ ...formData, experience: e.target.value })} /></div>
-                  <div className="space-y-1.5 md:col-span-2"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><Award size={12} /> Skills</label><input placeholder="Comma separated skills" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.skills} onChange={(e) => setFormData({ ...formData, skills: e.target.value })} /></div>
-                  <div className="space-y-1.5 md:col-span-2"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"><FileText size={12} /> Description (Optional)</label><textarea rows={4} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none resize-none" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} /></div>
+                  <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1 uppercase"><DollarSign size={12} /> Monthly Salary *</label><input placeholder="e.g. 40k - 60k" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.salary} onChange={(e) => setFormData({ ...formData, salary: e.target.value })} /></div>
+                  <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1 uppercase"><Briefcase size={12} /> Experience *</label><input placeholder="e.g. 1 Year / Fresh" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.experience} onChange={(e) => setFormData({ ...formData, experience: e.target.value })} /></div>
+                  <div className="space-y-1.5 md:col-span-2"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1 uppercase"><Award size={12} /> Skills</label><input placeholder="Comma separated skills (e.g. Sales, Marketing)" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.skills} onChange={(e) => setFormData({ ...formData, skills: e.target.value })} /></div>
+                  <div className="space-y-1.5 md:col-span-2"><label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1 uppercase"><FileText size={12} /> Description (Optional)</label><textarea rows={4} className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none resize-none" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} /></div>
                 </div>
               </motion.div>
             )}
 
             <div className="flex items-center justify-between mt-12 gap-4">
-              {currentStep > 1 && <button type="button" onClick={prevStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-gray-100 text-[#00004d] font-bold text-sm"><ArrowLeft size={18} /> Back</button>}
+              {currentStep > 1 && <button type="button" onClick={prevStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-gray-100 text-[#00004d] font-bold text-sm hover:bg-gray-200 transition-colors"><ArrowLeft size={18} /> Back</button>}
               {currentStep < totalSteps ? (
-                <button type="button" onClick={nextStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#00004d] text-white font-bold text-sm">Next Step <ArrowRight size={18} /></button>
+                <button type="button" onClick={nextStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#00004d] text-white font-bold text-sm active:scale-95 transition-transform">Next Step <ArrowRight size={18} /></button>
               ) : (
-                <button type="submit" disabled={loading} className="flex-[2] flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#5DBB63] text-white font-bold text-sm shadow-lg active:scale-95 transition-transform">
+                <button type="submit" disabled={loading} className="flex-[2] flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#5DBB63] text-white font-bold text-sm shadow-lg active:scale-95 transition-transform disabled:opacity-70">
                   {loading ? <Loader2 className="animate-spin" /> : <CheckCircle2 size={18} />} {loading ? "Publishing..." : "Publish Vacancy"}
                 </button>
               )}
