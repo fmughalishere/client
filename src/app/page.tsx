@@ -46,7 +46,7 @@ export default function HomePage() {
 
   const quickActions = [
     {
-      label: "Apply for a Job",
+      label: "Apply a Job",
       icon: (
         <Briefcase
           size={30}
@@ -123,9 +123,9 @@ export default function HomePage() {
 
       const approvedOnly = Array.isArray(data)
         ? data.filter(
-            (app: any) =>
-              app.status === "shortlisted"
-          )
+          (app: any) =>
+            app.status === "shortlisted"
+        )
         : [];
 
       const latestApplicants = approvedOnly.reverse();
@@ -189,13 +189,13 @@ export default function HomePage() {
               const newSavedBy =
                 isCurrentlySaved
                   ? app.savedBy.filter(
-                      (uid: string) =>
-                        uid !== currentUserId
-                    )
+                    (uid: string) =>
+                      uid !== currentUserId
+                  )
                   : [
-                      ...(app.savedBy || []),
-                      currentUserId,
-                    ];
+                    ...(app.savedBy || []),
+                    currentUserId,
+                  ];
 
               return {
                 ...app,
@@ -209,11 +209,11 @@ export default function HomePage() {
 
         isCurrentlySaved
           ? toast.success(
-              "Removed from saved"
-            )
+            "Removed from saved"
+          )
           : toast.success(
-              "Applicant Saved!"
-            );
+            "Applicant Saved!"
+          );
       }
     } catch (error) {
       toast.error(
@@ -234,11 +234,11 @@ export default function HomePage() {
 
     if (
       today.getMonth() <
-        birthDate.getMonth() ||
+      birthDate.getMonth() ||
       (today.getMonth() ===
         birthDate.getMonth() &&
         today.getDate() <
-          birthDate.getDate())
+        birthDate.getDate())
     ) {
       age--;
     }
@@ -275,7 +275,7 @@ export default function HomePage() {
         const diff =
           (end.getFullYear() -
             start.getFullYear()) *
-            12 +
+          12 +
           (end.getMonth() -
             start.getMonth());
 
@@ -290,9 +290,8 @@ export default function HomePage() {
 
     return yrs > 0
       ? `Exp: ${yrs} Years`
-      : `Exp: ${
-          totalMonths % 12
-        } Months`;
+      : `Exp: ${totalMonths % 12
+      } Months`;
   };
 
   return (
@@ -347,7 +346,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="max-w-2xl mx-auto px-9 mt-4 relative z-10">
+      <section className="max-w-2xl mx-auto px-14 mt-4 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full justify-items-center">
           {quickActions.map((action, i) => {
             const isPostJob =
@@ -363,55 +362,46 @@ export default function HomePage() {
                   )
                 }
                 className={`w-full max-w-[145px] transition-all duration-300 active:scale-95
-                ${
-                  isPostJob
+                ${isPostJob
                     ? "animate-pulse scale-105"
                     : "hover:scale-105"
-                }
+                  }
               `}
               >
                 <div
                   className={`flex flex-col items-center justify-center aspect-square rounded-2xl p-4 border
-                  ${
-                    isPostJob
+                  ${isPostJob
                       ? "bg-[#5DBB63] shadow-[0_0_30px_rgba(93,187,99,0.9)] border-[#5DBB63]"
                       : "bg-white shadow-md border-gray-50"
-                  }
+                    }
                 `}
                 >
                   <div
-                    className={`mb-2 ${
-                      isPostJob
+                    className={`mb-2 ${isPostJob
                         ? "animate-bounce"
                         : ""
-                    }`}
+                      }`}
                   >
                     {action.icon}
                   </div>
 
                   <span
                     className={`font-black text-center leading-tight
-                    ${
-                      isPostJob
+                    ${isPostJob
                         ? "text-white text-[17px]"
                         : "text-[#00004d] text-[15px]"
-                    }
+                      }
                   `}
                   >
                     {action.label}
                   </span>
-
-                  {isPostJob && (
-                    <span className="mt-1 text-[11px] font-extrabold text-white animate-pulse tracking-wide">
-                      POST NOW
-                    </span>
-                  )}
                 </div>
               </button>
             );
           })}
         </div>
-
+      </section>
+      <section className="max-w-2xl mx-auto px-6 mt-4 relative z-10">
         <div>
           <Image
             src="/images/totally-free-banner.png"
@@ -474,18 +464,17 @@ export default function HomePage() {
                         className="bg-white border border-gray-100 rounded-[15px] flex items-stretch shadow-md min-h-[50px] cursor-pointer overflow-hidden transition-transform active:scale-95"
                       >
                         <div
-                          className={`relative w-24 shrink-0 overflow-hidden flex items-center justify-center ${
-                            app.image ===
-                            "male"
+                          className={`relative w-24 shrink-0 overflow-hidden flex items-center justify-center ${app.image ===
+                              "male"
                               ? "bg-[#00004d]"
                               : app.image ===
                                 "female"
-                              ? "bg-[#5DBB63]"
-                              : "bg-gray-100"
-                          }`}
+                                ? "bg-[#5DBB63]"
+                                : "bg-gray-100"
+                            }`}
                         >
                           {app.image ===
-                          "male" ? (
+                            "male" ? (
                             <Image
                               src={MALE_ICON}
                               alt="M"
@@ -514,7 +503,7 @@ export default function HomePage() {
                             />
                           ) : app.image &&
                             app.image.length >
-                              20 ? (
+                            20 ? (
                             <Image
                               src={app.image}
                               alt="U"
@@ -554,11 +543,10 @@ export default function HomePage() {
 
                             <Heart
                               size={16}
-                              className={`shrink-0 transition-all duration-300 ${
-                                isSaved
+                              className={`shrink-0 transition-all duration-300 ${isSaved
                                   ? "text-[#00004d] fill-[#00004d]"
                                   : "text-[#00004d]"
-                              }`}
+                                }`}
                               onClick={(e) =>
                                 handleToggleSave(
                                   e,

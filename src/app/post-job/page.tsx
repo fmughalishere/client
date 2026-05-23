@@ -238,7 +238,7 @@ export default function PostJobPage() {
                 </section>
 
                 <section className="space-y-6">
-                  <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Location Details</h2></div>
+                  <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Company Details</h2></div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="relative" ref={cityRef}>
                       <label className="text-[10px] font-bold text-[#00004d] mb-2 block">Select City *</label>
