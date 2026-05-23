@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Search, User, Loader2, Heart } from "lucide-react"; // Heart import as it is
+import { Search, User, Loader2, Heart } from "lucide-react";
 import { LuChevronsRight } from "react-icons/lu";
 import { IoIosPin } from "react-icons/io";
 import { MALE_ICON, FEMALE_ICON } from "../constants";
@@ -162,13 +162,11 @@ export default function ApplicantsPage() {
     <main className="min-h-screen bg-[#e6e8e8] pb-20 font-sans">
       <Toaster position="top-center" />
       <section className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center relative shadow-sm">
-        <h1 style={{ fontFamily: 'Fontatica' }} className="text-[35px] text-[#5DBB63] leading-tight text-center">
+        <h1 className="text-[25px] text-[#5DBB63] leading-tight text-center font-bold">
           Hire Experts <br /> Get Quality Work
         </h1>
       </section>
-      
-      {/* Search Section */}
-      <div className="relative -mt-8 flex justify-center px-6 z-30" ref={searchRef}>
+            <div className="relative -mt-8 flex justify-center px-6 z-30" ref={searchRef}>
         <div className="relative w-full max-w-[280px]">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-[#00004d]" strokeWidth={3} />
@@ -197,7 +195,6 @@ export default function ApplicantsPage() {
             <>
               {currentItems.length > 0 ? (
                 currentItems.map((app) => {
-                  {/* Logic to check if saved */}
                   const isSaved = currentUserId && app.savedBy?.includes(currentUserId);
 
                   return (
