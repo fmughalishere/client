@@ -33,7 +33,6 @@ async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> 
   return canvas.toDataURL("image/jpeg", 0.7);
 }
 
-// Icon ko white karne ke liye filter
 const whiteFilter = {
   filter: "brightness(0) invert(1)",
 };
@@ -310,7 +309,7 @@ export default function MobileResponsiveJobForm() {
       </AnimatePresence>
 
       <div className="bg-white rounded-b-[40px] pt-8 pb-12 px-6 flex flex-col items-center shadow-sm relative overflow-hidden">
-        <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} style={{ fontFamily: 'Fontatica' }} className="text-[#5DBB63] text-[35px]">Apply for a Job</motion.h1>
+        <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-[#5DBB63] text-[25px] font-bold">Apply for a Job</motion.h1>
         <div className="flex gap-2 mt-4">
           {[1, 2, 3, 4, 5].map((s) => (
             <div key={s} className={`h-1.5 w-8 rounded-full transition-all duration-300 ${s <= currentStep ? 'bg-[#5DBB63]' : 'bg-gray-200'}`} />
@@ -359,11 +358,9 @@ export default function MobileResponsiveJobForm() {
                   <input type="file" ref={fileInputRef} className="hidden" onChange={handleImageChange} accept="image/*" />
                   
                   <div className="flex gap-4 w-full justify-center">
-                    {/* Male Selection Button: Blue Theme */}
                     <button type="button" onClick={() => setFormData({ ...formData, image: "male" })} className={`px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "male" ? 'border-[#00004d] bg-[#00004d] text-white' : 'border-gray-100 text-gray-400'}`}>
                       <span className="text-[10px] font-bold">Male Icon</span>
                     </button>
-                    {/* Female Selection Button: Green Theme */}
                     <button type="button" onClick={() => setFormData({ ...formData, image: "female" })} className={`px-6 py-3 rounded-xl border-2 transition-all ${formData.image === "female" ? 'border-[#5DBB63] bg-[#5DBB63] text-white' : 'border-gray-100 text-gray-400'}`}>
                       <span className="text-[10px] font-bold">Female Icon</span>
                     </button>
@@ -397,8 +394,6 @@ export default function MobileResponsiveJobForm() {
                 </section>
               </motion.div>
             )}
-
-            {/* Rest of the steps (2, 3, 4, 5) remains exactly the same as in your original file */}
             {currentStep === 2 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Profession & Type</h2></div>
