@@ -297,7 +297,7 @@ export default function CompanyRegister() {
                 </div>
 
                 <div className="relative"> <FileText className="absolute left-5 top-5 text-gray-300" size={18} />
-                  <textarea required name="description" placeholder="Company description..." rows={3} value={formData.description} onChange={handleChange} className="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-2xl outline-none border-2 border-transparent focus:border-[#00004d] font-bold text-[#00004d] text-sm resize-none" />
+                  <textarea name="description" placeholder="Company description..." rows={3} value={formData.description} onChange={handleChange} className="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-2xl outline-none border-2 border-transparent focus:border-[#00004d] font-bold text-[#00004d] text-sm resize-none" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -322,7 +322,7 @@ export default function CompanyRegister() {
               </form>
 
               <div className="mt-10 text-center">
-                <p className="text-gray-400 font-bold text-[10px] tracking-widest "> Already a partner? <Link href="/login" className="text-[#00004d] font-black hover:underline ml-2">Login Here</Link> </p>
+                <p className="text-gray-400 font-bold text-[10px] tracking-widest "> Already a partner? <Link href="/company-login" className="text-[#00004d] font-black hover:underline ml-2">Login Here</Link> </p>
               </div>
             </motion.div>
           ) : (
@@ -338,8 +338,8 @@ export default function CompanyRegister() {
                 Please verify your email to start posting jobs.
               </p>
               <div className="space-y-4">
-                <button onClick={() => router.push("/login")} className="w-full py-4 bg-[#00004d] text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform">
-                  Go to Login <ArrowRight size={18} />
+                <button onClick={() => router.push("/company-login")} className="w-full py-4 bg-[#00004d] text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform">
+                  Go to company-login <ArrowRight size={18} />
                 </button>
                 <button onClick={() => setIsEmailSent(false)} className="text-gray-400 font-bold text-[10px] uppercase tracking-[0.2em] hover:text-[#00004d] transition-colors">
                   Wrong email? Go back

@@ -64,6 +64,9 @@ export default function ApplicantDetail() {
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [isCropping, setIsCropping] = useState(false);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
 
   const [offerData, setOfferData] = useState({
     employerName: "", designation: "", companyName: "", companyLogo: "", cityName: "", address: "", email: "", salaryRange: "", whatsapp: "", interviewDate: "", message: ""
@@ -112,22 +115,78 @@ export default function ApplicantDetail() {
       }
     } catch (e) { console.error(e); }
   };
+  const handleEasyHireClick = () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      localStorage.setItem(
+        "pendingOfferData",
+        JSON.stringify({
+          applicantId: id,
+          offerData,
+        })
+      );
+
+      router.push("/company-login");
+      return;
+    }
+
+    setIsModalOpen(true);
+  };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`https://easyjobspk.onrender.com/api/applications/${id}/offer`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-        body: JSON.stringify(offerData)
-      });
-      if (res.ok) { setIsModalOpen(false); setShowSuccessModal(true); }
-      else { const errData = await res.json(); alert(errData.message || "Failed"); }
-    } catch (err) { console.error(err); } finally { setIsSubmitting(false); }
-  };
 
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setShowLoginPopup(true);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const res = await fetch(
+        `https://easyjobspk.onrender.com/api/applications/${id}/offer`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(offerData),
+        }
+      );
+
+      if (res.ok) {
+        setIsModalOpen(false);
+        setShowSuccessModal(true);
+      } else {
+        const errData = await res.json();
+
+        setErrorMessage(errData.message || "Failed");
+        setShowLoginPopup(true);
+      }
+    } catch (err) {
+      setErrorMessage("Something went wrong");
+      setShowLoginPopup(true);
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  useEffect(() => {
+  const pending = localStorage.getItem("pendingOfferData");
+
+  if (pending) {
+    const parsed = JSON.parse(pending);
+
+    if (parsed.offerData) {
+      setOfferData(parsed.offerData);
+    }
+  }
+}, []);
   if (loading) return <div className="flex justify-center items-center h-screen"><Loader2 className="animate-spin w-10 h-10 text-[#00004d]" /></div>;
   if (!applicant) return <div className="p-10 text-center font-bold">No data found</div>;
 
@@ -149,7 +208,54 @@ export default function ApplicantDetail() {
           </div>
         )}
       </AnimatePresence>
+      <AnimatePresence>
+        {showLoginPopup && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60"
+              onClick={() => setShowLoginPopup(false)}
+            />
 
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl"
+            >
+              <h3 className="text-2xl font-bold text-[#00004d] mb-3">
+                Login Required
+              </h3>
+
+              <p className="text-gray-600 mb-6">
+                Please login first to send a job offer.
+                <br />
+                <span className="text-sm text-gray-400">
+                  آفر بھیجنے کیلئے پہلے لاگ اِن کریں۔
+                </span>
+              </p>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowLoginPopup(false)}
+                  className="flex-1 py-3 rounded-xl border font-semibold"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={() => router.push("/company-register")}
+                  className="flex-1 py-3 rounded-xl bg-[#00004d] text-white font-semibold"
+                >
+                  Login Now
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
       <OfferSuccessModal isOpen={showSuccessModal} onClose={() => setShowSuccessModal(false)} onAction={() => router.push("/applicants")} />
 
       <div className="max-w-5xl mx-auto space-y-6">
@@ -193,12 +299,12 @@ export default function ApplicantDetail() {
             {applicant.isFresher ? (
               <p className="text-sm text-[#00004d] font-bold p-6 bg-gray-50 rounded-3xl border border-dashed text-center">Fresh Candidate / Entry Level</p>
             ) : applicant.experience?.map((exp: any, i: number) => (
-                <div key={i} className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
-                  <p className="text-xs font-bold text-gray-400 tracking-widest mb-1">{exp.companyName}</p>
-                  <p className="font-bold text-[#00004d] text-lg ">{exp.designation}</p>
-                  <p className="text-[10px] font-bold text-gray-500 mt-1 ">{new Date(exp.startDate).toLocaleDateString()} - {exp.isCurrentJob ? "Present" : new Date(exp.endDate).toLocaleDateString()}</p>
-                </div>
-              ))
+              <div key={i} className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
+                <p className="text-xs font-bold text-gray-400 tracking-widest mb-1">{exp.companyName}</p>
+                <p className="font-bold text-[#00004d] text-lg ">{exp.designation}</p>
+                <p className="text-[10px] font-bold text-gray-500 mt-1 ">{new Date(exp.startDate).toLocaleDateString()} - {exp.isCurrentJob ? "Present" : new Date(exp.endDate).toLocaleDateString()}</p>
+              </div>
+            ))
             }
           </div>
         </div>
@@ -207,7 +313,7 @@ export default function ApplicantDetail() {
           <h2 className="text-lg font-bold text-[#00004d] tracking-wider flex items-center gap-3 border-b pb-4 "><Wand2 size={20} /> Skills</h2>
           <div className="flex flex-wrap gap-3">
             {applicant.skills?.map((skill: string, i: number) => (
-                <span key={i} className="px-4 py-2 bg-blue-50 text-[#00004d] text-xs font-bold rounded-full border border-blue-100 tracking-wider">{skill}</span>
+              <span key={i} className="px-4 py-2 bg-blue-50 text-[#00004d] text-xs font-bold rounded-full border border-blue-100 tracking-wider">{skill}</span>
             ))}
           </div>
         </div>
@@ -233,7 +339,7 @@ export default function ApplicantDetail() {
               <button onClick={() => setIsModalOpen(false)} className="bg-white/10 p-2 rounded-full"><X size={24} /></button>
             </div>
             <form onSubmit={handleFormSubmit} className="p-8 space-y-6 max-h-[75vh] overflow-y-auto">
-                <div className="flex flex-col items-center gap-3 border-b pb-6">
+              <div className="flex flex-col items-center gap-3 border-b pb-6">
                 <div onClick={() => fileInputRef.current?.click()} className="w-20 h-20 rounded-2xl bg-gray-50 border-2 border-dashed flex items-center justify-center overflow-hidden relative cursor-pointer group">
                   {offerData.companyLogo ? <img src={offerData.companyLogo} className="w-full h-full object-cover" alt="Logo" /> : <Building className="text-gray-200" size={30} />}
                   <div className="absolute -bottom-1 -right-1 bg-[#00004d] text-white p-1 rounded-md"><Camera size={14} /></div>
@@ -254,11 +360,19 @@ export default function ApplicantDetail() {
               </div>
               <textarea name="message" placeholder="Message to candidate..." onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border font-bold text-xs" rows={3} />
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-gray-400 ml-1">Interview Date & Time</label>
+                <label className="text-[10px] font-bold text-gray-400 ml-1">Interview Date & Time (Optional)</label>
                 <input type="datetime-local" name="interviewDate" onChange={handleInputChange} className="w-full p-4 bg-gray-50 rounded-xl outline-none border font-bold text-sm" />
               </div>
-              <button type="submit" disabled={isSubmitting} className="w-full h-12 py-5 rounded-[9px] font-bold text-white bg-[#5DBB63] active:scale-95 transition-all flex justify-center items-center shadow-xl">
-                {isSubmitting ? <Loader2 className="animate-spin" /> : "Submit Offer"}
+              <button
+                onClick={handleEasyHireClick}
+                disabled={applicant.status === "Offered"}
+                className={`w-50 h-10 px-8 rounded-[9px] font-bold text-sm shadow-2xl flex items-center justify-center gap-2 active:scale-95 transition-all tracking-[0.2em] ${applicant.status === "Offered"
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#5DBB63] text-white"
+                  }`}
+              >
+                <Send size={16} strokeWidth={3} />
+                <span>{applicant.status === "Offered" ? "Offer Sent" : "Easy Hire"}</span>
               </button>
             </form>
           </div>

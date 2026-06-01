@@ -127,13 +127,13 @@ export default function MobileResponsiveJobForm() {
 
   const validateStep = () => {
     if (currentStep === 1) {
-      return formData.fullName.trim() !== "" && formData.city !== "";
+      return formData.fullName.trim() !== "" && formData.city.trim() !== "";
     }
     if (currentStep === 2) {
-      return formData.category !== "" && (formData.category === "Other" ? formData.otherCategory.trim() !== "" : true);
+      return formData.category.trim() !== "" && (formData.category === "Other" ? formData.otherCategory.trim() !== "" : true);
     }
     if (currentStep === 3) {
-      return formData.education !== "" && (formData.education === "Other" ? formData.otherEducation.trim() !== "" : true);
+      return formData.education.trim() !== "" && (formData.education === "Other" ? formData.otherEducation.trim() !== "" : true);
     }
     if (currentStep === 5) {
       return formData.phone.replace(/\s/g, "").length > 10 && formData.salaryDemand.trim() !== "" && formData.agreeTerms;
@@ -141,16 +141,18 @@ export default function MobileResponsiveJobForm() {
     return true;
   };
 
-  const nextStep = () => {
+  const nextStep = (e: React.MouseEvent) => {
+    e.preventDefault();
     if (validateStep()) {
       if (currentStep < totalSteps) setCurrentStep(prev => prev + 1);
       window.scrollTo(0, 0);
     } else {
-      toast.error("Please fill all required fields.", { position: "top-center" });
+      toast.error("Please fill all required fields before moving forward.", { position: "top-center" });
     }
   };
 
-  const prevStep = () => {
+  const prevStep = (e: React.MouseEvent) => {
+    e.preventDefault();
     if (currentStep > 1) setCurrentStep(prev => prev - 1);
     window.scrollTo(0, 0);
   };
@@ -169,7 +171,6 @@ export default function MobileResponsiveJobForm() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
 
   const calculatedTotalYears = useMemo(() => {
     if (isFresher) return 0;
@@ -300,8 +301,8 @@ export default function MobileResponsiveJobForm() {
             <div className="mt-8 w-full max-w-[400px] space-y-6 px-4">
               <input type="range" value={zoom} min={1} max={3} step={0.1} onChange={(e) => setZoom(Number(e.target.value))} className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#5DBB63]" />
               <div className="flex gap-4">
-                <button onClick={() => setIsCropping(false)} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold flex items-center justify-center gap-2 border border-white/20"><X size={18} /> Cancel</button>
-                <button onClick={saveCroppedImage} className="flex-1 py-4 bg-[#5DBB63] text-white rounded-2xl font-bold flex items-center justify-center gap-2"><Check size={18} /> Done</button>
+                <button type="button" onClick={() => setIsCropping(false)} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold flex items-center justify-center gap-2 border border-white/20"><X size={18} /> Cancel</button>
+                <button type="button" onClick={saveCroppedImage} className="flex-1 py-4 bg-[#5DBB63] text-white rounded-2xl font-bold flex items-center justify-center gap-2"><Check size={18} /> Done</button>
               </div>
             </div>
           </div>
@@ -394,6 +395,7 @@ export default function MobileResponsiveJobForm() {
                 </section>
               </motion.div>
             )}
+            
             {currentStep === 2 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Profession & Type</h2></div>
@@ -517,11 +519,8 @@ export default function MobileResponsiveJobForm() {
                 <div className="pt-6 border-t space-y-4">
                   <button type="button" onClick={() => router.push('/readpolicy')} className="text-[#00004d] text-[11px] font-bold underline">Read Privacy Policy</button>
                   <label className="flex items-center gap-3 cursor-pointer">
-                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${formData.agreeTerms ? 'bg-[#00004d] border-[#00004d]' : 'bg-white'}`}>
-                      <input type="checkbox" className="hidden" checked={formData.agreeTerms} onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })} />
-                      {formData.agreeTerms && <Check size={12} className="text-white" />}
-                    </div>
-                    <span className="text-[10px] font-bold text-gray-500">I agree to the privacy policy *</span>
+                    <input type="checkbox" checked={formData.agreeTerms} onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })} className="accent-[#00004d] w-4 h-4" />
+                    <span className="text-[12px] font-bold text-gray-600">I agree to the Terms & Conditions</span>
                   </label>
                 </div>
               </motion.div>
@@ -529,23 +528,20 @@ export default function MobileResponsiveJobForm() {
 
             <div className="flex items-center justify-between mt-12 gap-4">
               {currentStep > 1 && (
-                <button type="button" onClick={prevStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-gray-100 text-[#00004d] font-bold text-sm">
+                <button type="button" onClick={(e) => prevStep(e)} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-gray-100 text-[#00004d] font-bold text-sm hover:bg-gray-200 transition-colors">
                   <ArrowLeft size={18} /> Back
                 </button>
               )}
-
               {currentStep < totalSteps ? (
-                <button type="button" onClick={nextStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#00004d] text-white font-bold text-sm ml-auto">
+                <button type="button" onClick={(e) => nextStep(e)} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#00004d] text-white font-bold text-sm active:scale-95 transition-transform">
                   Next Step <ArrowRight size={18} />
                 </button>
               ) : (
-                <button type="submit" disabled={loading || submitted} className="flex-[2] flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#5DBB63] text-white font-bold text-sm shadow-lg active:scale-95 transition-transform">
-                  {loading ? <Loader2 className="animate-spin" /> : <CheckCircle2 />}
-                  {loading ? "Submitting..." : "Submit Application"}
+                <button type="submit" disabled={loading} className="flex-[2] flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#5DBB63] text-white font-bold text-sm shadow-lg active:scale-95 transition-transform disabled:opacity-70">
+                  {loading ? <Loader2 className="animate-spin" /> : <CheckCircle2 size={18} />} {loading ? "Submitting..." : "Submit Profile"}
                 </button>
               )}
             </div>
-
           </form>
         </div>
       </div>

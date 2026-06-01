@@ -165,15 +165,17 @@ export default function PostJobPage() {
     if (validateStep()) { 
       setCurrentStep(prev => Math.min(prev + 1, totalSteps)); 
       window.scrollTo(0, 0); 
+    } else {
+      toast.error("Please fill required fields");
     }
-    else toast.error("Please fill required fields");
   };
 
   const prevStep = () => { setCurrentStep(prev => Math.max(prev - 1, 1)); window.scrollTo(0, 0); };
 
   const handleAuthNavigation = () => {
     localStorage.setItem("pendingJobPost", JSON.stringify(formData));
-    router.push("/company-register");
+    const isRegistered = localStorage.getItem("isRegistered");
+    router.push(isRegistered === "true" ? "/company-login" : "/company-register");
   };
 
   const filteredCategories = useMemo(() => {
@@ -205,51 +207,57 @@ export default function PostJobPage() {
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    const token = localStorage.getItem("token");
-    
-    if (!token) {
-        setIsAuthModalOpen(true);
-        return;
+  const handleFinalSubmit = async () => {
+    if (!validateStep()) {
+      toast.error("Please fill required fields");
+      return;
     }
 
-    if (!validateStep()) return;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+
     setLoading(true);
-    
+
     const finalCategory = formData.category === "Other" ? formData.otherCategory : formData.category;
     const finalEducation = formData.education === "Other" ? formData.otherEducation : formData.education;
-    
+
     try {
       const res = await fetch("https://easyjobspk.onrender.com/api/jobs", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-        body: JSON.stringify({ 
-            ...formData, 
-            category: finalCategory, 
-            education: finalEducation, 
-            skills: formData.skills ? formData.skills.split(",").map(s => s.trim()) : [] 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          ...formData,
+          category: finalCategory,
+          education: finalEducation,
+          skills: formData.skills ? formData.skills.split(",").map((s) => s.trim()) : [],
         }),
       });
-      if (res.ok) { 
+
+      if (res.ok) {
         setShowSuccess(true);
-        localStorage.removeItem("pendingJobPost"); 
-      } else { 
-        const errorData = await res.json(); 
-        toast.error(errorData.message || "Failed to post job"); 
+        localStorage.removeItem("pendingJobPost");
+      } else {
+        const errorData = await res.json();
+        toast.error(errorData.message || "Failed to post job");
       }
-    } catch (err) { 
-      toast.error("Server error. Please try again."); 
-    } finally { 
-      setLoading(false); 
+    } catch (err) {
+      toast.error("Server error. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-[70vh] bg-[#e6e8e8] pb-10 font-sans">
       <Toaster position="top-center" />
-            <AuthRequiredModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onAction={handleAuthNavigation} />
-            <JobPendingModal isOpen={showSuccess} onAction={() => router.push("/jobs")} />
+      <AuthRequiredModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onAction={handleAuthNavigation} />
+      <JobPendingModal isOpen={showSuccess} onAction={() => router.push("/jobs")} />
 
       <AnimatePresence>
         {isCropping && (
@@ -260,8 +268,8 @@ export default function PostJobPage() {
             <div className="mt-8 w-full max-w-[400px] space-y-6 px-4">
               <input type="range" value={zoom} min={1} max={3} step={0.1} onChange={(e) => setZoom(Number(e.target.value))} className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#5DBB63]" />
               <div className="flex gap-4">
-                <button onClick={() => setIsCropping(false)} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold flex items-center justify-center gap-2 border border-white/20"><X size={18} /> Cancel</button>
-                <button onClick={saveCroppedImage} className="flex-1 py-4 bg-[#5DBB63] text-white rounded-2xl font-bold flex items-center justify-center gap-2"><Check size={18} /> Done</button>
+                <button type="button" onClick={() => setIsCropping(false)} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold flex items-center justify-center gap-2 border border-white/20"><X size={18} /> Cancel</button>
+                <button type="button" onClick={saveCroppedImage} className="flex-1 py-4 bg-[#5DBB63] text-white rounded-2xl font-bold flex items-center justify-center gap-2"><Check size={18} /> Done</button>
               </div>
             </div>
           </div>
@@ -279,7 +287,7 @@ export default function PostJobPage() {
 
       <div className="max-w-4xl mx-auto px-4 mt-6">
         <div className="bg-white rounded-[35px] shadow-xl overflow-hidden border border-white">
-          <form onSubmit={handleSubmit} className="p-6 md:p-14">
+          <div className="p-6 md:p-14">
             {currentStep === 1 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-10">
                 <section className="flex flex-col items-center gap-6">
@@ -312,7 +320,7 @@ export default function PostJobPage() {
                     <div className="flex items-end"><div className="w-full bg-gray-100 rounded-xl p-4 text-sm font-bold text-gray-500 flex items-center gap-2 h-[54px]"><Globe size={14} /> Pakistan</div></div>
                     <div className="space-y-1.5 md:col-span-2">
                         <label className="text-[10px] font-bold text-[#00004d] flex items-center gap-1"> Company Name *</label>
-                        <input placeholder="Company or Business Name" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyName} onChange={(e) => setFormData({ ...formData, companyName: e.target.value })} />
+                        <input placeholder="Company or Business Name" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyName} onChange={(e) => setFormData({ ...formData, companyName: e.target.value })} />
                     </div>
                   </div>
                 </section>
@@ -322,10 +330,10 @@ export default function PostJobPage() {
             {currentStep === 2 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
                 <div className="flex items-center gap-3 border-l-4 border-[#00004d] pl-3"><h2 className="text-[#00004d] font-bold text-lg tracking-wider">Contact Information</h2></div>
-                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Contact Person *</label><input placeholder="Contact Person Name" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.contactPerson} onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })} /></div>
-                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Designation *</label><input placeholder="Contact Person's Designation" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.designation} onChange={(e) => setFormData({ ...formData, designation: e.target.value })} /></div>
-                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Phone Number *</label><input placeholder="Enter your phone no." required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} /></div>
-                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Company Email *</label><input placeholder="Enter company email" required className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyEmail} onChange={(e) => setFormData({ ...formData, companyEmail: e.target.value })} /></div>
+                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Contact Person *</label><input placeholder="Contact Person Name" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.contactPerson} onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })} /></div>
+                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Designation *</label><input placeholder="Contact Person's Designation" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.designation} onChange={(e) => setFormData({ ...formData, designation: e.target.value })} /></div>
+                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Phone Number *</label><input placeholder="Enter your phone no." className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} /></div>
+                <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Company Email *</label><input placeholder="Enter company email" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyEmail} onChange={(e) => setFormData({ ...formData, companyEmail: e.target.value })} /></div>
                 <div className="space-y-1.5"><label className="text-[10px] font-bold text-[#00004d]"> Address </label><input placeholder="Company Address (Optional)" className="w-full bg-[#f8fafc] border border-gray-100 rounded-xl p-4 text-sm font-bold outline-none" value={formData.companyAddress} onChange={(e) => setFormData({ ...formData, companyAddress: e.target.value })} /></div>
               </motion.div>
             )}
@@ -385,12 +393,12 @@ export default function PostJobPage() {
               {currentStep < totalSteps ? (
                 <button type="button" onClick={nextStep} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#00004d] text-white font-bold text-sm active:scale-95 transition-transform">Next Step <ArrowRight size={18} /></button>
               ) : (
-                <button type="submit" disabled={loading} className="flex-[2] flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#5DBB63] text-white font-bold text-sm shadow-lg active:scale-95 transition-transform disabled:opacity-70">
+                <button type="button" onClick={handleFinalSubmit} disabled={loading} className="flex-[2] flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#5DBB63] text-white font-bold text-sm shadow-lg active:scale-95 transition-transform disabled:opacity-70">
                   {loading ? <Loader2 className="animate-spin" /> : <CheckCircle2 size={18} />} {loading ? "Publishing..." : "Publish Vacancy"}
                 </button>
               )}
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
