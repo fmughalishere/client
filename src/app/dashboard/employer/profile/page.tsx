@@ -105,7 +105,7 @@ export default function MyProfile() {
           </div>
 
           <h1 className="mt-4 text-2xl font-black text-[#00004d] tracking-tight">{formData.name}</h1>
-          <p className="text-[#5DBB63] font-bold text-[10px] tracking-widest">{profile?.role} Account</p>
+          <p className="text-[#00d26a] font-bold text-[10px] tracking-widest">{profile?.role} Account</p>
         </div>
       </section>
 
