@@ -643,7 +643,7 @@ export default function HomePage() {
                           <div className="flex items-center gap-0.5 text-[#5DBB63]">
                             <IoIosPin size={12} /><span className="font-bold text-[10px]">{app.city}</span>
                           </div>
-                          <span className="text-[#5DBB63] font-black text-[10px] flex items-center">Visit profile <LuChevronsRight size={14} strokeWidth={3} /></span>
+                          <span className="text-[#5DBB63] font-black text-[10px] flex items-center">Visit my profile <LuChevronsRight size={14} strokeWidth={3} /></span>
                         </div>
                       </div>
                     </div>

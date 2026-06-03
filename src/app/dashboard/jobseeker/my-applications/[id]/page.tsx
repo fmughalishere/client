@@ -12,7 +12,7 @@ export default function ApplicationDetails() {
     const { id } = useParams();
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
-    const [showOfferOnly, setShowOfferOnly] = useState(false); // State to toggle view
+    const [showOfferOnly, setShowOfferOnly] = useState(false);
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -38,7 +38,6 @@ export default function ApplicationDetails() {
 
     const isJobApp = !!data?.job;
 
-    // --- FULL SCREEN OFFER VIEW ---
     if (showOfferOnly && data?.offerDetails) {
         const offer = data.offerDetails;
         return (
@@ -96,8 +95,6 @@ export default function ApplicationDetails() {
                             "{offer.message || "We are pleased to offer you this position based on your profile."}"
                         </div>
                     </div>
-
-                    {/* ACTION BUTTON: Accept & WhatsApp */}
                     <div className="pt-4 flex flex-col gap-4">
                         <div className="grid grid-cols-2 gap-3">
                             <button

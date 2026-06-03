@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef, ChangeEvent, FormEvent, useMemo, useEffect } from "react";
+import { useState, useRef, ChangeEvent, FormEvent, useMemo, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Cropper, { Area } from "react-easy-crop";
 import toast, { Toaster } from "react-hot-toast";
 import {
@@ -68,7 +68,7 @@ function AuthRequiredModal({ isOpen, onClose, onAction }: { isOpen: boolean; onC
   );
 }
 
-function SuccessModal({ isOpen, onClose, onAction }: { isOpen: boolean, onClose: () => void, onAction: () => void }) {
+function SuccessModal({ isOpen, onClose, onAction, hasJobId }: { isOpen: boolean, onClose: () => void, onAction: () => void, hasJobId: boolean }) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -76,30 +76,32 @@ function SuccessModal({ isOpen, onClose, onAction }: { isOpen: boolean, onClose:
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <motion.div initial={{ scale: 0.9, opacity: 0, y: 50 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 50 }} className="relative w-full max-w-[360px] md:max-w-md bg-white rounded-[30px] p-6 md:p-8 text-left shadow-2xl overflow-y-auto max-h-[90vh]">
             <div className="flex justify-center mb-4"><div className="bg-green-100 p-3 rounded-full"><CheckCircle2 size={40} className="text-green-500" /></div></div>
-            <h3 className="text-xl font-bold text-[#00004d] mb-3 text-center">Thank You for Submitting Your Profile</h3>
+            <h3 className="text-xl font-bold text-[#00004d] mb-3 text-center">{hasJobId ? "Application Submitted Successfully!" : "Thank You for Submitting Your Profile"}</h3>
             <div className="text-sm text-gray-700 space-y-4 leading-relaxed">
               <div><p className="font-semibold">1. Your profile will be published after admin approval.</p><p className="text-gray-500 text-[12px]">آپ کی پروفائل مین پیج پر صرف ایڈمن کی منظوری کے بعد لگائی جائے گی۔</p></div>
-              <div><p className="font-semibold">2. Your contact information will remain confidential.</p><p className="text-gray-500 text-[12px]">آپ کی کانٹیکٹ انفارمیشن مکمل طور پر خفیہ رکھی جائے گی۔</p></div>
+              <div><p className="font-semibold">2. Your contact information will remain confidential.</p><p className="text-gray-500 text-[12px]">آپ کی کانٹیکٹ انفامرشن مکمل طور پر خفیہ رکھی جائے گی۔</p></div>
               <div><p className="font-semibold">3. Employers will contact you directly.</p><p className="text-gray-500 text-[12px]">ایمپلائر خود آپ سے براہِ راست رابطہ کریں گے اور آپ کو جاب آفر دیں گے۔</p></div>
             </div>
-            <button onClick={onAction} className="w-full mt-6 bg-[#00004d] text-white py-4 rounded-full font-bold text-sm active:scale-95 transition-transform">Go to Dashboard</button>
+            <button onClick={onAction} className="w-full mt-6 bg-[#00004d] text-white py-4 rounded-full font-bold text-sm active:scale-95 transition-transform">
+              {hasJobId ? "View My Applications" : "Go to Dashboard"}
+            </button>
           </motion.div>
         </div>
       )}
     </AnimatePresence>
   );
 }
-
-export default function MobileResponsiveJobForm() {
+function JobFormContent() {
   const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const searchParams = useSearchParams();
+  const jobId = searchParams.get("jobId");
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 5;
 
   const [isFresher, setIsFresher] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [isCatOpen, setIsCatOpen] = useState(false);
   const [catSearch, setCatSearch] = useState("");
   const catRef = useRef<HTMLDivElement>(null);
@@ -126,18 +128,10 @@ export default function MobileResponsiveJobForm() {
   ]);
 
   const validateStep = () => {
-    if (currentStep === 1) {
-      return formData.fullName.trim() !== "" && formData.city.trim() !== "";
-    }
-    if (currentStep === 2) {
-      return formData.category.trim() !== "" && (formData.category === "Other" ? formData.otherCategory.trim() !== "" : true);
-    }
-    if (currentStep === 3) {
-      return formData.education.trim() !== "" && (formData.education === "Other" ? formData.otherEducation.trim() !== "" : true);
-    }
-    if (currentStep === 5) {
-      return formData.phone.replace(/\s/g, "").length > 10 && formData.salaryDemand.trim() !== "" && formData.agreeTerms;
-    }
+    if (currentStep === 1) return formData.fullName.trim() !== "" && formData.city.trim() !== "";
+    if (currentStep === 2) return formData.category.trim() !== "" && (formData.category === "Other" ? formData.otherCategory.trim() !== "" : true);
+    if (currentStep === 3) return formData.education.trim() !== "" && (formData.education === "Other" ? formData.otherEducation.trim() !== "" : true);
+    if (currentStep === 5) return formData.phone.replace(/\s/g, "").length > 10 && formData.salaryDemand.trim() !== "" && formData.agreeTerms;
     return true;
   };
 
@@ -147,7 +141,7 @@ export default function MobileResponsiveJobForm() {
       if (currentStep < totalSteps) setCurrentStep(prev => prev + 1);
       window.scrollTo(0, 0);
     } else {
-      toast.error("Please fill all required fields before moving forward.", { position: "top-center" });
+      toast.error("Please fill all required fields before moving forward.");
     }
   };
 
@@ -158,7 +152,7 @@ export default function MobileResponsiveJobForm() {
   };
 
   const handleAuthNavigation = () => {
-    localStorage.setItem("pendingJobApplication", JSON.stringify({ formData, isFresher, experienceList }));
+    localStorage.setItem("pendingJobApplication", JSON.stringify({ formData, isFresher, experienceList, jobId }));
     const isRegistered = localStorage.getItem("isRegistered");
     router.push(isRegistered === "true" ? "/login" : "/register");
   };
@@ -234,7 +228,7 @@ export default function MobileResponsiveJobForm() {
       setFormData({ ...formData, image: croppedImage });
       setIsCropping(false);
       setImageToCrop(null);
-      toast.success("Profile image updated!", { position: "top-center" });
+      toast.success("Profile image updated!");
     }
   };
 
@@ -248,13 +242,14 @@ export default function MobileResponsiveJobForm() {
     }
 
     if (!validateStep()) {
-      toast.error("Please ensure all required fields and terms are completed.", { position: "top-center" });
+      toast.error("Please ensure all required fields and terms are completed.");
       return;
     }
 
     setLoading(true);
     const finalPayload = {
       ...formData,
+      job: jobId || undefined,
       category: formData.category === "Other" ? formData.otherCategory : formData.category,
       education: formData.education === "Other" ? formData.otherEducation : formData.education,
       skills: formData.skills ? formData.skills.split(",").map(s => s.trim()) : [],
@@ -270,19 +265,27 @@ export default function MobileResponsiveJobForm() {
         body: JSON.stringify(finalPayload)
       });
       if (res.ok) {
-        setSubmitted(true);
         setIsModalOpen(true);
-        toast.success("Application submitted successfully!", { position: "top-center" });
+        toast.success("Application submitted successfully!");
       }
       else {
         const data = await res.json();
-        toast.error(data.message || "Error submitting application", { position: "top-center" });
+        toast.error(data.message || "Error submitting application");
       }
     } catch {
-      toast.error("Server error. Please try again later.", { position: "top-center" });
+      toast.error("Server error. Please try again later.");
     }
     finally {
       setLoading(false);
+    }
+  };
+
+  const handleSuccessRedirection = () => {
+    setIsModalOpen(false);
+    if (jobId) {
+      router.push("/dashboard/jobseeker/my-applications");
+    } else {
+      router.push("/");
     }
   };
 
@@ -290,7 +293,12 @@ export default function MobileResponsiveJobForm() {
     <div className="min-h-[60vh] bg-[#e6e8e8] pb-10 font-sans">
       <Toaster position="top-center" reverseOrder={false} />
       <AuthRequiredModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onAction={handleAuthNavigation} />
-      <SuccessModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAction={() => router.push("/")} />
+      <SuccessModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onAction={handleSuccessRedirection} 
+        hasJobId={!!jobId}
+      />
 
       <AnimatePresence>
         {isCropping && (
@@ -546,5 +554,13 @@ export default function MobileResponsiveJobForm() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function MobileResponsiveJobForm() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-[#00004d]" size={40} /></div>}>
+      <JobFormContent />
+    </Suspense>
   );
 }
