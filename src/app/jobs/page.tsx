@@ -32,7 +32,10 @@ export default function JobsPage() {
   const fetchJobs = useCallback(async () => {
     try {
       const userData = typeof window !== "undefined" ? localStorage.getItem("user") : null;
-      if (userData) setCurrentUserId(JSON.parse(userData)._id);
+      if (userData) {
+        const parsedUser = JSON.parse(userData);
+        setCurrentUserId(parsedUser.id || parsedUser._id);
+      }
 
       const res = await fetch("https://easyjobspk.onrender.com/api/jobs");
       const data = await res.json();
@@ -81,8 +84,8 @@ export default function JobsPage() {
     if (!token || !currentUserId) return toast.error("Please login to save jobs!");
 
     try {
-      const res = await fetch(`https://easyjobspk.onrender.com/api/jobs/${id}/save`, {
-        method: "PATCH",
+      const res = await fetch(`https://easyjobspk.onrender.com/api/jobs/save/${id}`, {
+        method: "POST",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
       });
       if (res.ok) {

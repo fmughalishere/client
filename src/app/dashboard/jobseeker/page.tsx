@@ -122,8 +122,8 @@ export default function JobSeekerDashboard() {
                   key={item.name}
                   href={item.path}
                   className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-sm transition-all ${pathname === item.path
-                      ? 'bg-[#00004d] text-white shadow-xl translate-x-2'
-                      : 'bg-white text-slate-400 hover:text-[#00004d] hover:bg-slate-50'
+                    ? 'bg-[#00004d] text-white shadow-xl translate-x-2'
+                    : 'bg-white text-slate-400 hover:text-[#00004d] hover:bg-slate-50'
                     }`}
                 >
                   <item.icon size={20} /> {item.name}
@@ -165,11 +165,12 @@ export default function JobSeekerDashboard() {
                 </motion.div>
               )}
             </AnimatePresence>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { label: "Applied", val: data?.totalApplications || 0, icon: FileText, color: "text-blue-600", bg: "bg-blue-50" },
-                { label: "Shortlisted", val: data?.shortlisted || 0, icon: CheckCircle2, color: "text-purple-600", bg: "bg-purple-50" },
-                { label: "Saved Jobs", val: data?.savedJobs || 0, icon: Bookmark, color: "text-green-600", bg: "bg-green-50" },
+                { label: "Applied", val: data?.stats?.totalApplications || 0, icon: FileText, color: "text-blue-600", bg: "bg-blue-50" },
+                { label: "Shortlisted", val: data?.stats?.shortlisted || 0, icon: CheckCircle2, color: "text-purple-600", bg: "bg-purple-50" },
+                { label: "Offered", val: data?.stats?.offered || 0, icon: PartyPopper, color: "text-orange-600", bg: "bg-orange-50" }, // Ye rahi offered wali line
+                { label: "Saved Jobs", val: data?.stats?.savedJobs || 0, icon: Bookmark, color: "text-green-600", bg: "bg-green-50" },
               ].map((stat, i) => (
                 <motion.div
                   key={i}
