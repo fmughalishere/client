@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import {
-  Briefcase, ArrowLeft, Loader2,
+import { 
+  Briefcase, ArrowLeft, Loader2, 
   ChevronRight, ChevronDown, Filter,
   Check, PartyPopper, Search, FileText
 } from "lucide-react";
@@ -20,7 +20,7 @@ export default function MyApplications() {
       try {
         const token = localStorage.getItem("token");
         const res = await fetch("https://easyjobspk.onrender.com/api/applications/my-applications", {
-          headers: { 'Authorization': `Bearer ${token}` }
+            headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
         setApps(data);
@@ -39,7 +39,7 @@ export default function MyApplications() {
 
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
-      case 'offered':
+      case 'offered': 
       case 'approved': return "bg-[#5DBB63] text-white";
       case 'shortlisted': return "bg-purple-600 text-white";
       case 'rejected': return "bg-red-500 text-white";
@@ -59,8 +59,8 @@ export default function MyApplications() {
               <h1 className="text-2xl md:text-4xl font-black text-[#00004d] tracking-tight">My Applications</h1>
               <p className="text-slate-400 font-bold text-sm mt-1">Track your job & general applications 🚀</p>
             </div>
-            <div className="relative w-full md:w-64" ref={dropRef}>
-              <button
+                        <div className="relative w-full md:w-64" ref={dropRef}>
+              <button 
                 onClick={() => setIsDropOpen(!isDropOpen)}
                 className="w-full bg-white border-2 border-slate-100 px-5 py-3.5 rounded-2xl flex items-center justify-between shadow-sm"
               >
@@ -74,7 +74,7 @@ export default function MyApplications() {
                 {isDropOpen && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white border rounded-[2rem] shadow-2xl z-50 p-2 overflow-hidden">
                     {filterOptions.map((opt) => (
-                      <button key={opt} onClick={() => { setFilter(opt); setIsDropOpen(false) }} className={`w-full text-left px-5 py-3 rounded-xl font-bold text-xs capitalize ${filter === opt ? 'bg-[#00004d] text-white' : 'text-slate-500 hover:bg-slate-50'}`}>
+                      <button key={opt} onClick={() => {setFilter(opt); setIsDropOpen(false)}} className={`w-full text-left px-5 py-3 rounded-xl font-bold text-xs capitalize ${filter === opt ? 'bg-[#00004d] text-white' : 'text-slate-500 hover:bg-slate-50'}`}>
                         {opt}
                       </button>
                     ))}
@@ -88,7 +88,7 @@ export default function MyApplications() {
 
       <div className="max-w-5xl mx-auto px-4 py-10">
         {loading ? (
-          <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#00004d]" size={40} /></div>
+           <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#00004d]" size={40} /></div>
         ) : (
           <div className="grid gap-4">
             {filteredApps.map((app: any, i: number) => (
@@ -99,12 +99,14 @@ export default function MyApplications() {
                       {app.job ? <Briefcase size={26} /> : <FileText size={26} />}
                     </div>
                     <div>
-                      <h1 className="text-2xl font-black text-[#00004d]">
-                        {app?.job ? app.job.category : "General Application"}
-                      </h1>
-
-                      <p className="text-[#5DBB63] font-bold">
-                        {app?.job ? `Applied for: ${app.job.city}` : "Easy Jobs PK Network"}
+                      <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1 block">
+                        {app.job ? "Job-Specific" : "General Application"}
+                      </span>
+                      <h4 className="text-lg md:text-xl font-black text-[#00004d] leading-tight">
+                        {app.job?.title || "Platform Application"}
+                      </h4>
+                      <p className="text-[#5DBB63] font-black text-[10px] uppercase tracking-widest mt-1">
+                        {app.job?.companyName || "Easy Jobs PK"}
                       </p>
                     </div>
                   </div>

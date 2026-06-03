@@ -127,8 +127,6 @@ export default function ApplicationDetails() {
             </div>
         );
     }
-
-    // --- NORMAL APPLICATION VIEW ---
     const steps = [
         { label: "Submitted", date: data.createdAt, done: true },
         { label: isJobApp ? "Reviewed by HR" : "Verified by Team", date: data.reviewedAt || null, done: !!data.reviewedAt || data.status !== 'pending' },
@@ -159,11 +157,12 @@ export default function ApplicationDetails() {
                                     {isJobApp ? <Building2 size={32} /> : <FileText size={32} />}
                                 </div>
                                 <div>
-                                    <h1 className="text-2xl md:text-3xl font-black text-[#00004d] leading-tight">
-                                        {data.job?.title || "General Application"}
+                                    <h1 className="text-2xl font-black text-[#00004d]">
+                                        {data?.job ? data.job.category : "General Application"}
                                     </h1>
-                                    <p className="text-[#5DBB63] font-black  tracking-widest text-sm mt-1">
-                                        {data.job?.companyName || "Easy Jobs PK Network"}
+
+                                    <p className="text-[#5DBB63] font-bold">
+                                        {data?.job ? `Applied for: ${data.job.city}` : "Easy Jobs PK Network"}
                                     </p>
                                 </div>
                             </div>
@@ -215,8 +214,6 @@ export default function ApplicationDetails() {
                         <div className={`p-8 rounded-[2.5rem] text-white shadow-xl ${['offered', 'approved'].includes(data.status?.toLowerCase()) ? 'bg-gradient-to-br from-[#5DBB63] to-[#4ea854]' : 'bg-[#00004d]'}`}>
                             <h3 className="text-xl font-black mb-2  tracking-tight">Verdict</h3>
                             <p className="text-sm font-bold opacity-90 capitalize mb-4">{data.status}</p>
-
-                            {/* OFFER BUTTON */}
                             {data.status === 'offered' && data.offerDetails && (
                                 <button
                                     onClick={() => setShowOfferOnly(true)}
