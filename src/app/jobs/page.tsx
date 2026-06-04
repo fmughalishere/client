@@ -175,13 +175,13 @@ export default function JobsPage() {
                     </div>
                     <div className="flex flex-col flex-1 overflow-hidden py-2 pr-3">
                       <div className="flex justify-between items-center">
-                        <p className="text-[11px] font-bold text-[#00004d] truncate max-w-[150px]">{job.category}</p>
+                        <p className="text-[11px] font-bold text-[#00004d] truncate max-w-[150px]">Category: {job.category}</p>
                         <button onClick={(e) => handleToggleSave(e, job._id)} className="p-1">
                           <Heart size={18} className={job.savedBy?.includes(currentUserId) ? "fill-[#00004d] text-[#00004d]" : "text-[#00004d]"} />
                         </button>
                       </div>
-                      <p className="text-[9px] font-bold text-[#00004d]">{job.type || "Full Time"}</p>
-                      <p className="text-[10px] font-bold text-[#00004d] mt-0.5">{job.salary || "Negotiable"}</p>
+                      <p className="text-[9px] font-bold text-[#00004d]">Job Type: {job.type || "Full Time"}</p>
+                      <p className="text-[10px] font-bold text-[#00004d] mt-0.5">Salary: {job.salary || "Negotiable"}</p>
                       <div className="flex justify-between items-center mt-1">
                         <div className="flex items-center gap-0 text-[#5DBB63] ml-[-1]">
                           <MapPin size={13} />
