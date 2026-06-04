@@ -71,7 +71,6 @@ function CustomDropdown({
 
       {open && (
         <div className="absolute top-full left-0 mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto">
-
           <button
             type="button"
             onClick={() => {
@@ -378,7 +377,6 @@ export default function HomePage() {
         `https://easyjobspk.onrender.com/api/applications/${id}/save`,
         {
           method: "PATCH",
-
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type":
