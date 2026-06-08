@@ -91,6 +91,7 @@ function SuccessModal({ isOpen, onClose, onAction, hasJobId }: { isOpen: boolean
     </AnimatePresence>
   );
 }
+
 function JobFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -249,7 +250,7 @@ function JobFormContent() {
     setLoading(true);
     const finalPayload = {
       ...formData,
-      job: jobId || undefined,
+      jobId: jobId || undefined,
       category: formData.category === "Other" ? formData.otherCategory : formData.category,
       education: formData.education === "Other" ? formData.otherEducation : formData.education,
       skills: formData.skills ? formData.skills.split(",").map(s => s.trim()) : [],
@@ -326,7 +327,7 @@ function JobFormContent() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-4xl mx-auto px-4 mt-8">
         <div className="bg-white rounded-[35px] shadow-xl overflow-hidden border border-white">
           <form onSubmit={handleSubmit} className="p-6 md:p-14">
             {currentStep === 1 && (
@@ -524,29 +525,35 @@ function JobFormContent() {
                   </div>
                 </div>
 
-                <div className="pt-6 border-t space-y-4">
-                  <button type="button" onClick={() => router.push('/readpolicy')} className="text-[#00004d] text-[11px] font-bold underline">Read Privacy Policy</button>
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" checked={formData.agreeTerms} onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })} className="accent-[#00004d] w-4 h-4" />
-                    <span className="text-[12px] font-bold text-gray-600">I agree to the Terms & Conditions</span>
+                <div className="pt-4 border-t">
+                  <label className="flex items-start gap-3 cursor-pointer select-none">
+                    <input type="checkbox" name="agreeTerms" checked={formData.agreeTerms} onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })} className="mt-1 accent-[#00004d] w-4 h-4 shrink-0" />
+                    <span className="text-xs text-gray-600 font-medium leading-relaxed">
+                      I agree that the details provided are accurate. False claims may lead to blacklisting.
+                      <br />
+                      <span className="text-gray-400 text-[11px]">میں تصدیق کرتا/کرتی ہوں کہ فراہم کردہ تمام معلومات درست ہیں۔</span>
+                    </span>
                   </label>
                 </div>
               </motion.div>
             )}
 
-            <div className="flex items-center justify-between mt-12 gap-4">
-              {currentStep > 1 && (
-                <button type="button" onClick={(e) => prevStep(e)} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-gray-100 text-[#00004d] font-bold text-sm hover:bg-gray-200 transition-colors">
-                  <ArrowLeft size={18} /> Back
-                </button>
-              )}
-              {currentStep < totalSteps ? (
-                <button type="button" onClick={(e) => nextStep(e)} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#00004d] text-white font-bold text-sm active:scale-95 transition-transform">
-                  Next Step <ArrowRight size={18} />
+            <div className="flex justify-between items-center mt-14 pt-8 border-t border-gray-100 gap-4">
+              {currentStep > 1 ? (
+                <button type="button" onClick={prevStep} className="flex items-center gap-2 px-6 py-4 rounded-xl border-2 font-bold text-sm text-[#00004d] hover:bg-gray-50 active:scale-95 transition-all">
+                  <ArrowLeft size={16} /> Back
                 </button>
               ) : (
-                <button type="submit" disabled={loading} className="flex-[2] flex items-center justify-center gap-2 py-4 rounded-2xl bg-[#5DBB63] text-white font-bold text-sm shadow-lg active:scale-95 transition-transform disabled:opacity-70">
-                  {loading ? <Loader2 className="animate-spin" /> : <CheckCircle2 size={18} />} {loading ? "Submitting..." : "Submit Profile"}
+                <div />
+              )}
+
+              {currentStep < totalSteps ? (
+                <button type="button" onClick={nextStep} className="flex items-center gap-2 px-8 py-4 bg-[#00004d] text-white rounded-xl font-bold text-sm hover:bg-opacity-90 active:scale-95 transition-all shadow-md ml-auto">
+                  Next <ArrowRight size={16} />
+                </button>
+              ) : (
+                <button type="submit" disabled={loading} className="flex items-center justify-center gap-2 px-10 py-4 bg-[#5DBB63] text-white rounded-xl font-black text-sm hover:bg-opacity-90 active:scale-95 transition-all shadow-lg disabled:opacity-50 ml-auto min-w-[160px]">
+                  {loading ? <Loader2 size={18} className="animate-spin" /> : "Submit Profile 🚀"}
                 </button>
               )}
             </div>
@@ -557,9 +564,9 @@ function JobFormContent() {
   );
 }
 
-export default function MobileResponsiveJobForm() {
+export default function JobForm() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-[#00004d]" size={40} /></div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#e6e8e8]"><Loader2 className="animate-spin text-[#00004d]" size={40} /></div>}>
       <JobFormContent />
     </Suspense>
   );

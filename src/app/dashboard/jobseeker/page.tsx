@@ -58,12 +58,11 @@ export default function JobSeekerDashboard() {
     </div>
   );
 
-  const jobOffers = data?.recentApplications?.filter((app: any) => app.status === "Offered") || [];
+  const jobOffers = data?.recentApplications?.filter((app: any) => app.status?.toLowerCase() === "offered") || [];
 
   return (
     <div className="bg-[#e6e8e8] min-h-screen pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-
         <div className="flex flex-col lg:flex-row gap-8">
           <aside className="w-full lg:w-72 flex flex-col gap-4">
             <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-center lg:flex-col lg:items-center gap-4 text-center">
@@ -122,8 +121,8 @@ export default function JobSeekerDashboard() {
                   key={item.name}
                   href={item.path}
                   className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-sm transition-all ${pathname === item.path
-                    ? 'bg-[#00004d] text-white shadow-xl translate-x-2'
-                    : 'bg-white text-slate-400 hover:text-[#00004d] hover:bg-slate-50'
+                      ? 'bg-[#00004d] text-white shadow-xl translate-x-2'
+                      : 'bg-white text-slate-400 hover:text-[#00004d] hover:bg-slate-50'
                     }`}
                 >
                   <item.icon size={20} /> {item.name}
@@ -169,7 +168,7 @@ export default function JobSeekerDashboard() {
               {[
                 { label: "Applied", val: data?.stats?.totalApplications || 0, icon: FileText, color: "text-blue-600", bg: "bg-blue-50" },
                 { label: "Shortlisted", val: data?.stats?.shortlisted || 0, icon: CheckCircle2, color: "text-purple-600", bg: "bg-purple-50" },
-                { label: "Offered", val: data?.stats?.offered || 0, icon: PartyPopper, color: "text-orange-600", bg: "bg-orange-50" }, // Ye rahi offered wali line
+                { label: "Offered", val: data?.stats?.offered || 0, icon: PartyPopper, color: "text-orange-600", bg: "bg-orange-50" },
                 { label: "Saved Jobs", val: data?.stats?.savedJobs || 0, icon: Bookmark, color: "text-green-600", bg: "bg-green-50" },
               ].map((stat, i) => (
                 <motion.div
@@ -197,27 +196,38 @@ export default function JobSeekerDashboard() {
 
               <div className="space-y-4">
                 {data?.recentApplications?.length > 0 ? (
-                  data?.recentApplications?.map((app: any) => (
-                    <div key={app._id} className="group flex items-center justify-between p-4 md:p-6 rounded-[2rem] border border-slate-50 hover:bg-slate-50/50 hover:border-[#00004d]/10 transition-all">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg shadow-sm ${app.status === 'Offered' ? 'bg-[#5DBB63] text-white' : 'bg-[#e6e8e8] text-[#00004d]'
-                          }`}>
-                          <Briefcase size={20} />
+                  data?.recentApplications?.map((app: any) => {
+                    const statusLower = app.status?.toLowerCase();
+                    return (
+                      <div key={app._id} className="group flex items-center justify-between p-4 md:p-6 rounded-[2rem] border border-slate-50 hover:bg-slate-50/50 hover:border-[#00004d]/10 transition-all">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg shadow-sm ${statusLower === 'offered' ? 'bg-[#5DBB63] text-white' : 'bg-[#e6e8e8] text-[#00004d]'
+                            }`}>
+                            <Briefcase size={20} />
+                          </div>
+                          <div className="max-w-[150px] sm:max-w-none">
+                            <h4 className="font-black text-[#00004d] text-base leading-tight truncate">
+                              {app.jobId?.designation || app.jobId?.title || "Administrative Role"}
+                            </h4>
+                            <p className="text-xs font-bold text-slate-500 mt-0.5">
+                              {app.jobId?.companyName || "Company Profile"}
+                            </p>
+                            <p className="text-xs font-bold text-slate-400 mt-1">
+                              Status: <span className={
+                                statusLower === 'offered' ? 'text-[#5DBB63]' :
+                                  statusLower === 'shortlisted' ? 'text-purple-600' : 'text-blue-500'
+                              }>{app.status}</span>
+                            </p>
+                          </div>
                         </div>
-                        <div className="max-w-[150px] sm:max-w-none">
-                          <h4 className="font-black text-[#00004d] text-base leading-tight truncate">{app.job?.title || "Job Application"}</h4>
-                          <p className="text-xs font-bold text-slate-400 mt-1">
-                            Status: <span className={app.status === 'Offered' ? 'text-[#5DBB63]' : 'text-blue-500'}>{app.status}</span>
-                          </p>
+                        <div className="flex items-center gap-4">
+                          <span className="hidden sm:block text-[10px] font-black px-4 py-2 bg-white border border-slate-100 rounded-full text-slate-500">
+                            {new Date(app.updatedAt || app.createdAt).toLocaleDateString()}
+                          </span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <span className="hidden sm:block text-[10px] font-black px-4 py-2 bg-white border border-slate-100 rounded-full text-slate-500">
-                          {new Date(app.updatedAt || app.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-                  ))
+                    );
+                  })
                 ) : (
                   <div className="text-center py-20 bg-slate-50/50 rounded-[2rem] border-2 border-dashed border-slate-200">
                     <p className="font-bold text-slate-400">No applications found. Start applying!</p>

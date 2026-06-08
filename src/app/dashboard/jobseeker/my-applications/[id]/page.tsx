@@ -4,47 +4,98 @@ import { useParams, useRouter } from "next/navigation";
 import {
     ArrowLeft, Briefcase, MapPin, DollarSign,
     Calendar, Building2, CheckCircle2, Clock,
-    FileText, Loader2, Mail, ExternalLink, Info, Phone, MessageCircle, X
+    FileText, Loader2, Mail, ExternalLink, Info, Phone, MessageCircle, X,
+    User, GraduationCap, Award
 } from "lucide-react";
 import Link from "next/link";
 
 export default function ApplicationDetails() {
     const { id } = useParams();
+    const router = useRouter();
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [showOfferOnly, setShowOfferOnly] = useState(false);
+    const [actionLoading, setActionLoading] = useState(false);
 
     useEffect(() => {
+        let isMounted = true;
+        
         const fetchDetails = async () => {
             try {
                 const token = localStorage.getItem("token");
                 const res = await fetch(`https://easyjobspk.onrender.com/api/applications/${id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
+                
+                if (!res.ok) throw new Error("Failed to fetch application details");
+                
                 const result = await res.json();
-                setData(result);
-            } catch (err) { console.error(err) }
-            finally { setLoading(false) }
+                if (isMounted) setData(result);
+            } catch (err: any) { 
+                console.error(err);
+                if (isMounted) setError(err.message || "Something went wrong");
+            } finally { 
+                if (isMounted) setLoading(false);
+            }
         };
-        fetchDetails();
+
+        if (id) fetchDetails();
+
+        return () => { isMounted = false; };
     }, [id]);
+
+    const handleOfferAction = async (status: 'accepted' | 'rejected') => {
+        try {
+            setActionLoading(true);
+            const token = localStorage.getItem("token");
+            const res = await fetch(`https://easyjobspk.onrender.com/api/applications/${id}/respond`, {
+                method: 'POST',
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status })
+            });
+
+            if (res.ok) {
+                alert(`Offer successfully ${status}!`);
+                setShowOfferOnly(false);
+                router.refresh();
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setActionLoading(false);
+        }
+    };
 
     if (loading) return (
         <div className="min-h-[70vh] flex flex-col items-center justify-center bg-[#e6e8e8] gap-4">
             <Loader2 className="animate-spin text-[#00004d]" size={40} />
-            <p className="font-black text-slate-400 text-xs  tracking-widest">Loading Details...</p>
+            <p className="font-black text-slate-400 text-xs tracking-widest">Loading Details...</p>
         </div>
     );
 
-    const isJobApp = !!data?.job;
+    if (error || !data) return (
+        <div className="min-h-[70vh] flex flex-col items-center justify-center bg-[#e6e8e8] gap-4">
+            <p className="font-black text-red-500 text-sm tracking-wider">{error || "Application not found."}</p>
+            <Link href="/dashboard/jobseeker/my-applications" className="text-xs font-bold text-[#00004d] underline">
+                Go Back
+            </Link>
+        </div>
+    );
+
+    const isJobApp = !!(data?.jobId || data?.job);
 
     if (showOfferOnly && data?.offerDetails) {
         const offer = data.offerDetails;
         return (
-            <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 animate-in fade-in zoom-in duration-300">
+            <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 animate-in fade-in zoom-in duration-300 relative">
                 <button
                     onClick={() => setShowOfferOnly(false)}
-                    className="absolute top-8 left-8 flex items-center gap-2 text-slate-400 font-black text-xs  tracking-widest hover:text-[#00004d] transition-colors"
+                    className="absolute top-8 left-8 flex items-center gap-2 text-slate-400 font-black text-xs tracking-widest hover:text-[#00004d] transition-colors"
+                    disabled={actionLoading}
                 >
                     <ArrowLeft size={20} /> Back to Application
                 </button>
@@ -58,18 +109,18 @@ export default function ApplicationDetails() {
                         <h1 className="text-4xl md:text-5xl font-black text-[#00004d] leading-tight tracking-tighter">
                             Congratulations!
                         </h1>
-                        <p className="text-slate-400 font-bold  tracking-[0.2em] text-sm">You have received a job offer</p>
+                        <p className="text-slate-400 font-bold tracking-[0.2em] text-sm">You have received a job offer</p>
                     </div>
 
                     <div className="bg-slate-50 p-8 rounded-[3rem] border border-slate-100 text-left space-y-6">
                         <div className="flex justify-between items-start border-b border-slate-200 pb-6">
                             <div>
-                                <span className="text-[10px] font-black text-slate-400 ">Designation</span>
+                                <span className="text-[10px] font-black text-slate-400">Designation</span>
                                 <h2 className="text-2xl font-black text-[#00004d]">{offer.designation}</h2>
                                 <p className="text-[#5DBB63] font-extrabold">{offer.companyName}</p>
                             </div>
                             <div className="text-right">
-                                <span className="text-[10px] font-black text-slate-400 ">Offered By</span>
+                                <span className="text-[10px] font-black text-slate-400">Offered By</span>
                                 <p className="font-bold text-[#00004d]">{offer.employerName}</p>
                             </div>
                         </div>
@@ -78,14 +129,16 @@ export default function ApplicationDetails() {
                             <div className="flex items-center gap-3">
                                 <Calendar className="text-[#5DBB63]" size={20} />
                                 <div>
-                                    <span className="text-[10px] font-black text-slate-400  block">Interview Date</span>
-                                    <p className="text-sm font-bold text-[#00004d]">{new Date(offer.interviewDate).toLocaleString()}</p>
+                                    <span className="text-[10px] font-black text-slate-400 block">Interview Date</span>
+                                    <p className="text-sm font-bold text-[#00004d]">
+                                        {offer.interviewDate ? new Date(offer.interviewDate).toLocaleString() : "N/A"}
+                                    </p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
                                 <MapPin className="text-[#5DBB63]" size={20} />
                                 <div>
-                                    <span className="text-[10px] font-black text-slate-400  block">Location</span>
+                                    <span className="text-[10px] font-black text-slate-400 block">Location</span>
                                     <p className="text-sm font-bold text-[#00004d]">{offer.cityName}</p>
                                 </div>
                             </div>
@@ -95,19 +148,25 @@ export default function ApplicationDetails() {
                             "{offer.message || "We are pleased to offer you this position based on your profile."}"
                         </div>
                     </div>
+                    
                     <div className="pt-4 flex flex-col gap-4">
                         <div className="grid grid-cols-2 gap-3">
                             <button
-                                className="py-4 bg-[#5DBB63] hover:bg-[#4ea854] text-white rounded-[2rem] font-black flex items-center justify-center gap-2 shadow-xl shadow-green-100"
+                                onClick={() => handleOfferAction('accepted')}
+                                disabled={actionLoading}
+                                className="py-4 bg-[#5DBB63] hover:bg-[#4ea854] text-white rounded-[2rem] font-black flex items-center justify-center gap-2 shadow-xl shadow-green-100 disabled:opacity-50"
                             >
                                 <MessageCircle size={20} />
-                                ACCEPT
+                                {actionLoading ? "PROCESSING..." : "ACCEPT"}
                             </button>
 
                             <button
-                                className="py-4 bg-red-500 hover:bg-red-600 text-white rounded-[2rem] font-black flex items-center justify-center gap-2 shadow-xl shadow-red-100"
+                                onClick={() => handleOfferAction('rejected')}
+                                disabled={actionLoading}
+                                className="py-4 bg-red-500 hover:bg-red-600 text-white rounded-[2rem] font-black flex items-center justify-center gap-2 shadow-xl shadow-red-100 disabled:opacity-50"
                             >
-                                REJECT
+                                <X size={20} />
+                                {actionLoading ? "PROCESSING..." : "REJECT"}
                             </button>
                         </div>
 
@@ -115,18 +174,15 @@ export default function ApplicationDetails() {
                             href={`mailto:${offer.email}`}
                             className="block bg-slate-50 border border-slate-200 rounded-2xl p-4 hover:bg-slate-100 transition"
                         >
-                            <p className="text-xs text-slate-500 font-semibold mb-1">
-                                Contact Email
-                            </p>
-                            <p className="text-sm font-bold text-blue-600">
-                                {offer.email}
-                            </p>
+                            <p className="text-xs text-slate-500 font-semibold mb-1">Contact Email</p>
+                            <p className="text-sm font-bold text-blue-600">{offer.email}</p>
                         </a>
                     </div>
                 </div>
             </div>
         );
     }
+
     const steps = [
         { label: "Submitted", date: data.createdAt, done: true },
         { label: isJobApp ? "Reviewed by HR" : "Verified by Team", date: data.reviewedAt || null, done: !!data.reviewedAt || data.status !== 'pending' },
@@ -140,8 +196,7 @@ export default function ApplicationDetails() {
                     <Link href="/dashboard/jobseeker/my-applications" className="flex items-center gap-2 text-slate-400 font-bold text-xs group">
                         <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-all" /> BACK
                     </Link>
-                    <div className={`px-4 py-1.5 rounded-full text-[10px] font-black  tracking-wider ${['offered', 'approved'].includes(data.status?.toLowerCase()) ? 'bg-[#5DBB63] text-white' : 'bg-[#00004d] text-white'
-                        }`}>
+                    <div className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-wider ${['offered', 'approved'].includes(data.status?.toLowerCase()) ? 'bg-[#5DBB63] text-white' : 'bg-[#00004d] text-white'}`}>
                         Current Status: {data.status}
                     </div>
                 </div>
@@ -149,36 +204,88 @@ export default function ApplicationDetails() {
 
             <div className="max-w-6xl mx-auto px-4 py-12">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
                     <div className="lg:col-span-2 space-y-8">
                         <div className="bg-white p-8 md:p-10 rounded-[3rem] shadow-sm border border-white">
                             <div className="flex items-center gap-5 mb-8">
-                                <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center ${isJobApp ? 'bg-slate-100 text-[#00004d]' : 'bg-green-50 text-[#5DBB63]'}`}>
-                                    {isJobApp ? <Building2 size={32} /> : <FileText size={32} />}
-                                </div>
+                                {data.image && data.image.startsWith('data:image') ? (
+                                    <img 
+                                        src={data.image} 
+                                        alt={data.fullName || "Candidate"} 
+                                        className="w-16 h-16 rounded-[1.5rem] object-cover border border-slate-100 shadow-sm shrink-0"
+                                    />
+                                ) : (
+                                    <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center shrink-0 ${isJobApp ? 'bg-slate-100 text-[#00004d]' : 'bg-green-50 text-[#5DBB63]'}`}>
+                                        {isJobApp ? <Building2 size={32} /> : <FileText size={32} />}
+                                    </div>
+                                )}
                                 <div>
-                                    <h1 className="text-2xl font-black text-[#00004d]">
-                                        {data?.job ? data.job.category : "General Application"}
+                                    <h1 className="text-2xl font-black text-[#00004d] tracking-tight leading-tight">
+                                        {isJobApp ? (data.job?.category || "Job Position") : (data.category || "General Application")}
                                     </h1>
-
-                                    <p className="text-[#5DBB63] font-bold">
-                                        {data?.job ? `Applied for: ${data.job.city}` : "Easy Jobs PK Network"}
+                                    <p className="text-[#5DBB63] font-bold text-sm mt-0.5">
+                                        {isJobApp ? `Applied for Job Matrix` : `${data.fullName || "Easy Jobs Profile"}`}
                                     </p>
                                 </div>
                             </div>
 
                             {isJobApp ? (
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 py-8 border-y border-slate-50">
-                                    <div className="flex flex-col"><span className="text-[10px] font-black text-slate-400 ">Location</span><p className="text-sm font-bold text-[#00004d]">{data.job.location}</p></div>
-                                    <div className="flex flex-col"><span className="text-[10px] font-black text-slate-400 ">Salary</span><p className="text-sm font-bold text-[#00004d]">{data.job.salary}</p></div>
-                                    <div className="flex flex-col"><span className="text-[10px] font-black text-slate-400 ">Role</span><p className="text-sm font-bold text-[#00004d]">{data.job.jobType}</p></div>
+                                    <div className="flex flex-col"><span className="text-[10px] font-black text-slate-400">Location</span><p className="text-sm font-bold text-[#00004d]">{data.job?.location || "N/A"}</p></div>
+                                    <div className="flex flex-col"><span className="text-[10px] font-black text-slate-400">Salary</span><p className="text-sm font-bold text-[#00004d]">{data.job?.salary || "N/A"}</p></div>
+                                    <div className="flex flex-col"><span className="text-[10px] font-black text-slate-400">Role</span><p className="text-sm font-bold text-[#00004d]">{data.job?.jobType || "N/A"}</p></div>
                                 </div>
                             ) : (
-                                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 mb-8 flex gap-4">
-                                    <Info className="text-blue-500 shrink-0" size={20} />
-                                    <p className="text-sm text-slate-600 font-medium">
-                                        This was a general application submitted to our talent pool. Companies can view your profile and contact you directly for relevant roles.
-                                    </p>
+                                <div className="space-y-6 border-y border-slate-50 py-8">
+                                    <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex gap-4">
+                                        <Info className="text-blue-500 shrink-0" size={20} />
+                                        <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                                            This is your general platform profile application submitted to our central recruitment pool. Registered companies can view these metrics to source you directly.
+                                        </p>
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <div className="flex items-center gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+                                            <MapPin size={18} className="text-slate-400" />
+                                            <div>
+                                                <span className="text-[9px] font-black text-slate-400 block uppercase">Location</span>
+                                                <span className="text-xs font-bold text-[#00004d]">{data.city || "N/A"}, {data.country || "Pakistan"}</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+                                            <GraduationCap size={18} className="text-slate-400" />
+                                            <div>
+                                                <span className="text-[9px] font-black text-slate-400 block uppercase">Education</span>
+                                                <span className="text-xs font-bold text-[#00004d] truncate block max-w-[200px]" title={data.education}>{data.education || "N/A"}</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+                                            <Clock size={18} className="text-slate-400" />
+                                            <div>
+                                                <span className="text-[9px] font-black text-slate-400 block uppercase">Job Mode Preference</span>
+                                                <span className="text-xs font-bold text-[#00004d]">{data.jobtype || "N/A"}</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+                                            <DollarSign size={18} className="text-slate-400" />
+                                            <div>
+                                                <span className="text-[9px] font-black text-slate-400 block uppercase">Salary Demand</span>
+                                                <span className="text-xs font-bold text-[#00004d]">{data.salaryDemand || "Not Specified"}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {data.skills && data.skills.length > 0 && (
+                                        <div>
+                                            <span className="text-[10px] font-black text-slate-400 block uppercase mb-2">Core Skills Matrix</span>
+                                            <div className="flex flex-wrap gap-1.5">
+                                                {data.skills.map((skill: string, index: number) => (
+                                                    <span key={index} className="bg-[#00004d]/5 font-bold text-[#00004d] text-[10px] px-3 py-1 rounded-lg border border-[#00004d]/5">
+                                                        {skill}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             )}
 
@@ -187,7 +294,7 @@ export default function ApplicationDetails() {
                                     <FileText size={20} className="text-[#5DBB63]" /> Details Summary
                                 </h3>
                                 <p className="text-slate-500 text-sm leading-relaxed">
-                                    {data.job?.description || "Your application is being processed. Our team is verifying your details to match you with the best opportunities available in our network."}
+                                    {isJobApp ? (data.job?.description) : (data.achievements || "Your centralized talent application is currently active. The Easy Jobs PK team is matching your profile credentials with active corporate vacancies in your specialized domain.")}
                                 </p>
                             </div>
                         </div>
@@ -201,7 +308,7 @@ export default function ApplicationDetails() {
                                             <CheckCircle2 size={18} />
                                         </div>
                                         <div>
-                                            <h4 className={`text-sm font-black  tracking-wider ${step.done ? 'text-[#00004d]' : 'text-slate-400'}`}>{step.label}</h4>
+                                            <h4 className={`text-sm font-black tracking-wider ${step.done ? 'text-[#00004d]' : 'text-slate-400'}`}>{step.label}</h4>
                                             <p className="text-xs font-bold text-slate-400">{step.date ? new Date(step.date).toLocaleDateString() : "Pending"}</p>
                                         </div>
                                     </div>
@@ -212,12 +319,12 @@ export default function ApplicationDetails() {
 
                     <div className="space-y-6">
                         <div className={`p-8 rounded-[2.5rem] text-white shadow-xl ${['offered', 'approved'].includes(data.status?.toLowerCase()) ? 'bg-gradient-to-br from-[#5DBB63] to-[#4ea854]' : 'bg-[#00004d]'}`}>
-                            <h3 className="text-xl font-black mb-2  tracking-tight">Verdict</h3>
+                            <h3 className="text-xl font-black mb-2 tracking-tight">Verdict</h3>
                             <p className="text-sm font-bold opacity-90 capitalize mb-4">{data.status}</p>
                             {data.status === 'offered' && data.offerDetails && (
                                 <button
                                     onClick={() => setShowOfferOnly(true)}
-                                    className="w-full py-4 bg-white text-[#5DBB63] rounded-2xl font-black text-xs  tracking-widest mb-6 shadow-lg animate-pulse hover:scale-105 transition-all"
+                                    className="w-full py-4 bg-white text-[#5DBB63] rounded-2xl font-black text-xs tracking-widest mb-6 shadow-lg animate-pulse hover:scale-105 transition-all"
                                 >
                                     View Offer Details
                                 </button>
@@ -230,8 +337,29 @@ export default function ApplicationDetails() {
                                 {data.status === 'rejected' && "Unfortunately, your application was not successful this time."}
                             </p>
                         </div>
-                    </div>
 
+                        {!isJobApp && (
+                            <div className="bg-white p-6 rounded-[2rem] border border-white shadow-sm space-y-4">
+                                <h4 className="text-xs font-black text-[#00004d] uppercase tracking-wider mb-2 flex items-center gap-2">
+                                    <Award size={16} className="text-[#5DBB63]" /> Applicant Metadata
+                                </h4>
+                                <div className="space-y-3 text-xs">
+                                    <div className="flex items-center gap-2.5 text-slate-600">
+                                        <Mail size={14} className="text-slate-400" />
+                                        <span className="truncate">{data.email || "N/A"}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2.5 text-slate-600">
+                                        <Phone size={14} className="text-slate-400" />
+                                        <span>{data.phone || "N/A"}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2.5 text-slate-600">
+                                        <User size={14} className="text-slate-400" />
+                                        <span>Gender: {data.gender || "Male"}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
