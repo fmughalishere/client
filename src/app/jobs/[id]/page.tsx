@@ -44,23 +44,41 @@ export default function JobDetailPage() {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const apps = await res.json();
+      
+      const currentJobDetails = {
+        city: job?.city || "",
+        salaryDemand: job?.salary || "",
+        skills: Array.isArray(job?.skills) ? job.skills.join(", ") : job?.skills || "",
+        category: job?.category || "",
+        education: job?.education || "",
+        jobtype: job?.type || "Full-Time",
+        yearsOfExperience: job?.experience || "0"
+      };
+
       if (apps.length > 0) {
         const lastApp = apps[0];
         setFormData(prev => ({
           ...prev,
           fullName: lastApp.fullName || "",
-          city: lastApp.city || "",
-          category: lastApp.category || job?.category || "",
+          dob: lastApp.dob ? new Date(lastApp.dob).toISOString().split("T")[0] : "",
+          image: lastApp.image || "",
+          gender: lastApp.gender || "Male",
           whatsapp: lastApp.whatsapp || "+92",
-          skills: Array.isArray(lastApp.skills) ? lastApp.skills.join(", ") : lastApp.skills || "",
-          education: lastApp.education || "",
-          yearsOfExperience: lastApp.yearsOfExperience || "0",
           phone: lastApp.phone || "+92",
           email: lastApp.email || "",
+          achievements: lastApp.achievements || "",
+          ...currentJobDetails,
+          agreeTerms: false
         }));
         return true;
+      } else {
+        setFormData(prev => ({
+          ...prev,
+          ...currentJobDetails,
+          agreeTerms: false
+        }));
+        return false;
       }
-      return false;
     } catch (e) {
       console.log("No previous profile dataset found");
       return false;
@@ -82,7 +100,6 @@ export default function JobDetailPage() {
     setShowSelectionModal(true);
   };
 
-  // 1. Update your handleApplyAction function inside JobDetailPage.tsx
   const handleApplyAction = async () => {
     const token = localStorage.getItem("token");
     setIsApplying(true);
@@ -94,7 +111,7 @@ export default function JobDetailPage() {
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({
           jobId: id,
-          job: id // Dual tracking payload added here
+          job: id
         })
       });
 
@@ -106,9 +123,8 @@ export default function JobDetailPage() {
       }
       else if (res.status === 400 || res.status === 422) {
         await fetchPreviousData();
-        setFormData(prev => ({ ...prev, category: job?.category || "" }));
         setShowForm(true);
-        toast.error("Please complete your application details to apply.");
+        toast.error("Agree to terms and complete your profile to apply for this job.");
       }
       else {
         toast.error(result.message || "Already applied to this job position");
@@ -126,20 +142,22 @@ export default function JobDetailPage() {
 
     const token = localStorage.getItem("token");
     setIsApplying(true);
-
     const skillsPayload = typeof formData.skills === 'string'
       ? formData.skills.split(",").map(s => s.trim()).filter(s => s !== "")
       : [];
+    const experiencePayload = formData.yearsOfExperience ? [formData.yearsOfExperience] : [];
+    const { yearsOfExperience, skills, ...restFormData } = formData;
 
     try {
       const res = await fetch("https://easyjobspk.onrender.com/api/applications", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({
-          ...formData,
+          ...restFormData,
           jobId: id,
           job: id,
-          skills: skillsPayload
+          skills: skillsPayload,
+          experience: experiencePayload
         })
       });
 
@@ -157,6 +175,14 @@ export default function JobDetailPage() {
       setIsApplying(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#e6e8e8]">
+        <Loader2 className="animate-spin text-[#5DBB63]" size={40} />
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#e6e8e8] pb-20 font-sans text-[#00004d]">
@@ -184,7 +210,6 @@ export default function JobDetailPage() {
                   onClick={async () => {
                     setShowSelectionModal(false);
                     await fetchPreviousData();
-                    setFormData(prev => ({ ...prev, category: job?.category || "" }));
                     setShowForm(true);
                   }}
                   className="w-full border-2 border-[#00004d] text-[#00004d] py-4 rounded-2xl font-black text-sm active:scale-95 transition-all"

@@ -7,7 +7,7 @@ import Cropper from "react-easy-crop";
 import {
   Loader2, User, Calendar, Globe, MapPin, Briefcase,
   GraduationCap, Send, X, Building, Camera, Wand2,
-  CheckCircle2, Scissors
+  CheckCircle2
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { MALE_ICON, FEMALE_ICON } from "../../constants";
@@ -66,7 +66,6 @@ export default function ApplicantDetail() {
   const [isCropping, setIsCropping] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [showErrorPopup, setShowErrorPopup] = useState(false);
 
   const [offerData, setOfferData] = useState({
     employerName: "", designation: "", companyName: "", companyLogo: "", cityName: "", address: "", email: "", salaryRange: "", whatsapp: "", interviewDate: "", message: ""
