@@ -12,7 +12,6 @@ import {
   Heart,
   Filter,
   X,
-  ArrowUpDown,
 } from "lucide-react";
 
 import { IoIosPin } from "react-icons/io";
@@ -219,7 +218,7 @@ export default function HomePage() {
         )
         : [];
 
-      setApplicants(approvedOnly.reverse());
+      setApplicants(approvedOnly);
 
     } catch (error) {
       console.error(
@@ -278,13 +277,13 @@ export default function HomePage() {
       result = result.filter((item) => {
         const nameMatch =
           item.fullName
-            .toLowerCase()
+            ?.toLowerCase()
             .includes(query);
 
         const categoryMatch =
           item.category &&
           item.category
-            .toLowerCase()
+            ?.toLowerCase()
             .includes(query);
 
         const age =
@@ -339,6 +338,13 @@ export default function HomePage() {
           currentUserId &&
           app.savedBy?.includes(currentUserId)
       );
+    } else {
+      result.sort((a, b) => {
+        if (a.createdAt && b.createdAt) {
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        }
+        return b._id.localeCompare(a._id);
+      });
     }
 
     return result;
