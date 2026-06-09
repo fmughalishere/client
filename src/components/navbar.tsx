@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, PlusCircle, Bell, LogOut } from "lucide-react";
 import { AiFillHome } from "react-icons/ai";
 import { FaUserGear } from "react-icons/fa6";
-import { FaWhatsapp, FaFacebook } from "react-icons/fa";
+import { FaWhatsapp, FaFacebook, FaInstagram } from "react-icons/fa";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -87,51 +87,64 @@ const Navbar = () => {
     window.open(`https://wa.me/?text=${url}`, "_blank");
   };
 
+  const handleWhatsAppBusinessShare = () => {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://wa.me/?text=${url}`, "_blank");
+  };
+
   const handleFacebookShare = () => {
     const url = encodeURIComponent(window.location.href);
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, "_blank");
   };
 
+  const handleInstagramShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    alert("Link copied! Opening Instagram so you can paste it in DMs or Stories.");
+    window.open("https://www.instagram.com/", "_blank");
+  };
+
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#e6e8e8] shadow-sm border-b border-gray-200 backdrop-blur-md">      <nav className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between bg-[#e1eaed]">
-      <Link href="/">
-        <Image
-          src="/images/navbar-logo-easyjobspk.png"
-          alt="Logo"
-          width={210}
-          height={50}
-          className="object-contain"
-          priority
-          quality={100}
-          unoptimized
-        />
-      </Link>
-      <div className="hidden md:flex items-center gap-1">
-        {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className={`px-4 py-2 rounded-full text-[14px] font-semibold transition ${pathname === link.href
-              ? "text-blue-900 bg-blue-50"
-              : "text-gray-500 hover:text-blue-800 hover:bg-gray-50"
-              }`}
+    <header className="sticky top-0 z-50 w-full bg-[#e6e8e8] shadow-sm border-b border-gray-200 backdrop-blur-md">
+      <nav className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between bg-[#e1eaed]">
+        <Link href="/">
+          <Image
+            src="/images/navbar-logo-easyjobspk.png"
+            alt="Logo"
+            width={210}
+            height={50}
+            className="object-contain"
+            priority
+            quality={100}
+            unoptimized
+          />
+        </Link>
+        <div className="hidden md:flex items-center gap-1">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`px-4 py-2 rounded-full text-[14px] font-semibold transition ${pathname === link.href
+                ? "text-blue-900 bg-blue-50"
+                : "text-gray-500 hover:text-blue-800 hover:bg-gray-50"
+                }`}
+            >
+              {link.name}
+            </Link>
+          ))}
+        </div>
+        <div className="flex items-center gap-2">
+          <button className="relative p-2 mt-1 rounded-full hover:bg-gray-100 transition">
+            <Bell size={24} className="text-[#00004d]" />
+          </button>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden p-2 text-[#00004d]"
           >
-            {link.name}
-          </Link>
-        ))}
-      </div>
-      <div className="flex items-center gap-2">
-        <button className="relative p-2 mt-1 rounded-full hover:bg-gray-100 transition">
-          <Bell size={24} className="text-[#00004d]" />
-        </button>
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 text-[#00004d]"
-        >
-          {isOpen ? <X size={26} /> : <Menu size={26} />}
-        </button>
-      </div>
-    </nav>
+            {isOpen ? <X size={26} /> : <Menu size={26} />}
+          </button>
+        </div>
+      </nav>
+      
       <div className="py-2 bg-white">
         <div className="flex items-center justify-center gap-1 px-3">
           <Link
@@ -163,17 +176,17 @@ const Navbar = () => {
               Add to Home Screen
             </span>
           </button>
-
         </div>
       </div>
+
       <AnimatePresence>
         {showInstallBox && (
-          <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-[60]">
+          <div className="fixed top-0 left-0 w-screen h-screen backdrop-blur-sm bg-black/40 flex items-center justify-center z-[9999]">
             <motion.div
               initial={{ scale: 0.8, opacity: 0, y: 40 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.8, opacity: 0, y: 40 }}
-              className="bg-white/90 backdrop-blur-xl border border-gray-200 p-6 rounded-2xl w-[300px] text-center shadow-2xl"
+              className="bg-white border border-gray-200 p-6 rounded-2xl w-[320px] text-center shadow-2xl mx-4"
             >
               <div className="flex justify-center mb-3">
                 <div className="bg-[#00004d]/10 p-3 rounded-full">
@@ -182,22 +195,38 @@ const Navbar = () => {
               </div>
               <h2 className="font-bold text-lg text-[#00004d]">Install App</h2>
               <p className="text-sm text-gray-500 mb-4">Get quick access & better experience</p>
+              
               <button onClick={handleInstallClick} className="w-full bg-[#00004d] text-white py-2.5 rounded-xl font-semibold active:scale-95 transition">
                 Add to Home Screen
               </button>
+              
               <button onClick={handleCopyLink} className="w-full mt-2 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-medium active:scale-95 transition">
                 Copy Link
               </button>
+              
               <div className="flex items-center gap-2 my-3">
                 <div className="flex-1 h-[1px] bg-gray-200"></div>
                 <span className="text-xs text-gray-400">share</span>
                 <div className="flex-1 h-[1px] bg-gray-200"></div>
               </div>
-              <div className="flex justify-center gap-4">
-                <button onClick={handleWhatsAppShare} className="bg-green-500 hover:scale-110 transition p-3 rounded-full text-white shadow"><FaWhatsapp size={20} /></button>
-                <button onClick={handleFacebookShare} className="bg-blue-600 hover:scale-110 transition p-3 rounded-full text-white shadow"><FaFacebook size={20} /></button>
+              
+              <div className="flex justify-center gap-3 flex-wrap">
+                <button onClick={handleWhatsAppShare} title="WhatsApp" className="bg-[#25D366] hover:scale-110 transition p-3 rounded-full text-white shadow">
+                  <FaWhatsapp size={20} />
+                </button>
+                <button onClick={handleWhatsAppBusinessShare} title="WhatsApp Business" className="bg-[#128C7E] hover:scale-110 transition p-3 rounded-full text-white shadow relative">
+                  <FaWhatsapp size={20} />
+                  <span className="absolute -bottom-1 -right-1 bg-white text-[#128C7E] text-[8px] font-black px-1 rounded-full border border-[#128C7E]">B</span>
+                </button>
+                <button onClick={handleFacebookShare} title="Facebook" className="bg-[#1877F2] hover:scale-110 transition p-3 rounded-full text-white shadow">
+                  <FaFacebook size={20} />
+                </button>
+                <button onClick={handleInstagramShare} title="Instagram" className="bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] hover:scale-110 transition p-3 rounded-full text-white shadow">
+                  <FaInstagram size={20} />
+                </button>
               </div>
-              <button onClick={() => setShowInstallBox(false)} className="mt-4 text-xs text-gray-400 hover:text-gray-600">Cancel</button>
+
+              <button onClick={() => setShowInstallBox(false)} className="mt-4 text-xs text-gray-400 hover:text-gray-600 block w-full text-center">Cancel</button>
             </motion.div>
           </div>
         )}
