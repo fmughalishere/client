@@ -18,7 +18,7 @@ export default function JobDetailPage() {
   const [formData, setFormData] = useState({
     fullName: "", dob: "", gender: "Male", city: "", image: "",
     jobtype: "Full-Time", category: "", otherCategory: "", education: "", otherEducation: "",
-    yearsOfExperience: "0", skills: "", achievements: "",
+    yearsOfExperience: "0", skills: "",
     email: "", phone: "+92", whatsapp: "+92", salaryDemand: "", agreeTerms: false
   });
 
@@ -44,15 +44,12 @@ export default function JobDetailPage() {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const apps = await res.json();
-      
-      const currentJobDetails = {
+const currentJobDetails = {
         city: job?.city || "",
         salaryDemand: job?.salary || "",
-        skills: Array.isArray(job?.skills) ? job.skills.join(", ") : job?.skills || "",
         category: job?.category || "",
         education: job?.education || "",
         jobtype: job?.type || "Full-Time",
-        yearsOfExperience: job?.experience || "0"
       };
 
       if (apps.length > 0) {
@@ -66,7 +63,8 @@ export default function JobDetailPage() {
           whatsapp: lastApp.whatsapp || "+92",
           phone: lastApp.phone || "+92",
           email: lastApp.email || "",
-          achievements: lastApp.achievements || "",
+          yearsOfExperience: lastApp.yearsOfExperience || "0",
+          skills: Array.isArray(lastApp.skills) ? lastApp.skills.join(", ") : lastApp.skills || "",
           ...currentJobDetails,
           agreeTerms: false
         }));
@@ -142,22 +140,20 @@ export default function JobDetailPage() {
 
     const token = localStorage.getItem("token");
     setIsApplying(true);
+
     const skillsPayload = typeof formData.skills === 'string'
       ? formData.skills.split(",").map(s => s.trim()).filter(s => s !== "")
       : [];
-    const experiencePayload = formData.yearsOfExperience ? [formData.yearsOfExperience] : [];
-    const { yearsOfExperience, skills, ...restFormData } = formData;
 
     try {
       const res = await fetch("https://easyjobspk.onrender.com/api/applications", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({
-          ...restFormData,
+          ...formData,
           jobId: id,
           job: id,
-          skills: skillsPayload,
-          experience: experiencePayload
+          skills: skillsPayload
         })
       });
 
