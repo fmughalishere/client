@@ -553,7 +553,7 @@ function JobFormContent() {
                 </button>
               ) : (
                 <button type="submit" disabled={loading} className="flex items-center justify-center gap-2 px-10 py-4 bg-[#5DBB63] text-white rounded-xl font-black text-sm hover:bg-opacity-90 active:scale-95 transition-all shadow-lg disabled:opacity-50 ml-auto min-w-[160px]">
-                  {loading ? <Loader2 size={18} className="animate-spin" /> : "Submit Profile 🚀"}
+                  {loading ? <Loader2 size={18} className="animate-spin" /> : "Submit Profile"}
                 </button>
               )}
             </div>
