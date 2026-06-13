@@ -26,13 +26,13 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen bg-[#fcfcfc] pb-10 overflow-hidden">
             <section className="relative bg-[#e2f2f5] py-16 md:py-28 lg:py-32 text-[#00004d] px-6 rounded-b-[50px] shadow-sm">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-[#00d26a]/5 skew-x-12 transform origin-right hidden md:block"></div>
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-[#5DBB63]/5 skew-x-12 transform origin-right hidden md:block"></div>
         
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="mb-6 md:mb-10">
             <Link 
               href="/" 
-              className="inline-flex items-center text-[#00d26a] font-black  text-[10px] md:text-xs tracking-widest hover:underline"
+              className="inline-flex items-center text-[#5DBB63] font-black  text-[10px] md:text-xs tracking-widest hover:underline"
             >
               <ArrowLeft size={16} className="mr-2" /> Back to Home
             </Link>
@@ -43,7 +43,7 @@ export default function AboutPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.1] tracking-tight"
           >
-            Empowering <span className="text-[#00d26a]">Pakistan's</span> <br className="hidden md:block" /> 
+            Empowering <span className="text-[#5DBB63]">Pakistan's</span> <br className="hidden md:block" /> 
             Talent Landscape
           </motion.h1>
           
@@ -61,11 +61,11 @@ export default function AboutPage() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <motion.div {...fadeInUp}>
             <div className="inline-flex items-center gap-2 bg-[#00004d]/5 px-4 py-2 rounded-full text-[#00004d] text-[10px] md:text-xs font-black mb-6 border border-[#00004d]/10  tracking-widest">
-              <Target size={16} className="text-[#00d26a]" />
+              <Target size={16} className="text-[#5DBB63]" />
               <span>Our Vision</span>
             </div>
             <h2 className="text-3xl md:text-5xl font-black text-[#00004d] mb-6 leading-tight">
-              To be the #1 destination for <span className="text-[#00d26a]">career growth</span> in Pakistan.
+              To be the #1 destination for <span className="text-[#5DBB63]">career growth</span> in Pakistan.
             </h2>
             <p className="text-gray-500 font-bold text-sm md:text-lg mb-8 leading-relaxed">
               We started with a simple goal: to make job hunting easy and hiring efficient. Today, EasyJobs.pk serves thousands of users across the country.
@@ -73,7 +73,7 @@ export default function AboutPage() {
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {['Verified Employers', 'Direct Access', 'Zero Fees', 'Easy Interface'].map((item, i) => (
                 <li key={i} className="flex items-center gap-3 font-black text-[#00004d] text-sm md:text-base">
-                  <CheckCircle2 className="text-[#00d26a]" size={20} /> {item}
+                  <CheckCircle2 className="text-[#5DBB63]" size={20} /> {item}
                 </li>
               ))}
             </ul>
@@ -86,9 +86,9 @@ export default function AboutPage() {
           >
             {[
               { label: "Users", val: "50k+", icon: Users, color: "text-[#00004d]" },
-              { label: "Jobs", val: "15k+", icon: Briefcase, color: "text-[#00d26a]" },
+              { label: "Jobs", val: "15k+", icon: Briefcase, color: "text-[#5DBB63]" },
               { label: "Cities", val: "40+", icon: Globe, color: "text-[#00004d]" },
-              { label: "Success", val: "98%", icon: Trophy, color: "text-[#00d26a]" },
+              { label: "Success", val: "98%", icon: Trophy, color: "text-[#5DBB63]" },
             ].map((stat, i) => (
               <div key={i} className="bg-white p-5 md:p-8 rounded-[2rem] shadow-sm flex flex-col items-center text-center hover:shadow-md transition-all">
                 <stat.icon className={`${stat.color} mb-3`} size={24} />
@@ -118,7 +118,7 @@ export default function AboutPage() {
                 whileHover={{ y: -8 }}
                 className="bg-white/5 border border-white/10 p-8 md:p-10 rounded-[2.5rem] backdrop-blur-sm group transition-all"
               >
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-[#00d26a] rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-[#5DBB63] rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform">
                   <value.icon className="text-[#00004d]" size={28} />
                 </div>
                 <h4 className="text-xl md:text-2xl font-black mb-3  tracking-tight">{value.title}</h4>
